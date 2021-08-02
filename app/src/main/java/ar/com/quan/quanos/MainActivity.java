@@ -181,7 +181,6 @@ public class MainActivity extends AppCompatActivity {
         }
         return true;
     }
-
     private void mostrarMensajePermisos(String message, DialogInterface.OnClickListener okListener
             , DialogInterface.OnClickListener cancelListener) {
         new AlertDialog.Builder(this)

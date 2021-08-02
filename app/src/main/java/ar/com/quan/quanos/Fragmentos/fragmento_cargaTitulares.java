@@ -49,7 +49,6 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
     ArrayList<String> listaSexos= new ArrayList<String>();
     ArrayAdapter<String> adapterSexos;
     Map <String, String> mapSexos= new HashMap<>();
-
     public fragmento_cargaTitulares() {
         // Required empty public constructor
     }
@@ -152,5 +151,4 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
     public void setTrigger(FragmentChangeTrigger trigger) {
         this.trigger = trigger;
     }
-
 }
