@@ -1,0 +1,2 @@
+rootProject.name = "QuanOS"
+include ':app'
