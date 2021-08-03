@@ -36,7 +36,7 @@ public class TableDynamic {private TableLayout tableLayout;
     private void newCell(){
         txtCell=new TextView(context);
         txtCell.setGravity(Gravity.CENTER);
-        txtCell.setTextSize(25);
+        txtCell.setTextSize(13);
     }
     private void createHeader(){
         indexC=0;
@@ -50,12 +50,12 @@ public class TableDynamic {private TableLayout tableLayout;
     }
     private void createDataTable(){
         String info;
-        for (indexR=1; indexR<=data.size(); indexR++){
+        for (indexR=1; indexR<= data.size(); indexR++){
             newRow();
             for (indexC=0; indexC<header.length; indexC++){
                 newCell();
-                String[] row=data.get(indexR-1);
-                info=(indexC<row.length)?row[indexC]:"";
+                String[] columns=data.get(indexR-1);
+                info=(indexC<columns.length)?columns[indexC]:"";
                 txtCell.setText(info);
                 tableRow.addView(txtCell,newTableRowParams());
             }

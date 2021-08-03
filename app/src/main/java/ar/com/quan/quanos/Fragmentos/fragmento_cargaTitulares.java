@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -22,6 +23,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TabHost;
 import android.widget.TabWidget;
+import android.widget.TableLayout;
 import android.widget.Toast;
 
 import com.google.android.material.tabs.TabLayout;
@@ -40,6 +42,7 @@ import ar.com.quan.quanos.Interfaces.FragmentChangeTrigger;
 import ar.com.quan.quanos.Interfaces.SuccessResponseHandler;
 import ar.com.quan.quanos.Principal;
 import ar.com.quan.quanos.R;
+import ar.com.quan.quanos.TableDynamic;
 import ar.com.quan.quanos.WebService;
 
 public class fragmento_cargaTitulares extends Fragment  implements View.OnClickListener{
@@ -48,7 +51,7 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
     FragmentChangeTrigger trigger;
     String idUsuario, token;
     Button btnVolverAInicial;
-    EditText fecnac;
+    EditText fecnac, telefono;
     Spinner sexos,nacionalidades, estadosCiviles, planesPrestacionales;
     ArrayList<String> listaSexos= new ArrayList<String>(),listaNacionalidades= new ArrayList<String>()
             ,listaEstadosCiviles= new ArrayList<String>(),listaPlanesPrestacionales= new ArrayList<String>();
@@ -56,7 +59,9 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
             ,adapterplanesPrestacionales;
     Map <String, String> mapSexos= new HashMap<>(), mapNacionalidades= new HashMap<>(),
             mapEstadosCiviles= new HashMap<>(), mapPlanesPrestacionales= new HashMap<>();
-
+    TableLayout tablaTelefono ;
+    String [] encabezado = {"Teléfonos "} ;
+    ArrayList<String[]> filas = new ArrayList<String[]>();
     public fragmento_cargaTitulares() {
         // Required empty public constructor
     }
@@ -67,11 +72,26 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragmento_carga_titulares, container, false);
 
+    }
+    private ArrayList<String[]> buscaDatosTablas()
+    {
+        filas.add(new String[]{"uno"});
+        filas.add(new String[]{"dos"});
+        filas.add(new String[]{"tres"});
+        filas.add(new String[]{"cuatro"});
+        filas.add(new String[]{"5"});
+        filas.add(new String[]{"6"});
 
+        filas.add(new String[]{"7"});
+
+
+
+        return filas;
     }
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        contexto=view.getContext();
         btnVolverAInicial =(Button) view.findViewById(R.id.btnVolverAInicial);
         btnVolverAInicial.setOnClickListener(this);
         fecnac= (EditText) view.findViewById(R.id.fecNac);
@@ -80,22 +100,38 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
         nacionalidades=(Spinner) view.findViewById(R.id.nacionalidades);
         estadosCiviles=(Spinner) view.findViewById(R.id.estadosCiviles);
         planesPrestacionales=(Spinner) view.findViewById(R.id.planesPrestacionales);
+        creaTabs ();
         llenaSexos();
         llenaNacionalidades();
         llenaEstadoCiviles();
         llenaPlanesPrestacionales();
-        TabHost tabs = (TabHost) view.findViewById(R.id.tabHost);
-        tabs.setup();
-        TabHost.TabSpec spec = tabs.newTabSpec("tabs");
-        spec.setContent(R.id.tab1);
-        spec.setIndicator("Datos personales");
-        tabs.addTab(spec);
 
-        spec = tabs.newTabSpec("tag2");
-        spec.setContent(R.id.tab2);
-        spec.setIndicator("Teléfonos");
-        tabs.addTab(spec);
 
+        tablaTelefono =view.findViewById(R.id.tablaTelefono);
+        //telefono=view.findViewById(R.id.telefono);
+        TableDynamic tableDynamic =new TableDynamic(tablaTelefono,getContext());
+        tableDynamic =new TableDynamic(tablaTelefono,contexto);
+        tableDynamic.addHeader(encabezado);
+        tableDynamic.addData(buscaDatosTablas());
+        tableDynamic.backgroundHeader(Color.parseColor("#819FF7"));
+        tableDynamic.backgroundData(Color.parseColor("#95cbf5"), Color.parseColor("#68879e"));
+        tableDynamic.lineColor(Color.BLACK);
+        tableDynamic.textColorData(Color.WHITE);
+        tableDynamic.textColorHeader(Color.BLUE);
+
+
+/*                tableDynamic = TableDynamic(tablaTelefono,this@IngresoTitulares);
+        tableDynamic.tableDynamica(tablaTelefono,this@IngresoTitulares)
+        tableDynamic.addHeader(encabezado)
+        //tableDynamic.addData(arrayListOf("2","Juan","Perez"))
+        tableDynamic.addData(buscaDatos("TablaTelefono"))
+        //tableDynamic.addData(("3","Pedro","Paz"))
+        tableDynamic.backgroundHeader(Color.parseColor("#819FF7"))
+        tableDynamic.backgroundData(Color.parseColor("#95cbf5"), Color.parseColor("#68879e"))
+        tableDynamic.lineColor(Color.RED)
+        tableDynamic.textColorData(Color.MAGENTA)
+        tableDynamic.textColorHeader(Color.BLUE)
+        var telefono = findViewById<EditText>(R.id.telefono)*/
 
     }
 
@@ -111,7 +147,22 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
 
         }
     }
-    //Sexos
+
+    private void creaTabs (){
+        TabHost tabs = (TabHost) getActivity().findViewById(R.id.tabHost);
+        tabs.setup();
+        TabHost.TabSpec spec = tabs.newTabSpec("tabs");
+        spec.setContent(R.id.tab1);
+        spec.setIndicator("Datos personales");
+        tabs.addTab(spec);
+
+        spec = tabs.newTabSpec("tag2");
+        spec.setContent(R.id.tab2);
+        spec.setIndicator("Teléfonos");
+        tabs.addTab(spec);
+    }
+
+    //LLenado de spinners
     public void llenaSexos(){
         dialogo = Dialogos.dlgBuscando(getActivity(),"Recuperando sexos");
         WebService.leerSexos(getActivity(), "2C94AC04-F66C-4EFD-889B-B523ADF7909D","true"
@@ -265,9 +316,8 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
                     }
                 });
     }
+    //Fin llenado spinners
 
-
-    //FinSexos
     public <K, V> K getKey(Map<K, V> map, V value) {
         for (Map.Entry<K, V> entry : map.entrySet()) {
             if (entry.getValue().equals(value)) {

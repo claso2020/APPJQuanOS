@@ -58,7 +58,7 @@
                     android:overScrollMode="always"
                     android:scrollbarStyle="insideOverlay"
                     android:scrollbars="vertical">
-    <ScrollView
+                    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp">
@@ -155,6 +155,41 @@
                     android:overScrollMode="always"
                     android:scrollbarStyle="insideOverlay"
                     android:scrollbars="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                            <EditText
+                            android:id="@+id/telefono"
+                            android:layout_width="100dp"
+                            android:layout_height="40dp"
+                            android:layout_marginTop="10dp"
+                            android:background="@drawable/edittex_style"
+                            android:hint=" Ingrese teléfono"
+                            android:visibility="visible" />
+
+                        <ImageButton
+                            android:id="@+id/btnGuardaTelefono"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/guardapeque" />
+
+                        <ScrollView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center_vertical">
+
+                                <TableLayout
+                                    android:id="@+id/tablaTelefono"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent">
+
+                                </TableLayout>
+                        </ScrollView>
+
+                    </LinearLayout>
 
 
                 </LinearLayout>
