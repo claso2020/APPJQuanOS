@@ -20,7 +20,11 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TabHost;
+import android.widget.TabWidget;
 import android.widget.Toast;
+
+import com.google.android.material.tabs.TabLayout;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -62,6 +66,8 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragmento_carga_titulares, container, false);
+
+
     }
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -78,6 +84,18 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
         llenaNacionalidades();
         llenaEstadoCiviles();
         llenaPlanesPrestacionales();
+        TabHost tabs = (TabHost) view.findViewById(R.id.tabHost);
+        tabs.setup();
+        TabHost.TabSpec spec = tabs.newTabSpec("tabs");
+        spec.setContent(R.id.tab1);
+        spec.setIndicator("Datos personales");
+        tabs.addTab(spec);
+
+        spec = tabs.newTabSpec("tag2");
+        spec.setContent(R.id.tab2);
+        spec.setIndicator("Teléfonos");
+        tabs.addTab(spec);
+
 
     }
 
