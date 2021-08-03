@@ -39,16 +39,20 @@ import ar.com.quan.quanos.R;
 import ar.com.quan.quanos.WebService;
 
 public class fragmento_cargaTitulares extends Fragment  implements View.OnClickListener{
-    private Dialog dialogo;
+    private Dialog dialogo, dialogoNac, dialogoEstadoCivil, dialogoplanesPrestacionales;
     private Context contexto;
     FragmentChangeTrigger trigger;
     String idUsuario, token;
     Button btnVolverAInicial;
     EditText fecnac;
-    Spinner sexos;
-    ArrayList<String> listaSexos= new ArrayList<String>();
-    ArrayAdapter<String> adapterSexos;
-    Map <String, String> mapSexos= new HashMap<>();
+    Spinner sexos,nacionalidades, estadosCiviles, planesPrestacionales;
+    ArrayList<String> listaSexos= new ArrayList<String>(),listaNacionalidades= new ArrayList<String>()
+            ,listaEstadosCiviles= new ArrayList<String>(),listaPlanesPrestacionales= new ArrayList<String>();
+    ArrayAdapter<String> adapterSexos,adapterNacionalidades, adapterEstadosCiviles
+            ,adapterplanesPrestacionales;
+    Map <String, String> mapSexos= new HashMap<>(), mapNacionalidades= new HashMap<>(),
+            mapEstadosCiviles= new HashMap<>(), mapPlanesPrestacionales= new HashMap<>();
+
     public fragmento_cargaTitulares() {
         // Required empty public constructor
     }
@@ -67,7 +71,14 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
         fecnac= (EditText) view.findViewById(R.id.fecNac);
         fecnac.setOnClickListener(this);
         sexos = (Spinner) view.findViewById(R.id.sexos);
+        nacionalidades=(Spinner) view.findViewById(R.id.nacionalidades);
+        estadosCiviles=(Spinner) view.findViewById(R.id.estadosCiviles);
+        planesPrestacionales=(Spinner) view.findViewById(R.id.planesPrestacionales);
         llenaSexos();
+        llenaNacionalidades();
+        llenaEstadoCiviles();
+        llenaPlanesPrestacionales();
+
     }
 
     @Override
@@ -121,6 +132,124 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
                     }
                 });
     }
+    public void llenaNacionalidades(){
+        dialogoNac = Dialogos.dlgBuscando(getActivity(),"Recuperando nacionalidades");
+        WebService.leerNacionalidades(getActivity(), "","true"
+                , new SuccessResponseHandler<JSONObject>() {
+                    @Override
+                    public void onSuccess(JSONObject resultado) {
+                        dialogoNac.dismiss();
+                        try {
+                            JSONObject completo =new JSONObject(resultado.getString("resultado"));
+                            String datos =completo.getString("datos");
+                            JSONArray arrayCompleto = new JSONArray(datos);
+                            listaNacionalidades.add(0, "Seleccione nacionalidad");
+                            mapNacionalidades.put("00000000-0000-0000-0000-000000000000","Seleccione nacionalidad");
+                            for (int i = 0; i < arrayCompleto.length(); i++) {
+                                JSONObject arrayFila = arrayCompleto.getJSONObject(i);
+                                String id = arrayFila.getString("idNacionalidad");
+                                String nombre = arrayFila.getString("nombre");
+                                listaNacionalidades.add(i+1,nombre);
+                                mapNacionalidades.put(id,nombre);
+                            }
+                            adapterNacionalidades = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, listaNacionalidades);
+                            adapterNacionalidades.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                            nacionalidades.setAdapter(adapterNacionalidades);
+                            dialogoNac.dismiss();
+                            //String a = getKey(nacionalidades,"Argentina");
+
+                        } catch (Exception errEx) {
+                            dialogoNac = Dialogos.dlgError(getActivity(),errEx.getMessage());
+                        }
+                    }
+                }, new ErrorResponseHandler() {
+                    @Override
+                    public void onError(String msg) {
+                        dialogoNac.dismiss();
+                        dialogoNac = Dialogos.dlgError(getActivity(),msg);
+                    }
+                });
+    }
+    public void llenaEstadoCiviles(){
+        dialogoEstadoCivil = Dialogos.dlgBuscando(getActivity(),"Recuperando estados civiles");
+        WebService.leerEstadosCiviles(getActivity(), "","true"
+                , new SuccessResponseHandler<JSONObject>() {
+                    @Override
+                    public void onSuccess(JSONObject resultado) {
+                        dialogoNac.dismiss();
+                        try {
+                            JSONObject completo =new JSONObject(resultado.getString("resultado"));
+                            String datos =completo.getString("datos");
+                            JSONArray arrayCompleto = new JSONArray(datos);
+                            listaEstadosCiviles.add(0, "Seleccione estado civil");
+                            mapEstadosCiviles.put("00000000-0000-0000-0000-000000000000","Seleccione estado civil");
+                            for (int i = 0; i < arrayCompleto.length(); i++) {
+                                JSONObject arrayFila = arrayCompleto.getJSONObject(i);
+                                String id = arrayFila.getString("idEstadoCivil");
+                                String nombre = arrayFila.getString("nombre");
+                                listaEstadosCiviles.add(i+1,nombre);
+                                mapEstadosCiviles.put(id,nombre);
+                            }
+                            adapterEstadosCiviles = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, listaEstadosCiviles);
+                            adapterEstadosCiviles.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                            estadosCiviles.setAdapter(adapterEstadosCiviles);
+                            dialogoEstadoCivil.dismiss();
+                            //String a = getKey(nacionalidades,"Argentina");
+
+                        } catch (Exception errEx) {
+                            dialogoEstadoCivil = Dialogos.dlgError(getActivity(),errEx.getMessage());
+                        }
+                    }
+                }, new ErrorResponseHandler() {
+                    @Override
+                    public void onError(String msg) {
+                        dialogoEstadoCivil.dismiss();
+                        dialogoEstadoCivil = Dialogos.dlgError(getActivity(),msg);
+                    }
+                });
+    }
+    public void llenaPlanesPrestacionales(){
+        dialogoplanesPrestacionales = Dialogos.dlgBuscando(getActivity(),"Recuperando planes prestacionales");
+        WebService.leerPlanesPrestacionales(getActivity(), "","true"
+                , new SuccessResponseHandler<JSONObject>() {
+                    @Override
+                    public void onSuccess(JSONObject resultado) {
+                        dialogoplanesPrestacionales.dismiss();
+                        try {
+                            JSONObject completo =new JSONObject(resultado.getString("resultado"));
+                            String datos =completo.getString("datos");
+                            JSONArray arrayCompleto = new JSONArray(datos);
+                            listaPlanesPrestacionales.add(0, "Seleccione plan prestacional");
+                            mapPlanesPrestacionales.put("00000000-0000-0000-0000-000000000000","Seleccione plan prestacional");
+                            for (int i = 0; i < arrayCompleto.length(); i++) {
+                                JSONObject arrayFila = arrayCompleto.getJSONObject(i);
+                                String id = arrayFila.getString("idPlanPrestacional");
+                                String nombre = arrayFila.getString("nombre");
+                                listaPlanesPrestacionales.add(i+1,nombre);
+                                mapPlanesPrestacionales.put(id,nombre);
+                            }
+                            adapterplanesPrestacionales = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1
+                                    , listaPlanesPrestacionales);
+                            adapterplanesPrestacionales.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                            planesPrestacionales.setAdapter(adapterplanesPrestacionales);
+                            dialogoplanesPrestacionales.dismiss();
+                            //String a = getKey(nacionalidades,"Argentina");
+
+                        } catch (Exception errEx) {
+                            dialogoplanesPrestacionales = Dialogos.dlgError(getActivity(),errEx.getMessage());
+                        }
+                    }
+                }, new ErrorResponseHandler() {
+                    @Override
+                    public void onError(String msg) {
+                        dialogoplanesPrestacionales.dismiss();
+                        dialogoplanesPrestacionales = Dialogos.dlgError(getActivity(),msg);
+                    }
+                });
+    }
+
+
+    //FinSexos
     public <K, V> K getKey(Map<K, V> map, V value) {
         for (Map.Entry<K, V> entry : map.entrySet()) {
             if (entry.getValue().equals(value)) {
@@ -129,7 +258,6 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
         }
         return null;
     }
-    //FinSexos
     //Selector de fechas
     private void showDatePickerDialog() {
         DatePickerFragment newFragment =

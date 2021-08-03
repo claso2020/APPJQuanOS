@@ -166,7 +166,6 @@ public class MainActivity extends AppCompatActivity {
         }
         //esLaPrimeraVez();
     }
-
     private boolean agregarPermiso(List<String> permissionsList, String permission) {
 /*        if (ContextCompat.checkSelfPermission(this,permission) =="INTERNET")
         {
