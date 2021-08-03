@@ -4,8 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Fragmentos.fragmento_cargaTitulares">
-
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -29,85 +27,94 @@
 
         </LinearLayout>
 
-        <ScrollView
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp">
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-                <EditText
-                    android:id="@+id/apellido"
-                    android:layout_width="284dp"
-                    android:layout_height="40dp"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/edittex_style"
-                    android:hint="  Apellido"
-                    android:visibility="visible" />
+            <EditText
+                android:id="@+id/apellido"
+                android:layout_width="284dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/edittex_style"
+                android:hint="  Apellido"
+                android:visibility="visible" />
 
-                <EditText
-                    android:id="@+id/nombre"
-                    android:layout_width="284dp"
-                    android:layout_height="40dp"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/edittex_style"
-                    android:hint="  Nombre"
-                    android:visibility="visible" />
-                <EditText
-                    android:id="@+id/fecNac"
-                    android:layout_width="284dp"
-                    android:layout_height="40dp"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/edittex_style"
-                    android:clickable="true"
-                    android:focusable="false"
-                    android:hint="  Fecha Nacimiento"
-                    android:inputType="date"
-                    android:maxLines="1" />
-                <EditText
-                    android:id="@+id/cuil"
-                    android:layout_width="284dp"
-                    android:layout_height="40dp"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/edittex_style"
-                    android:hint="  CUIL"
-                    android:visibility="visible" />
-                <Spinner
-                    android:id="@+id/sexos"
-                    android:layout_width="284dp"
-                    android:layout_height="40dp"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/edittex_style" />
-                <Spinner
-                    android:id="@+id/nacionalidades"
-                    android:layout_width="284dp"
-                    android:layout_height="40dp"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/edittex_style" />
-                <Spinner
-                    android:id="@+id/estadosCiviles"
-                    android:layout_width="284dp"
-                    android:layout_height="40dp"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/edittex_style" />
-                <EditText
-                    android:id="@+id/claveFiscal"
-                    android:layout_width="284dp"
-                    android:layout_height="40dp"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/edittex_style"
-                    android:hint="  Clave fiscal"
-                    android:visibility="visible" />
-                <Spinner
-                    android:id="@+id/planesPrestacionales"
-                    android:layout_width="284dp"
-                    android:layout_height="40dp"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/edittex_style" />
+            <EditText
+                android:id="@+id/nombre"
+                android:layout_width="284dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/edittex_style"
+                android:hint="  Nombre"
+                android:visibility="visible" />
 
-            </LinearLayout>
-        </ScrollView>
+            <EditText
+                android:id="@+id/fecNac"
+                android:layout_width="284dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/edittex_style"
+                android:clickable="true"
+                android:focusable="false"
+                android:hint="  Fecha Nacimiento"
+                android:inputType="date"
+                android:maxLines="1" />
+
+            <EditText
+                android:id="@+id/cuil"
+                android:layout_width="284dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/edittex_style"
+                android:hint="  CUIL"
+                android:visibility="visible" />
+
+            <Spinner
+                android:id="@+id/sexos"
+                android:layout_width="284dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/edittex_style" />
+
+            <Spinner
+                android:id="@+id/nacionalidades"
+                android:layout_width="284dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/edittex_style" />
+
+            <Spinner
+                android:id="@+id/estadosCiviles"
+                android:layout_width="284dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/edittex_style" />
+
+            <EditText
+                android:id="@+id/claveFiscal"
+                android:layout_width="284dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/edittex_style"
+                android:hint="  Clave fiscal"
+                android:visibility="visible" />
+
+            <Spinner
+                android:id="@+id/planesPrestacionales"
+                android:layout_width="284dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/edittex_style" />
+
+        </LinearLayout>
+    </ScrollView>
 
 
 </FrameLayout>
