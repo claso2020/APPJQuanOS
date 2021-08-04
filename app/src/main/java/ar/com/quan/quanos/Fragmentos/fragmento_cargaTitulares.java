@@ -20,6 +20,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TabHost;
 import android.widget.TabWidget;
@@ -51,6 +52,7 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
     FragmentChangeTrigger trigger;
     String idUsuario, token;
     Button btnVolverAInicial;
+    ImageButton btnGuardaTelefono;
     EditText fecnac, telefono;
     Spinner sexos,nacionalidades, estadosCiviles, planesPrestacionales;
     ArrayList<String> listaSexos= new ArrayList<String>(),listaNacionalidades= new ArrayList<String>()
@@ -62,6 +64,8 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
     TableLayout tablaTelefono ;
     String [] encabezado = {"Teléfonos "} ;
     ArrayList<String[]> filas = new ArrayList<String[]>();
+    TableDynamic tableDynamic =new TableDynamic(tablaTelefono,getContext());
+
     public fragmento_cargaTitulares() {
         // Required empty public constructor
     }
@@ -81,11 +85,7 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
         filas.add(new String[]{"cuatro"});
         filas.add(new String[]{"5"});
         filas.add(new String[]{"6"});
-
         filas.add(new String[]{"7"});
-
-
-
         return filas;
     }
     @Override
@@ -94,47 +94,43 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
         contexto=view.getContext();
         btnVolverAInicial =(Button) view.findViewById(R.id.btnVolverAInicial);
         btnVolverAInicial.setOnClickListener(this);
+        btnGuardaTelefono= (ImageButton) view.findViewById(R.id.btnGuardaTelefono);
+        btnGuardaTelefono.setOnClickListener(this);
+
         fecnac= (EditText) view.findViewById(R.id.fecNac);
         fecnac.setOnClickListener(this);
+
         sexos = (Spinner) view.findViewById(R.id.sexos);
         nacionalidades=(Spinner) view.findViewById(R.id.nacionalidades);
         estadosCiviles=(Spinner) view.findViewById(R.id.estadosCiviles);
         planesPrestacionales=(Spinner) view.findViewById(R.id.planesPrestacionales);
+
+        telefono= (EditText) view.findViewById(R.id.telefono);
+        tablaTelefono =view.findViewById(R.id.tablaTelefono);
+        tableDynamic =new TableDynamic(tablaTelefono,contexto);
+
         creaTabs ();
         llenaSexos();
         llenaNacionalidades();
         llenaEstadoCiviles();
         llenaPlanesPrestacionales();
+        iniciaTablas();
 
-
-        tablaTelefono =view.findViewById(R.id.tablaTelefono);
-        //telefono=view.findViewById(R.id.telefono);
-        TableDynamic tableDynamic =new TableDynamic(tablaTelefono,getContext());
-        tableDynamic =new TableDynamic(tablaTelefono,contexto);
-        tableDynamic.addHeader(encabezado);
-        tableDynamic.addData(buscaDatosTablas());
-        tableDynamic.backgroundHeader(Color.parseColor("#819FF7"));
-        tableDynamic.backgroundData(Color.parseColor("#95cbf5"), Color.parseColor("#68879e"));
-        tableDynamic.lineColor(Color.BLACK);
-        tableDynamic.textColorData(Color.WHITE);
-        tableDynamic.textColorHeader(Color.BLUE);
-
-
-/*                tableDynamic = TableDynamic(tablaTelefono,this@IngresoTitulares);
-        tableDynamic.tableDynamica(tablaTelefono,this@IngresoTitulares)
-        tableDynamic.addHeader(encabezado)
-        //tableDynamic.addData(arrayListOf("2","Juan","Perez"))
-        tableDynamic.addData(buscaDatos("TablaTelefono"))
-        //tableDynamic.addData(("3","Pedro","Paz"))
-        tableDynamic.backgroundHeader(Color.parseColor("#819FF7"))
-        tableDynamic.backgroundData(Color.parseColor("#95cbf5"), Color.parseColor("#68879e"))
-        tableDynamic.lineColor(Color.RED)
-        tableDynamic.textColorData(Color.MAGENTA)
-        tableDynamic.textColorHeader(Color.BLUE)
-        var telefono = findViewById<EditText>(R.id.telefono)*/
 
     }
+private void iniciaTablas(){
 
+    //telefono=view.findViewById(R.id.telefono);
+
+    tableDynamic.addHeader(encabezado);
+    tableDynamic.addData(buscaDatosTablas());
+    tableDynamic.backgroundHeader(Color.parseColor("#819FF7"));
+    tableDynamic.backgroundData(Color.parseColor("#95cbf5"), Color.parseColor("#68879e"));
+    tableDynamic.lineColor(Color.BLACK);
+    tableDynamic.textColorData(Color.WHITE);
+    tableDynamic.textColorHeader(Color.BLUE);
+
+}
     @Override
     public void onClick(View v) {
         if(v.getId()==R.id.btnVolverAInicial){
@@ -146,8 +142,23 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
         if(v.getId()==R.id.sexos){
 
         }
+        if(v.getId()==R.id.btnGuardaTelefono){
+            agregaTelefono();
+        }
     }
+    private void agregaTelefono(){
+        String[]item = new String[]{telefono.getText().toString()};
+        if (telefono.getText().toString().equals(""))
+        {
+            Toast.makeText(contexto, "Debe ingresart un número de teléfono", Toast.LENGTH_LONG).show();
+        }
+        else
+        {
+            tableDynamic.addItems(item);
+            telefono.setText("");
+        }
 
+    }
     private void creaTabs (){
         TabHost tabs = (TabHost) getActivity().findViewById(R.id.tabHost);
         tabs.setup();
