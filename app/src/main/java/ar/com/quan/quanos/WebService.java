@@ -79,13 +79,13 @@ public class WebService {
         queue.add(req);
     }
 
-    public static void leerSexos(final Context contexto, String idConexion , final String soloHabilitados
+    public static void leerSexos(final Context contexto, final String soloHabilitados
             , final SuccessResponseHandler successResponseHandler, final ErrorResponseHandler errorHandler ) {
 
         SharedPreferences  globales = contexto.getSharedPreferences("datosGlobalesApp",contexto.MODE_PRIVATE);
         SharedPreferences.Editor editorGlobales = globales.edit();
         String token =globales.getString("token", null);
-        idConexion =globales.getString("idUsuario", null);
+        String idConexion =globales.getString("idUsuario", null);
 
         String url =contexto.getResources().getString(R.string.srvLocProduccion);
         url=url+"sistema/leerSexos?idConexion="+idConexion+"&soloHabilitados=true";
@@ -146,13 +146,13 @@ public class WebService {
 
     }
 
-    public static void leerNacionalidades(final Context contexto, String idConexion , final String soloHabilitados
+    public static void leerNacionalidades(final Context contexto,  final String soloHabilitados
             , final SuccessResponseHandler successResponseHandler, final ErrorResponseHandler errorHandler ) {
 
         SharedPreferences  globales = contexto.getSharedPreferences("datosGlobalesApp",contexto.MODE_PRIVATE);
         SharedPreferences.Editor editorGlobales = globales.edit();
         String token =globales.getString("token", null);
-        idConexion =globales.getString("idUsuario", null);
+        String idConexion =globales.getString("idUsuario", null);
 
         String url =contexto.getResources().getString(R.string.srvLocProduccion);
         url=url+"sistema/leerNacionalidades?idConexion="+idConexion+"&soloHabilitados=true";
@@ -213,13 +213,13 @@ public class WebService {
 
     }
 
-    public static void leerEstadosCiviles(final Context contexto, String idConexion , final String soloHabilitados
+    public static void leerEstadosCiviles(final Context contexto, final String soloHabilitados
             , final SuccessResponseHandler successResponseHandler, final ErrorResponseHandler errorHandler ) {
 
         SharedPreferences  globales = contexto.getSharedPreferences("datosGlobalesApp",contexto.MODE_PRIVATE);
         SharedPreferences.Editor editorGlobales = globales.edit();
         String token =globales.getString("token", null);
-        idConexion =globales.getString("idUsuario", null);
+        String idConexion  =globales.getString("idUsuario", null);
 
         String url =contexto.getResources().getString(R.string.srvLocProduccion);
         url=url+"sistema/leerEstadosCiviles?idConexion="+idConexion+"&soloHabilitados=true";
@@ -280,13 +280,13 @@ public class WebService {
 
     }
 
-    public static void leerPlanesPrestacionales(final Context contexto, String idConexion , final String soloHabilitados
+    public static void leerPlanesPrestacionales(final Context contexto,  final String soloHabilitados
             , final SuccessResponseHandler successResponseHandler, final ErrorResponseHandler errorHandler ) {
 
         SharedPreferences  globales = contexto.getSharedPreferences("datosGlobalesApp",contexto.MODE_PRIVATE);
         SharedPreferences.Editor editorGlobales = globales.edit();
         String token =globales.getString("token", null);
-        idConexion =globales.getString("idUsuario", null);
+        String idConexion  =globales.getString("idUsuario", null);
 
         String url =contexto.getResources().getString(R.string.srvLocProduccion);
         url=url+"sistema/leerPlanesPrestacionales?idConexion="+idConexion+"&soloHabilitados=true";

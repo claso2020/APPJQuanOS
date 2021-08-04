@@ -176,7 +176,7 @@ private void iniciaTablas(){
     //LLenado de spinners
     public void llenaSexos(){
         dialogo = Dialogos.dlgBuscando(getActivity(),"Recuperando sexos");
-        WebService.leerSexos(getActivity(), "2C94AC04-F66C-4EFD-889B-B523ADF7909D","true"
+        WebService.leerSexos(getActivity(),"true"
                 , new SuccessResponseHandler<JSONObject>() {
                     @Override
                     public void onSuccess(JSONObject resultado) {
@@ -214,7 +214,7 @@ private void iniciaTablas(){
     }
     public void llenaNacionalidades(){
         dialogoNac = Dialogos.dlgBuscando(getActivity(),"Recuperando nacionalidades");
-        WebService.leerNacionalidades(getActivity(), "","true"
+        WebService.leerNacionalidades(getActivity(),"true"
                 , new SuccessResponseHandler<JSONObject>() {
                     @Override
                     public void onSuccess(JSONObject resultado) {
@@ -252,7 +252,7 @@ private void iniciaTablas(){
     }
     public void llenaEstadoCiviles(){
         dialogoEstadoCivil = Dialogos.dlgBuscando(getActivity(),"Recuperando estados civiles");
-        WebService.leerEstadosCiviles(getActivity(), "","true"
+        WebService.leerEstadosCiviles(getActivity(), "true"
                 , new SuccessResponseHandler<JSONObject>() {
                     @Override
                     public void onSuccess(JSONObject resultado) {
@@ -290,7 +290,7 @@ private void iniciaTablas(){
     }
     public void llenaPlanesPrestacionales(){
         dialogoplanesPrestacionales = Dialogos.dlgBuscando(getActivity(),"Recuperando planes prestacionales");
-        WebService.leerPlanesPrestacionales(getActivity(), "","true"
+        WebService.leerPlanesPrestacionales(getActivity(),"true"
                 , new SuccessResponseHandler<JSONObject>() {
                     @Override
                     public void onSuccess(JSONObject resultado) {
