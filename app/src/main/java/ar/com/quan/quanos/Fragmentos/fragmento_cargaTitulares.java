@@ -40,22 +40,25 @@ import ar.com.quan.quanos.WebService;
 
 public class fragmento_cargaTitulares extends Fragment  implements View.OnClickListener{
     private Dialog dialogo, dialogoNac, dialogoEstadoCivil, dialogoplanesPrestacionales
-            , dialogoProvincias, dialogoDepartamentos;
+            , dialogoProvincias, dialogoDepartamentos, dialogoLocalidades;
     private Context contexto;
     FragmentChangeTrigger trigger;
-    String idUsuario, token, idProvinciaSeleccionada;
+    String idUsuario, token, idProvinciaSeleccionada, idDepartamentoSeleccionado;
     Button btnVolverAInicial;
 
     EditText fecnac, telefono, direccion, mail;
-    Spinner sexos,nacionalidades, estadosCiviles, planesPrestacionales, provincias, departamentos;
+    Spinner sexos,nacionalidades, estadosCiviles, planesPrestacionales,
+            provincias, departamentos, localidades;
     ArrayList<String> listaSexos= new ArrayList<String>(),listaNacionalidades= new ArrayList<String>()
             ,listaEstadosCiviles= new ArrayList<String>(),listaPlanesPrestacionales= new ArrayList<String>()
-            ,listaProvincias= new ArrayList<String>(),listaDepartamentos= new ArrayList<String>();
+            ,listaProvincias= new ArrayList<String>(),listaDepartamentos= new ArrayList<String>()
+            ,listaLocalidades= new ArrayList<String>();
     ArrayAdapter<String> adapterSexos,adapterNacionalidades, adapterEstadosCiviles
-            ,adapterplanesPrestacionales,adapterProvincias,adapterDepartamentos;
+            ,adapterplanesPrestacionales,adapterProvincias,adapterDepartamentos,adapterLocalidades;
     Map <String, String> mapSexos= new HashMap<>(), mapNacionalidades= new HashMap<>(),
             mapEstadosCiviles= new HashMap<>(), mapPlanesPrestacionales= new HashMap<>()
-            , mapProvincias= new HashMap<>(), mapDepartamentos= new HashMap<>();
+            , mapProvincias= new HashMap<>(), mapDepartamentos= new HashMap<>()
+            , mapLocalidades= new HashMap<>();
     ImageButton btnGuardaTelefono, btnGuardaDireccion, btnGuardaMail;
     TableLayout tablaTelefono, tablaDireccion, tablaMail;
     String [] encabezado = {"Teléfonos "}, encabezadoDireccion={"Dirección"}, encabezadoMail={"Mail"}  ;
@@ -99,6 +102,24 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
         planesPrestacionales=(Spinner) view.findViewById(R.id.planesPrestacionales);
         provincias=(Spinner) view.findViewById(R.id.provincias);
         departamentos=(Spinner) view.findViewById(R.id.departamentos);
+        localidades=(Spinner) view.findViewById(R.id.localidades);
+
+        departamentos.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View v, int i, long l) {
+                if(i!=0)
+                {
+                    String sel = listaDepartamentos.get(i).toString();
+                    idDepartamentoSeleccionado= getKey(mapDepartamentos,sel);
+                    llenaLocalidades(idDepartamentoSeleccionado);
+                }
+
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                Toast.makeText(contexto,"No selection",Toast.LENGTH_LONG).show();
+            }
+        });
         provincias.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View v, int i, long l) {
@@ -262,6 +283,44 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
     }
 
     //LLenado de spinners
+    public void llenaLocalidades(String idDepartamentoSeleccionado ){
+        dialogoLocalidades = Dialogos.dlgBuscando(getActivity(),"Recuperando Localidades");
+        WebService.leerLocalidades(getActivity(), idDepartamentoSeleccionado
+                , new SuccessResponseHandler<JSONObject>() {
+                    @Override
+                    public void onSuccess(JSONObject resultado) {
+                        dialogoProvincias.dismiss();
+                        try {
+                            JSONObject completo =new JSONObject(resultado.getString("resultado"));
+                            String datos =completo.getString("localidades");
+                            JSONArray arrayCompleto = new JSONArray(datos);
+                            listaLocalidades.add(0, "Seleccione Localidad");
+                            mapLocalidades.put("00000000-0000-0000-0000-000000000000","Seleccione Localidad");
+                            for (int i = 0; i < arrayCompleto.length(); i++) {
+                                JSONObject arrayFila = arrayCompleto.getJSONObject(i);
+                                String id = arrayFila.getString("idLocalidad");
+                                String nombre = arrayFila.getString("nombreLocalidad");
+                                listaLocalidades.add(i+1,nombre);
+                                mapDepartamentos.put(id,nombre);
+                            }
+                            adapterLocalidades = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, listaLocalidades);
+                            adapterLocalidades.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                            localidades.setAdapter(adapterLocalidades);
+                            dialogoLocalidades.dismiss();
+                            //String a = getKey(mapSexos,"Femenino");
+
+                        } catch (Exception errEx) {
+                            dialogoLocalidades = Dialogos.dlgError(getActivity(),errEx.getMessage());
+                        }
+                    }
+                }, new ErrorResponseHandler() {
+                    @Override
+                    public void onError(String msg) {
+                        dialogoLocalidades.dismiss();
+                        dialogoLocalidades = Dialogos.dlgError(getActivity(),msg);
+                    }
+                });
+    }
     public void llenaDepartamentos(String idProvinciaSeleccionada ){
         dialogoDepartamentos = Dialogos.dlgBuscando(getActivity(),"Recuperando Departamentos");
         WebService.leerDepartamentos(getActivity(), idProvinciaSeleccionada
