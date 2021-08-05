@@ -57,6 +57,7 @@
                     android:id="@+id/tab1"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:elevation="3dp"
                     android:orientation="vertical"
                     android:overScrollMode="always"
                     android:scrollbarStyle="insideOverlay"
@@ -223,6 +224,12 @@
                         android:orientation="vertical">
                         <Spinner
                             android:id="@+id/provincias"
+                            android:layout_width="270dp"
+                            android:layout_height="30dp"
+                            android:layout_marginTop="10dp"
+                            android:background="@drawable/edittex_style" />
+                        <Spinner
+                            android:id="@+id/departamentos"
                             android:layout_width="270dp"
                             android:layout_height="30dp"
                             android:layout_marginTop="10dp"
