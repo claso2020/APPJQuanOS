@@ -52,6 +52,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="3dp">
+
                 <LinearLayout
                     android:id="@+id/tab1"
                     android:layout_width="match_parent"
@@ -150,6 +151,7 @@
                         </LinearLayout>
                     </ScrollView>
                 </LinearLayout>
+
                 <LinearLayout
                     android:id="@+id/tab2"
                     android:layout_width="match_parent"
@@ -163,10 +165,12 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:orientation="vertical">
+
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center_vertical">
+
                             <EditText
                                 android:id="@+id/telefono"
                                 android:layout_width="270dp"
@@ -180,9 +184,9 @@
                                 android:id="@+id/btnGuardaTelefono"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_marginBottom="5dp"
                                 android:background="#90FFFFFF"
                                 android:contentDescription="Guardar teléfono"
-                                android:layout_marginBottom="5dp"
                                 android:src="@drawable/guardam48" />
                         </LinearLayout>
 
@@ -203,6 +207,7 @@
 
 
                 </LinearLayout>
+
                 <LinearLayout
                     android:id="@+id/tab3"
                     android:layout_width="match_parent"
@@ -216,10 +221,23 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:orientation="vertical">
+                        <Spinner
+                            android:id="@+id/provincias"
+                            android:layout_width="270dp"
+                            android:layout_height="30dp"
+                            android:layout_marginTop="10dp"
+                            android:background="@drawable/edittex_style" />
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_horizontal">
+
+                        </LinearLayout>
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center_vertical">
+
                             <EditText
                                 android:id="@+id/direccion"
                                 android:layout_width="270dp"
@@ -233,9 +251,9 @@
                                 android:id="@+id/btnGuardaDireccion"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_marginBottom="5dp"
                                 android:background="#90FFFFFF"
                                 android:contentDescription="Guardar dirección"
-                                android:layout_marginBottom="5dp"
                                 android:src="@drawable/guardam48" />
                         </LinearLayout>
 
@@ -256,6 +274,7 @@
 
 
                 </LinearLayout>
+
                 <LinearLayout
                     android:id="@+id/tab4"
                     android:layout_width="match_parent"
@@ -269,10 +288,12 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:orientation="vertical">
+
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center_vertical">
+
                             <EditText
                                 android:id="@+id/mail"
                                 android:layout_width="270dp"
@@ -286,9 +307,9 @@
                                 android:id="@+id/btnGuardaMail"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_marginBottom="5dp"
                                 android:background="#90FFFFFF"
                                 android:contentDescription="Guardar mail"
-                                android:layout_marginBottom="5dp"
                                 android:src="@drawable/guardam48" />
                         </LinearLayout>
 

@@ -38,20 +38,22 @@ import ar.com.quan.quanos.TableDynamic;
 import ar.com.quan.quanos.WebService;
 
 public class fragmento_cargaTitulares extends Fragment  implements View.OnClickListener{
-    private Dialog dialogo, dialogoNac, dialogoEstadoCivil, dialogoplanesPrestacionales;
+    private Dialog dialogo, dialogoNac, dialogoEstadoCivil, dialogoplanesPrestacionales, dialogoProvincias;
     private Context contexto;
     FragmentChangeTrigger trigger;
     String idUsuario, token;
     Button btnVolverAInicial;
 
     EditText fecnac, telefono, direccion, mail;
-    Spinner sexos,nacionalidades, estadosCiviles, planesPrestacionales;
+    Spinner sexos,nacionalidades, estadosCiviles, planesPrestacionales, provincias;
     ArrayList<String> listaSexos= new ArrayList<String>(),listaNacionalidades= new ArrayList<String>()
-            ,listaEstadosCiviles= new ArrayList<String>(),listaPlanesPrestacionales= new ArrayList<String>();
+            ,listaEstadosCiviles= new ArrayList<String>(),listaPlanesPrestacionales= new ArrayList<String>()
+            ,listaProvincias= new ArrayList<String>();
     ArrayAdapter<String> adapterSexos,adapterNacionalidades, adapterEstadosCiviles
-            ,adapterplanesPrestacionales;
+            ,adapterplanesPrestacionales,adapterProvincias;
     Map <String, String> mapSexos= new HashMap<>(), mapNacionalidades= new HashMap<>(),
-            mapEstadosCiviles= new HashMap<>(), mapPlanesPrestacionales= new HashMap<>();
+            mapEstadosCiviles= new HashMap<>(), mapPlanesPrestacionales= new HashMap<>()
+            , mapProvincias= new HashMap<>();
     ImageButton btnGuardaTelefono, btnGuardaDireccion, btnGuardaMail;
     TableLayout tablaTelefono, tablaDireccion, tablaMail;
     String [] encabezado = {"Teléfonos "}, encabezadoDireccion={"Dirección"}, encabezadoMail={"Mail"}  ;
@@ -93,6 +95,7 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
         nacionalidades=(Spinner) view.findViewById(R.id.nacionalidades);
         estadosCiviles=(Spinner) view.findViewById(R.id.estadosCiviles);
         planesPrestacionales=(Spinner) view.findViewById(R.id.planesPrestacionales);
+        provincias=(Spinner) view.findViewById(R.id.provincias);
 
         telefono= (EditText) view.findViewById(R.id.telefono);
         tablaTelefono =view.findViewById(R.id.tablaTelefono);
@@ -112,6 +115,7 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
         llenaNacionalidades();
         llenaEstadoCiviles();
         llenaPlanesPrestacionales();
+        llenaProvincias();
         iniciaTablas();
 
 
@@ -235,6 +239,45 @@ private void iniciaTablas(){
     }
 
     //LLenado de spinners
+
+    public void llenaProvincias(){
+        dialogoProvincias = Dialogos.dlgBuscando(getActivity(),"Recuperando Provincias");
+        WebService.leerProvincias(getActivity()
+                , new SuccessResponseHandler<JSONObject>() {
+                    @Override
+                    public void onSuccess(JSONObject resultado) {
+                        dialogoProvincias.dismiss();
+                        try {
+                            JSONObject completo =new JSONObject(resultado.getString("resultado"));
+                            String datos =completo.getString("provincias");
+                            JSONArray arrayCompleto = new JSONArray(datos);
+                            listaProvincias.add(0, "Seleccione Provincia");
+                            mapProvincias.put("00000000-0000-0000-0000-000000000000","Seleccione Provincia");
+                            for (int i = 0; i < arrayCompleto.length(); i++) {
+                                JSONObject arrayFila = arrayCompleto.getJSONObject(i);
+                                String id = arrayFila.getString("idProvincia");
+                                String nombre = arrayFila.getString("nombreProvincia");
+                                listaProvincias.add(i+1,nombre);
+                                mapProvincias.put(id,nombre);
+                            }
+                            adapterProvincias = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, listaProvincias);
+                            adapterProvincias.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                            provincias.setAdapter(adapterProvincias);
+                            dialogoProvincias.dismiss();
+                            //String a = getKey(mapSexos,"Femenino");
+
+                        } catch (Exception errEx) {
+                            dialogoProvincias = Dialogos.dlgError(getActivity(),errEx.getMessage());
+                        }
+                    }
+                }, new ErrorResponseHandler() {
+                    @Override
+                    public void onError(String msg) {
+                        dialogoProvincias.dismiss();
+                        dialogoProvincias = Dialogos.dlgError(getActivity(),msg);
+                    }
+                });
+    }
     public void llenaSexos(){
         dialogo = Dialogos.dlgBuscando(getActivity(),"Recuperando sexos");
         WebService.leerSexos(getActivity(),"true"
