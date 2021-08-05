@@ -3,19 +3,15 @@ package ar.com.quan.quanos.Fragmentos;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -23,11 +19,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TabHost;
-import android.widget.TabWidget;
 import android.widget.TableLayout;
 import android.widget.Toast;
-
-import com.google.android.material.tabs.TabLayout;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -35,13 +28,11 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Stream;
 
 import ar.com.quan.quanos.Fabrica.Dialogos;
 import ar.com.quan.quanos.Interfaces.ErrorResponseHandler;
 import ar.com.quan.quanos.Interfaces.FragmentChangeTrigger;
 import ar.com.quan.quanos.Interfaces.SuccessResponseHandler;
-import ar.com.quan.quanos.Principal;
 import ar.com.quan.quanos.R;
 import ar.com.quan.quanos.TableDynamic;
 import ar.com.quan.quanos.WebService;
@@ -52,8 +43,8 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
     FragmentChangeTrigger trigger;
     String idUsuario, token;
     Button btnVolverAInicial;
-    ImageButton btnGuardaTelefono;
-    EditText fecnac, telefono;
+
+    EditText fecnac, telefono, direccion, mail;
     Spinner sexos,nacionalidades, estadosCiviles, planesPrestacionales;
     ArrayList<String> listaSexos= new ArrayList<String>(),listaNacionalidades= new ArrayList<String>()
             ,listaEstadosCiviles= new ArrayList<String>(),listaPlanesPrestacionales= new ArrayList<String>();
@@ -61,10 +52,15 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
             ,adapterplanesPrestacionales;
     Map <String, String> mapSexos= new HashMap<>(), mapNacionalidades= new HashMap<>(),
             mapEstadosCiviles= new HashMap<>(), mapPlanesPrestacionales= new HashMap<>();
-    TableLayout tablaTelefono ;
-    String [] encabezado = {"Teléfonos "} ;
-    ArrayList<String[]> filas = new ArrayList<String[]>();
-    TableDynamic tableDynamic =new TableDynamic(tablaTelefono,getContext());
+    ImageButton btnGuardaTelefono, btnGuardaDireccion, btnGuardaMail;
+    TableLayout tablaTelefono, tablaDireccion, tablaMail;
+    String [] encabezado = {"Teléfonos "}, encabezadoDireccion={"Dirección"}, encabezadoMail={"Mail"}  ;
+    ArrayList<String[]> filasTelefono = new ArrayList<String[]>();
+    ArrayList<String[]> filasDomicilio = new ArrayList<String[]>();
+    ArrayList<String[]> filasMails = new ArrayList<String[]>();
+    TableDynamic tablaDinamicaTelefono;//=new TableDynamic(tablaTelefono,getContext());
+    TableDynamic tablaDinamicaDomicilio;// =new TableDynamic(tablaDireccion,getContext());
+    TableDynamic tablaDinamicaMail;// =new TableDynamic(tablaMail,getContext());
 
     public fragmento_cargaTitulares() {
         // Required empty public constructor
@@ -77,17 +73,6 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
         return inflater.inflate(R.layout.fragmento_carga_titulares, container, false);
 
     }
-    private ArrayList<String[]> buscaDatosTablas()
-    {
-        filas.add(new String[]{"uno"});
-        filas.add(new String[]{"dos"});
-        filas.add(new String[]{"tres"});
-        filas.add(new String[]{"cuatro"});
-        filas.add(new String[]{"5"});
-        filas.add(new String[]{"6"});
-        filas.add(new String[]{"7"});
-        return filas;
-    }
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -96,6 +81,10 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
         btnVolverAInicial.setOnClickListener(this);
         btnGuardaTelefono= (ImageButton) view.findViewById(R.id.btnGuardaTelefono);
         btnGuardaTelefono.setOnClickListener(this);
+        btnGuardaDireccion= (ImageButton) view.findViewById(R.id.btnGuardaDireccion);
+        btnGuardaDireccion.setOnClickListener(this);
+        btnGuardaMail= (ImageButton) view.findViewById(R.id.btnGuardaMail);
+        btnGuardaMail.setOnClickListener(this);
 
         fecnac= (EditText) view.findViewById(R.id.fecNac);
         fecnac.setOnClickListener(this);
@@ -107,7 +96,16 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
 
         telefono= (EditText) view.findViewById(R.id.telefono);
         tablaTelefono =view.findViewById(R.id.tablaTelefono);
-        tableDynamic =new TableDynamic(tablaTelefono,contexto);
+        tablaDinamicaTelefono =new TableDynamic(tablaTelefono,contexto);
+
+        direccion=(EditText) view.findViewById(R.id.direccion);
+        tablaDireccion =view.findViewById(R.id.tablaDireccion);
+        tablaDinamicaDomicilio =new TableDynamic(tablaDireccion,contexto);
+
+        mail=(EditText) view.findViewById(R.id.mail);
+        tablaMail =view.findViewById(R.id.tablaMail);
+        tablaDinamicaMail =new TableDynamic(tablaMail,contexto);
+
 
         creaTabs ();
         llenaSexos();
@@ -118,17 +116,38 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
 
 
     }
+/*    private ArrayList<String[]> buscaDatosTablas()
+    {
+        return filas;
+    }*/
 private void iniciaTablas(){
 
     //telefono=view.findViewById(R.id.telefono);
 
-    tableDynamic.addHeader(encabezado);
-    tableDynamic.addData(buscaDatosTablas());
-    tableDynamic.backgroundHeader(Color.parseColor("#819FF7"));
-    tableDynamic.backgroundData(Color.parseColor("#95cbf5"), Color.parseColor("#68879e"));
-    tableDynamic.lineColor(Color.BLACK);
-    tableDynamic.textColorData(Color.WHITE);
-    tableDynamic.textColorHeader(Color.BLUE);
+    tablaDinamicaTelefono.addHeader(encabezado);
+    tablaDinamicaTelefono.addData(filasTelefono); //le paso filas vacia sino ir a buscaDatosTablas()
+    tablaDinamicaTelefono.backgroundHeader(Color.parseColor("#819FF7"));
+    tablaDinamicaTelefono.backgroundData(Color.parseColor("#95cbf5"), Color.parseColor("#68879e"));
+    tablaDinamicaTelefono.lineColor(Color.BLACK);
+    tablaDinamicaTelefono.textColorData(Color.WHITE);
+
+
+    tablaDinamicaDomicilio.addHeader(encabezadoDireccion);
+    tablaDinamicaDomicilio.addData(filasDomicilio);
+    tablaDinamicaDomicilio.backgroundHeader(Color.parseColor("#819FF7"));
+    tablaDinamicaDomicilio.backgroundData(Color.parseColor("#95cbf5"), Color.parseColor("#68879e"));
+    tablaDinamicaDomicilio.lineColor(Color.BLACK);
+    tablaDinamicaDomicilio.textColorData(Color.WHITE);
+    tablaDinamicaDomicilio.textColorHeader(Color.BLUE);
+
+
+    tablaDinamicaMail.addHeader(encabezadoMail);
+    tablaDinamicaMail.addData(filasMails);
+    tablaDinamicaMail.backgroundHeader(Color.parseColor("#819FF7"));
+    tablaDinamicaMail.backgroundData(Color.parseColor("#95cbf5"), Color.parseColor("#68879e"));
+    tablaDinamicaMail.lineColor(Color.BLACK);
+    tablaDinamicaMail.textColorData(Color.WHITE);
+    tablaDinamicaMail.textColorHeader(Color.BLUE);
 
 }
     @Override
@@ -145,16 +164,48 @@ private void iniciaTablas(){
         if(v.getId()==R.id.btnGuardaTelefono){
             agregaTelefono();
         }
+        if(v.getId()==R.id.btnGuardaDireccion){
+            agregaDireccion();
+        }
+        if(v.getId()==R.id.btnGuardaMail){
+            agregaMail();
+        }
+
+    }
+    private void agregaMail(){
+        String[]itemMail = new String[]{mail.getText().toString()};
+        if (mail.getText().toString().equals(""))
+        {
+            Toast.makeText(contexto, "Debe ingresar un mail", Toast.LENGTH_LONG).show();
+        }
+        else
+        {
+            tablaDinamicaMail.addItems(itemMail);
+            mail.setText("");
+        }
+    }
+    private void agregaDireccion(){
+        String[]itemDirecion = new String[]{direccion.getText().toString()};
+        if (direccion.getText().toString().equals(""))
+        {
+            Toast.makeText(contexto, "Debe ingresar una dirección", Toast.LENGTH_LONG).show();
+        }
+        else
+        {
+            tablaDinamicaDomicilio.addItems(itemDirecion);
+            direccion.setText("");
+        }
+
     }
     private void agregaTelefono(){
         String[]item = new String[]{telefono.getText().toString()};
         if (telefono.getText().toString().equals(""))
         {
-            Toast.makeText(contexto, "Debe ingresart un número de teléfono", Toast.LENGTH_LONG).show();
+            Toast.makeText(contexto, "Debe ingresar un número de teléfono", Toast.LENGTH_LONG).show();
         }
         else
         {
-            tableDynamic.addItems(item);
+            tablaDinamicaTelefono.addItems(item);
             telefono.setText("");
         }
 
@@ -170,6 +221,16 @@ private void iniciaTablas(){
         spec = tabs.newTabSpec("tag2");
         spec.setContent(R.id.tab2);
         spec.setIndicator("Teléfonos");
+        tabs.addTab(spec);
+
+        spec = tabs.newTabSpec("tag3");
+        spec.setContent(R.id.tab3);
+        spec.setIndicator("Direción");
+        tabs.addTab(spec);
+
+        spec = tabs.newTabSpec("tag4");
+        spec.setContent(R.id.tab4);
+        spec.setIndicator("Mail");
         tabs.addTab(spec);
     }
 
