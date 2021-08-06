@@ -468,6 +468,110 @@
 
                 </LinearLayout>
 
+                <LinearLayout
+                    android:id="@+id/tab6"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:overScrollMode="always"
+                    android:scrollbarStyle="insideOverlay"
+                    android:scrollbars="vertical">
+
+                    <ScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <EditText
+                                android:id="@+id/razonSocial"
+                                android:layout_width="270dp"
+                                android:layout_height="30dp"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginEnd="5dp"
+                                android:background="@drawable/edittex_style"
+                                android:hint=" Ingrese razón social"
+                                android:visibility="visible" />
+
+                            <EditText
+                                android:id="@+id/cuit"
+                                android:layout_width="270dp"
+                                android:layout_height="30dp"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginEnd="5dp"
+                                android:background="@drawable/edittex_style"
+                                android:hint=" Ingrese CUIT"
+                                android:visibility="visible" />
+
+                            <EditText
+                                android:id="@+id/fecIngreso"
+                                android:layout_width="270dp"
+                                android:layout_height="30dp"
+                                android:layout_marginTop="10dp"
+                                android:background="@drawable/edittex_style"
+                                android:clickable="true"
+                                android:focusable="false"
+                                android:hint="  Fecha ingreso"
+                                android:inputType="date"
+                                android:maxLines="1" />
+
+                            <EditText
+                                android:id="@+id/aporteOS"
+                                android:layout_width="270dp"
+                                android:layout_height="30dp"
+                                android:layout_marginTop="10dp"
+                                android:background="@drawable/edittex_style"
+                                android:hint="  Aportes OS/Recibo"
+                                android:visibility="visible" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_vertical">
+
+                                <EditText
+                                    android:id="@+id/sac"
+                                    android:layout_width="270dp"
+                                    android:layout_height="30dp"
+                                    android:layout_marginTop="10dp"
+                                    android:background="@drawable/edittex_style"
+                                    android:hint="  SAC/Vacaciones"
+                                    android:visibility="visible" />
+
+                                <ImageButton
+                                    android:id="@+id/btnGuardaRelLab"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginBottom="5dp"
+                                    android:background="#90FFFFFF"
+                                    android:contentDescription="Guardar realación laboral"
+                                    android:src="@drawable/guardam48" />
+                            </LinearLayout>
+
+                            <ScrollView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_gravity="center_vertical">
+                                <HorizontalScrollView
+                                    android:layout_width="fill_parent"
+                                    android:layout_height="fill_parent">
+                                    <TableLayout
+                                        android:id="@+id/tablaRelLab"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent">
+                                    </TableLayout>
+                                </HorizontalScrollView>
+                            </ScrollView>
+
+                        </LinearLayout>
+                    </ScrollView>
+
+
+                </LinearLayout>
+
 
             </FrameLayout>
         </LinearLayout>

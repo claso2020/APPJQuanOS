@@ -46,7 +46,8 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
     String idUsuario, token, idProvinciaSeleccionada, idDepartamentoSeleccionado;
     Button btnVolverAInicial;
 
-    EditText fecnac, telefono, direccion, mail, fecnacFam, apellidoFam, nombreFam, cuilFam;
+    EditText fecnac, telefono, direccion, mail, fecnacFam, apellidoFam, nombreFam, cuilFam
+            ,razonSocial, cuit, fecIngreso, aporteOS, sac;
     Spinner sexos,nacionalidades, estadosCiviles, planesPrestacionales,
             provincias, departamentos, localidades, sexosFam, nacionalidadesFam, estadosCivilesFam
             ,parentescos;
@@ -70,21 +71,25 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
             , mapNacionalidadesFam= new HashMap<>(),mapEstadosCivilesFam= new HashMap<>()
             ,mapParentesco= new HashMap<>();
 
-    ImageButton btnGuardaTelefono, btnGuardaDireccion, btnGuardaMail, btnGuardaFamiliares;
-    TableLayout tablaTelefono, tablaDireccion, tablaMail, tablaFamiliares;
+    ImageButton btnGuardaTelefono, btnGuardaDireccion, btnGuardaMail, btnGuardaFamiliares, btnGuardaRelLab;
+    TableLayout tablaTelefono, tablaDireccion, tablaMail, tablaFamiliares, tablaRelLab;
 
     String [] encabezado = {"Teléfonos "}, encabezadoDireccion={"Dirección", "Localidad"}
-            , encabezadoMail={"Mail"}, encabezadoFamiliares={"Apellido", "nombre","Fecha Nac.","CUIL","Sexo","Nacionalidad","EstadoCivil", "Parentesco"}  ;
+            , encabezadoMail={"Mail"}
+            , encabezadoFamiliares={"Apellido", "nombre","Fecha Nac.","CUIL","Sexo","Nacionalidad","EstadoCivil", "Parentesco"}
+            ,encabezadoRelLab={"Razón Social", "Cuit", "Fecha ingreso", "Aporte OS", "SAC"};
 
     ArrayList<String[]> filasTelefono = new ArrayList<String[]>();
     ArrayList<String[]> filasDomicilio = new ArrayList<String[]>();
     ArrayList<String[]> filasMails = new ArrayList<String[]>();
     ArrayList<String[]> filasFamiliares= new ArrayList<String[]>();
+    ArrayList<String[]> filasRellab= new ArrayList<String[]>();
 
     TableDynamic tablaDinamicaTelefono;//=new TableDynamic(tablaTelefono,getContext());
     TableDynamic tablaDinamicaDomicilio;// =new TableDynamic(tablaDireccion,getContext());
     TableDynamic tablaDinamicaMail;// =new TableDynamic(tablaMail,getContext());
     TableDynamic tablaDinamicaFamiliares;// =new TableDynamic(tablaMail,getContext());
+    TableDynamic tablaDinamicaRelLab;// =new TableDynamic(tablaMail,getContext());
 
     public fragmento_cargaTitulares() {
         // Required empty public constructor
@@ -112,6 +117,9 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
         btnGuardaMail.setOnClickListener(this);
         btnGuardaFamiliares=(ImageButton) view.findViewById(R.id.btnGuardaFamiliares);
         btnGuardaFamiliares.setOnClickListener(this);
+        btnGuardaRelLab=(ImageButton) view.findViewById(R.id.btnGuardaRelLab);
+        btnGuardaRelLab.setOnClickListener(this);
+
 
         telefono= (EditText) view.findViewById(R.id.telefono);
         direccion=(EditText) view.findViewById(R.id.direccion);
@@ -121,9 +129,15 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
         cuilFam=(EditText) view.findViewById(R.id.cuilFam);
         fecnac= (EditText) view.findViewById(R.id.fecNac);
         fecnacFam= (EditText) view.findViewById(R.id.fecNacFam);
+        fecIngreso= (EditText) view.findViewById(R.id.fecIngreso);
+        razonSocial= (EditText) view.findViewById(R.id.razonSocial);
+        cuit= (EditText) view.findViewById(R.id.cuit);
+        aporteOS=(EditText) view.findViewById(R.id.aporteOS);
+        sac=(EditText) view.findViewById(R.id.sac);
 
         fecnacFam.setOnClickListener(this);
         fecnac.setOnClickListener(this);
+        fecIngreso.setOnClickListener(this);
 
         sexos = (Spinner) view.findViewById(R.id.sexos);
         nacionalidades=(Spinner) view.findViewById(R.id.nacionalidades);
@@ -178,6 +192,8 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
         tablaDinamicaMail =new TableDynamic(tablaMail,contexto);
         tablaFamiliares =view.findViewById(R.id.tablaFamiliares);
         tablaDinamicaFamiliares =new TableDynamic(tablaFamiliares,contexto);
+        tablaRelLab =view.findViewById(R.id.tablaRelLab);
+        tablaDinamicaRelLab =new TableDynamic(tablaRelLab,contexto);
 
         creaTabs ();
         llenaSexos();
@@ -229,6 +245,14 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
         tablaDinamicaFamiliares.lineColor(Color.BLACK);
         tablaDinamicaFamiliares.textColorData(Color.WHITE);
         tablaDinamicaFamiliares.textColorHeader(Color.BLUE);
+
+        tablaDinamicaRelLab.addHeader(encabezadoRelLab);
+        tablaDinamicaRelLab.addData(filasMails);
+        tablaDinamicaRelLab.backgroundHeader(Color.parseColor("#819FF7"));
+        tablaDinamicaRelLab.backgroundData(Color.parseColor("#95cbf5"), Color.parseColor("#68879e"));
+        tablaDinamicaRelLab.lineColor(Color.BLACK);
+        tablaDinamicaRelLab.textColorData(Color.WHITE);
+        tablaDinamicaRelLab.textColorHeader(Color.BLUE);
     }
 
 
@@ -242,6 +266,9 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
         }
         if(v.getId()==R.id.fecNacFam){
             showDatePickerDialog(fecnacFam);
+        }
+        if(v.getId()==R.id.fecIngreso){
+            showDatePickerDialog(fecIngreso);
         }
         if(v.getId()==R.id.sexos){
 
@@ -258,8 +285,36 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
         if(v.getId()==R.id.btnGuardaFamiliares){
             agregaFamiliares();
         }
+        if(v.getId()==R.id.btnGuardaRelLab){
+            agregaRelacionLaboral();
+        }
+
 
     }
+
+    private void agregaRelacionLaboral(){
+        String[]itemRelLab = new String[]{razonSocial.getText().toString()
+                ,cuit.getText().toString()
+                ,fecIngreso.getText().toString()
+                ,aporteOS.getText().toString()
+                ,sac.getText().toString()
+                };
+        if (razonSocial.getText().toString().equals("") ||
+                cuit.getText().toString().equals("") ||
+                aporteOS.getText().toString().equals("") ||
+                sac.getText().toString().equals("")
+        )
+        {
+            Toast.makeText(contexto, "Debe ingresar todos los datos", Toast.LENGTH_LONG).show();
+        }
+        else
+        {
+            tablaDinamicaRelLab.addItems(itemRelLab);
+
+        }
+
+    }
+
     private void agregaMail(){
         String[]itemMail = new String[]{mail.getText().toString()};
         if (mail.getText().toString().equals(""))
@@ -326,6 +381,7 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
         }
 
     }
+
     private void creaTabs (){
         TabHost tabs = (TabHost) getActivity().findViewById(R.id.tabHost);
         tabs.setup();
@@ -353,6 +409,11 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
         spec = tabs.newTabSpec("tag5");
         spec.setContent(R.id.tab5);
         spec.setIndicator("Familiares");
+        tabs.addTab(spec);
+
+        spec = tabs.newTabSpec("tag6");
+        spec.setContent(R.id.tab6);
+        spec.setIndicator("Realción laboral");
         tabs.addTab(spec);
 
     }
@@ -472,7 +533,6 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
                     }
                 });
     }
-
     public void llenaParentescos(){
         dialogoParentesco = Dialogos.dlgBuscando(getActivity(),"Recuperando sexos");
         WebService.leerParentescos(getActivity()
