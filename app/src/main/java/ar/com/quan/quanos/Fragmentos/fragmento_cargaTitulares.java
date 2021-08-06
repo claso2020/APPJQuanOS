@@ -40,34 +40,51 @@ import ar.com.quan.quanos.WebService;
 
 public class fragmento_cargaTitulares extends Fragment  implements View.OnClickListener{
     private Dialog dialogo, dialogoNac, dialogoEstadoCivil, dialogoplanesPrestacionales
-            , dialogoProvincias, dialogoDepartamentos, dialogoLocalidades;
+            , dialogoProvincias, dialogoDepartamentos, dialogoLocalidades, dialogoParentesco;
     private Context contexto;
     FragmentChangeTrigger trigger;
     String idUsuario, token, idProvinciaSeleccionada, idDepartamentoSeleccionado;
     Button btnVolverAInicial;
 
-    EditText fecnac, telefono, direccion, mail;
+    EditText fecnac, telefono, direccion, mail, fecnacFam, apellidoFam, nombreFam, cuilFam;
     Spinner sexos,nacionalidades, estadosCiviles, planesPrestacionales,
-            provincias, departamentos, localidades;
+            provincias, departamentos, localidades, sexosFam, nacionalidadesFam, estadosCivilesFam
+            ,parentescos;
+
     ArrayList<String> listaSexos= new ArrayList<String>(),listaNacionalidades= new ArrayList<String>()
             ,listaEstadosCiviles= new ArrayList<String>(),listaPlanesPrestacionales= new ArrayList<String>()
             ,listaProvincias= new ArrayList<String>(),listaDepartamentos= new ArrayList<String>()
-            ,listaLocalidades= new ArrayList<String>();
+            ,listaLocalidades= new ArrayList<String>(),listaSexosFam= new ArrayList<String>()
+            ,listaNacionalidadesFam= new ArrayList<String>(),listaEstadosCivilesFam= new ArrayList<String>()
+            ,listaparentesco= new ArrayList<String>();
+
     ArrayAdapter<String> adapterSexos,adapterNacionalidades, adapterEstadosCiviles
-            ,adapterplanesPrestacionales,adapterProvincias,adapterDepartamentos,adapterLocalidades;
-    Map <String, String> mapSexos= new HashMap<>(), mapNacionalidades= new HashMap<>(),
-            mapEstadosCiviles= new HashMap<>(), mapPlanesPrestacionales= new HashMap<>()
+            ,adapterplanesPrestacionales,adapterProvincias,adapterDepartamentos
+            ,adapterLocalidades, adapterSexosFam, adapterNacionalidadesFam
+            ,adapterEstadosCivilesFam ,adapterParentesco;
+
+    Map <String, String> mapSexos= new HashMap<>(), mapNacionalidades= new HashMap<>()
+            ,mapEstadosCiviles= new HashMap<>(), mapPlanesPrestacionales= new HashMap<>()
             , mapProvincias= new HashMap<>(), mapDepartamentos= new HashMap<>()
-            , mapLocalidades= new HashMap<>();
-    ImageButton btnGuardaTelefono, btnGuardaDireccion, btnGuardaMail;
-    TableLayout tablaTelefono, tablaDireccion, tablaMail;
-    String [] encabezado = {"Teléfonos "}, encabezadoDireccion={"Dirección"}, encabezadoMail={"Mail"}  ;
+            , mapLocalidades= new HashMap<>(), mapSexosFam= new HashMap<>()
+            , mapNacionalidadesFam= new HashMap<>(),mapEstadosCivilesFam= new HashMap<>()
+            ,mapParentesco= new HashMap<>();
+
+    ImageButton btnGuardaTelefono, btnGuardaDireccion, btnGuardaMail, btnGuardaFamiliares;
+    TableLayout tablaTelefono, tablaDireccion, tablaMail, tablaFamiliares;
+
+    String [] encabezado = {"Teléfonos "}, encabezadoDireccion={"Dirección", "Localidad"}
+    , encabezadoMail={"Mail"}, encabezadoFamiliares={"Apellido", "nombre","Fecha Nac.","CUIL","Sexo","Nacionalidad","EstadoCivil", "Parentesco"}  ;
+
     ArrayList<String[]> filasTelefono = new ArrayList<String[]>();
     ArrayList<String[]> filasDomicilio = new ArrayList<String[]>();
     ArrayList<String[]> filasMails = new ArrayList<String[]>();
+    ArrayList<String[]> filasFamiliares= new ArrayList<String[]>();
+
     TableDynamic tablaDinamicaTelefono;//=new TableDynamic(tablaTelefono,getContext());
     TableDynamic tablaDinamicaDomicilio;// =new TableDynamic(tablaDireccion,getContext());
     TableDynamic tablaDinamicaMail;// =new TableDynamic(tablaMail,getContext());
+    TableDynamic tablaDinamicaFamiliares;// =new TableDynamic(tablaMail,getContext());
 
     public fragmento_cargaTitulares() {
         // Required empty public constructor
@@ -84,6 +101,7 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         contexto=view.getContext();
+
         btnVolverAInicial =(Button) view.findViewById(R.id.btnVolverAInicial);
         btnVolverAInicial.setOnClickListener(this);
         btnGuardaTelefono= (ImageButton) view.findViewById(R.id.btnGuardaTelefono);
@@ -92,8 +110,19 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
         btnGuardaDireccion.setOnClickListener(this);
         btnGuardaMail= (ImageButton) view.findViewById(R.id.btnGuardaMail);
         btnGuardaMail.setOnClickListener(this);
+        btnGuardaFamiliares=(ImageButton) view.findViewById(R.id.btnGuardaFamiliares);
+        btnGuardaFamiliares.setOnClickListener(this);
 
+        telefono= (EditText) view.findViewById(R.id.telefono);
+        direccion=(EditText) view.findViewById(R.id.direccion);
+        mail=(EditText) view.findViewById(R.id.mail);
+        apellidoFam=(EditText) view.findViewById(R.id.apellidoFam);
+        nombreFam=(EditText) view.findViewById(R.id.nombreFam);
+        cuilFam=(EditText) view.findViewById(R.id.cuilFam);
         fecnac= (EditText) view.findViewById(R.id.fecNac);
+        fecnacFam= (EditText) view.findViewById(R.id.fecNacFam);
+
+        fecnacFam.setOnClickListener(this);
         fecnac.setOnClickListener(this);
 
         sexos = (Spinner) view.findViewById(R.id.sexos);
@@ -103,6 +132,10 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
         provincias=(Spinner) view.findViewById(R.id.provincias);
         departamentos=(Spinner) view.findViewById(R.id.departamentos);
         localidades=(Spinner) view.findViewById(R.id.localidades);
+        sexosFam=(Spinner) view.findViewById(R.id.sexosFam);
+        nacionalidadesFam=(Spinner) view.findViewById(R.id.nacionalidadesFam);
+        estadosCivilesFam=(Spinner) view.findViewById(R.id.estadosCivilesFam);
+        parentescos=(Spinner) view.findViewById(R.id.parentescos);
 
         departamentos.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -137,18 +170,14 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
             }
         });
 
-        telefono= (EditText) view.findViewById(R.id.telefono);
         tablaTelefono =view.findViewById(R.id.tablaTelefono);
         tablaDinamicaTelefono =new TableDynamic(tablaTelefono,contexto);
-
-        direccion=(EditText) view.findViewById(R.id.direccion);
         tablaDireccion =view.findViewById(R.id.tablaDireccion);
         tablaDinamicaDomicilio =new TableDynamic(tablaDireccion,contexto);
-
-        mail=(EditText) view.findViewById(R.id.mail);
         tablaMail =view.findViewById(R.id.tablaMail);
         tablaDinamicaMail =new TableDynamic(tablaMail,contexto);
-
+        tablaFamiliares =view.findViewById(R.id.tablaFamiliares);
+        tablaDinamicaFamiliares =new TableDynamic(tablaFamiliares,contexto);
 
         creaTabs ();
         llenaSexos();
@@ -156,6 +185,7 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
         llenaEstadoCiviles();
         llenaPlanesPrestacionales();
         llenaProvincias();
+        llenaParentescos();
 
         iniciaTablas();
 
@@ -176,7 +206,6 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
     tablaDinamicaTelefono.lineColor(Color.BLACK);
     tablaDinamicaTelefono.textColorData(Color.WHITE);
 
-
     tablaDinamicaDomicilio.addHeader(encabezadoDireccion);
     tablaDinamicaDomicilio.addData(filasDomicilio);
     tablaDinamicaDomicilio.backgroundHeader(Color.parseColor("#819FF7"));
@@ -184,7 +213,6 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
     tablaDinamicaDomicilio.lineColor(Color.BLACK);
     tablaDinamicaDomicilio.textColorData(Color.WHITE);
     tablaDinamicaDomicilio.textColorHeader(Color.BLUE);
-
 
     tablaDinamicaMail.addHeader(encabezadoMail);
     tablaDinamicaMail.addData(filasMails);
@@ -194,6 +222,13 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
     tablaDinamicaMail.textColorData(Color.WHITE);
     tablaDinamicaMail.textColorHeader(Color.BLUE);
 
+    tablaDinamicaFamiliares.addHeader(encabezadoFamiliares);
+    tablaDinamicaFamiliares.addData(filasMails);
+    tablaDinamicaFamiliares.backgroundHeader(Color.parseColor("#819FF7"));
+    tablaDinamicaFamiliares.backgroundData(Color.parseColor("#95cbf5"), Color.parseColor("#68879e"));
+    tablaDinamicaFamiliares.lineColor(Color.BLACK);
+    tablaDinamicaFamiliares.textColorData(Color.WHITE);
+    tablaDinamicaFamiliares.textColorHeader(Color.BLUE);
 }
 
 
@@ -203,7 +238,10 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
             trigger.fireChange("cargaTitulares_btnVolverAInicial");
         }
         if(v.getId()==R.id.fecNac){
-            showDatePickerDialog();
+            showDatePickerDialog(fecnac);
+        }
+        if(v.getId()==R.id.fecNacFam){
+            showDatePickerDialog(fecnacFam);
         }
         if(v.getId()==R.id.sexos){
 
@@ -216,6 +254,9 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
         }
         if(v.getId()==R.id.btnGuardaMail){
             agregaMail();
+        }
+        if(v.getId()==R.id.btnGuardaFamiliares){
+            agregaFamiliares();
         }
 
     }
@@ -231,15 +272,43 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
             mail.setText("");
         }
     }
+    private void agregaFamiliares(){
+        String[]itemFam = new String[]{apellidoFam.getText().toString()
+                ,nombreFam.getText().toString()
+                ,fecnacFam.getText().toString()
+                ,cuilFam.getText().toString()
+                ,sexosFam.getSelectedItem().toString()
+                ,nacionalidadesFam.getSelectedItem().toString()
+                ,estadosCivilesFam.getSelectedItem().toString()
+                ,parentescos.getSelectedItem().toString()
+                };
+        if (apellidoFam.getText().toString().equals("") ||
+                nombreFam.getText().toString().equals("") ||
+                cuilFam.getText().toString().equals("") ||
+                sexosFam.getSelectedItem().toString().equals("") ||
+                nacionalidadesFam.getSelectedItem().toString().equals("") ||
+                estadosCivilesFam.getSelectedItem().toString().equals("") ||
+                parentescos.getSelectedItem().toString().equals("")
+            )
+        {
+            Toast.makeText(contexto, "Debe ingresar todos los datos", Toast.LENGTH_LONG).show();
+        }
+        else
+        {
+            tablaDinamicaFamiliares.addItems(itemFam);
+            direccion.setText("");
+        }
+
+    }
     private void agregaDireccion(){
-        String[]itemDirecion = new String[]{direccion.getText().toString()};
+        String[]itemDireccion = new String[]{direccion.getText().toString(), localidades.getSelectedItem().toString()};
         if (direccion.getText().toString().equals(""))
         {
             Toast.makeText(contexto, "Debe ingresar una dirección", Toast.LENGTH_LONG).show();
         }
         else
         {
-            tablaDinamicaDomicilio.addItems(itemDirecion);
+            tablaDinamicaDomicilio.addItems(itemDireccion);
             direccion.setText("");
         }
 
@@ -280,6 +349,12 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
         spec.setContent(R.id.tab4);
         spec.setIndicator("Mail");
         tabs.addTab(spec);
+
+        spec = tabs.newTabSpec("tag5");
+        spec.setContent(R.id.tab5);
+        spec.setIndicator("Familiares");
+        tabs.addTab(spec);
+
     }
 
     //LLenado de spinners
@@ -397,6 +472,48 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
                     }
                 });
     }
+
+    public void llenaParentescos(){
+        dialogoParentesco = Dialogos.dlgBuscando(getActivity(),"Recuperando sexos");
+        WebService.leerParentescos(getActivity()
+                , new SuccessResponseHandler<JSONObject>() {
+                    @Override
+                    public void onSuccess(JSONObject resultado) {
+                        dialogoParentesco.dismiss();
+                        try {
+                            JSONObject completo =new JSONObject(resultado.getString("resultado"));
+                            String datos =completo.getString("parentescos");
+                            JSONArray arrayCompleto = new JSONArray(datos);
+                            listaparentesco.add(0, "Seleccione Parentesco");
+                            mapParentesco.put("00000000-0000-0000-0000-000000000000","Seleccione Parentesco");
+
+                            for (int i = 0; i < arrayCompleto.length(); i++) {
+                                JSONObject arrayFila = arrayCompleto.getJSONObject(i);
+                                String id = arrayFila.getString("idParentesco");
+                                String nombre = arrayFila.getString("nombreParentesco");
+
+                                listaparentesco.add(i+1,nombre);
+                                mapParentesco.put(id,nombre);
+                            }
+                            adapterParentesco = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, listaparentesco);
+                            adapterParentesco.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                            parentescos.setAdapter(adapterParentesco);
+
+                            dialogoParentesco.dismiss();
+                            //String a = getKey(mapSexos,"Femenino");
+
+                        } catch (Exception errEx) {
+                            dialogoParentesco = Dialogos.dlgError(getActivity(),errEx.getMessage());
+                        }
+                    }
+                }, new ErrorResponseHandler() {
+                    @Override
+                    public void onError(String msg) {
+                        dialogoParentesco.dismiss();
+                        dialogoParentesco = Dialogos.dlgError(getActivity(),msg);
+                    }
+                });
+    }
     public void llenaSexos(){
         dialogo = Dialogos.dlgBuscando(getActivity(),"Recuperando sexos");
         WebService.leerSexos(getActivity(),"true"
@@ -410,16 +527,25 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
                             JSONArray arrayCompleto = new JSONArray(datos);
                             listaSexos.add(0, "Seleccione Sexo");
                             mapSexos.put("00000000-0000-0000-0000-000000000000","Seleccione Sexo");
+                            listaSexosFam.add(0, "Seleccione Sexo");
+                            mapSexosFam.put("00000000-0000-0000-0000-000000000000","Seleccione Sexo");
                             for (int i = 0; i < arrayCompleto.length(); i++) {
                                 JSONObject arrayFila = arrayCompleto.getJSONObject(i);
                                 String id = arrayFila.getString("idSexo");
                                 String nombre = arrayFila.getString("nombre");
                                 listaSexos.add(i+1,nombre);
                                 mapSexos.put(id,nombre);
+                                listaSexosFam.add(i+1,nombre);
+                                mapSexosFam.put(id,nombre);
                             }
                             adapterSexos = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, listaSexos);
                             adapterSexos.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                             sexos.setAdapter(adapterSexos);
+
+                            adapterSexosFam = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, listaSexosFam);
+                            adapterSexosFam.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                            sexosFam.setAdapter(adapterSexosFam);
+
                             dialogo.dismiss();
                             //String a = getKey(mapSexos,"Femenino");
 
@@ -446,18 +572,30 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
                             JSONObject completo =new JSONObject(resultado.getString("resultado"));
                             String datos =completo.getString("datos");
                             JSONArray arrayCompleto = new JSONArray(datos);
+
                             listaNacionalidades.add(0, "Seleccione nacionalidad");
                             mapNacionalidades.put("00000000-0000-0000-0000-000000000000","Seleccione nacionalidad");
+
+                            listaNacionalidadesFam.add(0, "Seleccione nacionalidad");
+                            mapNacionalidadesFam.put("00000000-0000-0000-0000-000000000000","Seleccione nacionalidad");
+
                             for (int i = 0; i < arrayCompleto.length(); i++) {
                                 JSONObject arrayFila = arrayCompleto.getJSONObject(i);
                                 String id = arrayFila.getString("idNacionalidad");
                                 String nombre = arrayFila.getString("nombre");
+
                                 listaNacionalidades.add(i+1,nombre);
                                 mapNacionalidades.put(id,nombre);
+                                listaNacionalidadesFam.add(i+1,nombre);
+                                mapNacionalidadesFam.put(id,nombre);
                             }
                             adapterNacionalidades = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, listaNacionalidades);
                             adapterNacionalidades.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                             nacionalidades.setAdapter(adapterNacionalidades);
+                            adapterNacionalidadesFam = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, listaNacionalidadesFam);
+                            adapterNacionalidadesFam.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                            nacionalidadesFam.setAdapter(adapterNacionalidadesFam);
+
                             dialogoNac.dismiss();
                             //String a = getKey(nacionalidades,"Argentina");
 
@@ -484,19 +622,33 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
                             JSONObject completo =new JSONObject(resultado.getString("resultado"));
                             String datos =completo.getString("datos");
                             JSONArray arrayCompleto = new JSONArray(datos);
+
                             listaEstadosCiviles.add(0, "Seleccione estado civil");
                             mapEstadosCiviles.put("00000000-0000-0000-0000-000000000000","Seleccione estado civil");
+                            listaEstadosCivilesFam.add(0, "Seleccione estado civil");
+                            mapEstadosCivilesFam.put("00000000-0000-0000-0000-000000000000","Seleccione estado civil");
+
                             for (int i = 0; i < arrayCompleto.length(); i++) {
                                 JSONObject arrayFila = arrayCompleto.getJSONObject(i);
                                 String id = arrayFila.getString("idEstadoCivil");
                                 String nombre = arrayFila.getString("nombre");
+
                                 listaEstadosCiviles.add(i+1,nombre);
                                 mapEstadosCiviles.put(id,nombre);
+
+                                listaEstadosCivilesFam.add(i+1,nombre);
+                                mapEstadosCivilesFam.put(id,nombre);
                             }
                             adapterEstadosCiviles = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, listaEstadosCiviles);
                             adapterEstadosCiviles.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                             estadosCiviles.setAdapter(adapterEstadosCiviles);
+
+                            adapterEstadosCivilesFam = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, listaEstadosCivilesFam);
+                            adapterEstadosCivilesFam.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                            estadosCivilesFam.setAdapter(adapterEstadosCivilesFam);
+
                             dialogoEstadoCivil.dismiss();
+
                             //String a = getKey(nacionalidades,"Argentina");
 
                         } catch (Exception errEx) {
@@ -561,14 +713,14 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
         return null;
     }
     //Selector de fechas
-    private void showDatePickerDialog() {
+    private void showDatePickerDialog(EditText fechaDestino ) {
         DatePickerFragment newFragment =
                 DatePickerFragment.newInstance(new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker datePicker, int year, int month, int day) {
                 // +1 because January is zero
                 final String selectedDate = twoDigits(day) + "/" + twoDigits(month+1) + "/" + year;
-                fecnac.setText(selectedDate);
+                fechaDestino.setText(selectedDate);
             }
         });
 
