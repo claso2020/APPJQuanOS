@@ -74,7 +74,7 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
     TableLayout tablaTelefono, tablaDireccion, tablaMail, tablaFamiliares;
 
     String [] encabezado = {"Teléfonos "}, encabezadoDireccion={"Dirección", "Localidad"}
-    , encabezadoMail={"Mail"}, encabezadoFamiliares={"Apellido", "nombre","Fecha Nac.","CUIL","Sexo","Nacionalidad","EstadoCivil", "Parentesco"}  ;
+            , encabezadoMail={"Mail"}, encabezadoFamiliares={"Apellido", "nombre","Fecha Nac.","CUIL","Sexo","Nacionalidad","EstadoCivil", "Parentesco"}  ;
 
     ArrayList<String[]> filasTelefono = new ArrayList<String[]>();
     ArrayList<String[]> filasDomicilio = new ArrayList<String[]>();
@@ -191,45 +191,45 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
 
 
     }
-/*    private ArrayList<String[]> buscaDatosTablas()
-    {
-        return filas;
-    }*/
+    /*    private ArrayList<String[]> buscaDatosTablas()
+        {
+            return filas;
+        }*/
     private void iniciaTablas(){
 
-    //telefono=view.findViewById(R.id.telefono);
+        //telefono=view.findViewById(R.id.telefono);
 
-    tablaDinamicaTelefono.addHeader(encabezado);
-    tablaDinamicaTelefono.addData(filasTelefono); //le paso filas vacia sino ir a buscaDatosTablas()
-    tablaDinamicaTelefono.backgroundHeader(Color.parseColor("#819FF7"));
-    tablaDinamicaTelefono.backgroundData(Color.parseColor("#95cbf5"), Color.parseColor("#68879e"));
-    tablaDinamicaTelefono.lineColor(Color.BLACK);
-    tablaDinamicaTelefono.textColorData(Color.WHITE);
+        tablaDinamicaTelefono.addHeader(encabezado);
+        tablaDinamicaTelefono.addData(filasTelefono); //le paso filas vacia sino ir a buscaDatosTablas()
+        tablaDinamicaTelefono.backgroundHeader(Color.parseColor("#819FF7"));
+        tablaDinamicaTelefono.backgroundData(Color.parseColor("#95cbf5"), Color.parseColor("#68879e"));
+        tablaDinamicaTelefono.lineColor(Color.BLACK);
+        tablaDinamicaTelefono.textColorData(Color.WHITE);
 
-    tablaDinamicaDomicilio.addHeader(encabezadoDireccion);
-    tablaDinamicaDomicilio.addData(filasDomicilio);
-    tablaDinamicaDomicilio.backgroundHeader(Color.parseColor("#819FF7"));
-    tablaDinamicaDomicilio.backgroundData(Color.parseColor("#95cbf5"), Color.parseColor("#68879e"));
-    tablaDinamicaDomicilio.lineColor(Color.BLACK);
-    tablaDinamicaDomicilio.textColorData(Color.WHITE);
-    tablaDinamicaDomicilio.textColorHeader(Color.BLUE);
+        tablaDinamicaDomicilio.addHeader(encabezadoDireccion);
+        tablaDinamicaDomicilio.addData(filasDomicilio);
+        tablaDinamicaDomicilio.backgroundHeader(Color.parseColor("#819FF7"));
+        tablaDinamicaDomicilio.backgroundData(Color.parseColor("#95cbf5"), Color.parseColor("#68879e"));
+        tablaDinamicaDomicilio.lineColor(Color.BLACK);
+        tablaDinamicaDomicilio.textColorData(Color.WHITE);
+        tablaDinamicaDomicilio.textColorHeader(Color.BLUE);
 
-    tablaDinamicaMail.addHeader(encabezadoMail);
-    tablaDinamicaMail.addData(filasMails);
-    tablaDinamicaMail.backgroundHeader(Color.parseColor("#819FF7"));
-    tablaDinamicaMail.backgroundData(Color.parseColor("#95cbf5"), Color.parseColor("#68879e"));
-    tablaDinamicaMail.lineColor(Color.BLACK);
-    tablaDinamicaMail.textColorData(Color.WHITE);
-    tablaDinamicaMail.textColorHeader(Color.BLUE);
+        tablaDinamicaMail.addHeader(encabezadoMail);
+        tablaDinamicaMail.addData(filasMails);
+        tablaDinamicaMail.backgroundHeader(Color.parseColor("#819FF7"));
+        tablaDinamicaMail.backgroundData(Color.parseColor("#95cbf5"), Color.parseColor("#68879e"));
+        tablaDinamicaMail.lineColor(Color.BLACK);
+        tablaDinamicaMail.textColorData(Color.WHITE);
+        tablaDinamicaMail.textColorHeader(Color.BLUE);
 
-    tablaDinamicaFamiliares.addHeader(encabezadoFamiliares);
-    tablaDinamicaFamiliares.addData(filasMails);
-    tablaDinamicaFamiliares.backgroundHeader(Color.parseColor("#819FF7"));
-    tablaDinamicaFamiliares.backgroundData(Color.parseColor("#95cbf5"), Color.parseColor("#68879e"));
-    tablaDinamicaFamiliares.lineColor(Color.BLACK);
-    tablaDinamicaFamiliares.textColorData(Color.WHITE);
-    tablaDinamicaFamiliares.textColorHeader(Color.BLUE);
-}
+        tablaDinamicaFamiliares.addHeader(encabezadoFamiliares);
+        tablaDinamicaFamiliares.addData(filasMails);
+        tablaDinamicaFamiliares.backgroundHeader(Color.parseColor("#819FF7"));
+        tablaDinamicaFamiliares.backgroundData(Color.parseColor("#95cbf5"), Color.parseColor("#68879e"));
+        tablaDinamicaFamiliares.lineColor(Color.BLACK);
+        tablaDinamicaFamiliares.textColorData(Color.WHITE);
+        tablaDinamicaFamiliares.textColorHeader(Color.BLUE);
+    }
 
 
     @Override
@@ -281,7 +281,7 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
                 ,nacionalidadesFam.getSelectedItem().toString()
                 ,estadosCivilesFam.getSelectedItem().toString()
                 ,parentescos.getSelectedItem().toString()
-                };
+        };
         if (apellidoFam.getText().toString().equals("") ||
                 nombreFam.getText().toString().equals("") ||
                 cuilFam.getText().toString().equals("") ||
@@ -289,7 +289,7 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
                 nacionalidadesFam.getSelectedItem().toString().equals("") ||
                 estadosCivilesFam.getSelectedItem().toString().equals("") ||
                 parentescos.getSelectedItem().toString().equals("")
-            )
+        )
         {
             Toast.makeText(contexto, "Debe ingresar todos los datos", Toast.LENGTH_LONG).show();
         }
@@ -716,13 +716,13 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
     private void showDatePickerDialog(EditText fechaDestino ) {
         DatePickerFragment newFragment =
                 DatePickerFragment.newInstance(new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                // +1 because January is zero
-                final String selectedDate = twoDigits(day) + "/" + twoDigits(month+1) + "/" + year;
-                fechaDestino.setText(selectedDate);
-            }
-        });
+                    @Override
+                    public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+                        // +1 because January is zero
+                        final String selectedDate = twoDigits(day) + "/" + twoDigits(month+1) + "/" + year;
+                        fechaDestino.setText(selectedDate);
+                    }
+                });
 
         newFragment.show(getActivity().getSupportFragmentManager(), "datePicker");
     }
