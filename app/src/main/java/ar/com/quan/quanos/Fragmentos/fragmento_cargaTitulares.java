@@ -24,6 +24,7 @@ import android.widget.TableLayout;
 import android.widget.Toast;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -44,7 +45,7 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
     private Context contexto;
     FragmentChangeTrigger trigger;
     String idUsuario, token, idProvinciaSeleccionada, idDepartamentoSeleccionado;
-    Button btnVolverAInicial;
+    Button btnVolverAInicial, btnGuardaTitular;
 
     EditText fecnac, telefono, direccion, mail, fecnacFam, apellidoFam, nombreFam, cuilFam
             ,razonSocial, cuit, fecIngreso, aporteOS, sac;
@@ -119,6 +120,9 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
         btnGuardaFamiliares.setOnClickListener(this);
         btnGuardaRelLab=(ImageButton) view.findViewById(R.id.btnGuardaRelLab);
         btnGuardaRelLab.setOnClickListener(this);
+        btnGuardaTitular =(Button) view.findViewById(R.id.btnGuardaTitular);
+        btnGuardaTitular.setOnClickListener(this);
+
 
 
         telefono= (EditText) view.findViewById(R.id.telefono);
@@ -288,9 +292,42 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
         if(v.getId()==R.id.btnGuardaRelLab){
             agregaRelacionLaboral();
         }
+        if(v.getId()==R.id.btnGuardaTitular){
+            agregaTitulares();
+        }
+
 
 
     }
+
+    private void agregaTitulares() {
+        JSONObject jResult = new JSONObject();
+        JSONArray jArray = new JSONArray();
+        try {
+
+        for (int i = 0; i < filasMails.size(); i++) {
+            JSONObject jGroup = new JSONObject();
+            jGroup.put("mail", filasMails.get(i)[0]);
+
+            jArray.put(jGroup);
+        }
+
+        jResult.put("recordset", jArray);
+
+    } catch (JSONException e) {
+        e.printStackTrace();
+    }
+
+     /*   JSONArray jsArray = new JSONArray(filasMails);
+        JSONArray jsonArray = new JSONArray();
+        for (int i=0; i < filasMails.size(); i++) {
+            jsonArray.put(filasMails.get(i)[0]);
+        };
+        String a = "22";*/
+
+
+    }
+
 
     private void agregaRelacionLaboral(){
         String[]itemRelLab = new String[]{razonSocial.getText().toString()
@@ -314,7 +351,6 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
         }
 
     }
-
     private void agregaMail(){
         String[]itemMail = new String[]{mail.getText().toString()};
         if (mail.getText().toString().equals(""))
