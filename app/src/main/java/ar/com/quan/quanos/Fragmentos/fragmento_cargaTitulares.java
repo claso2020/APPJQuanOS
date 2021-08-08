@@ -75,7 +75,7 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
     ImageButton btnGuardaTelefono, btnGuardaDireccion, btnGuardaMail, btnGuardaFamiliares, btnGuardaRelLab;
     TableLayout tablaTelefono, tablaDireccion, tablaMail, tablaFamiliares, tablaRelLab;
 
-    String [] encabezado = {"Teléfonos "}, encabezadoDireccion={"Dirección", "Localidad"}
+    String [] encabezado = {"Teléfonos ","Acción"}, encabezadoDireccion={"Dirección", "Localidad"}
             , encabezadoMail={"Mail"}
             , encabezadoFamiliares={"Apellido", "nombre","Fecha Nac.","CUIL","Sexo","Nacionalidad","EstadoCivil", "Parentesco"}
             ,encabezadoRelLab={"Razón Social", "Cuit", "Fecha ingreso", "Aporte OS", "SAC"};
@@ -405,7 +405,7 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
 
     }
     private void agregaTelefono(){
-        String[]item = new String[]{telefono.getText().toString()};
+        String[]item = new String[]{telefono.getText().toString(),"Eliminar"};
         if (telefono.getText().toString().equals(""))
         {
             Toast.makeText(contexto, "Debe ingresar un número de teléfono", Toast.LENGTH_LONG).show();

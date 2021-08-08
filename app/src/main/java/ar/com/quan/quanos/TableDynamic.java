@@ -1,17 +1,23 @@
 package ar.com.quan.quanos;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.view.Gravity;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import java.util.ArrayList;
 
-public class TableDynamic {private TableLayout tableLayout;
+public class TableDynamic  {private TableLayout tableLayout;
     private Context context;
     private String[] header;
     private  ArrayList<String[]>data;
     private TableRow tableRow;
     private TextView txtCell;
+    private Button btnAccion;
+    private ImageButton btnAccionI;
     private int indexC;
     private int indexR;
     private boolean multiColor=false;
@@ -36,7 +42,7 @@ public class TableDynamic {private TableLayout tableLayout;
     private void newCell(){
         txtCell=new TextView(context);
         txtCell.setGravity(Gravity.CENTER);
-        txtCell.setTextSize(13);
+        txtCell.setTextSize(17);
     }
     private void createHeader(){
         indexC=0;
@@ -68,10 +74,22 @@ public class TableDynamic {private TableLayout tableLayout;
         indexC=0;
         newRow();
         while (indexC<header.length){
-            newCell();
-            info=(indexC<item.length)?item[indexC++]:"";
-            txtCell.setText(info);
-            tableRow.addView(txtCell,newTableRowParams());
+            if(item[indexC].equals("Eliminar")){
+                //btnAccion=new Button(context);
+                btnAccionI=new ImageButton(context);
+               btnAccionI.setImageResource(R.drawable.borrar);
+               //btnAccion.setGravity(Gravity.CENTER);
+                //btnAccion.setText("X");
+                //tableRow.addView(btnAccion, newTableRowParams());
+                tableRow.addView(btnAccionI, newTableRowParams());
+                indexC++;
+            }
+            else {
+                newCell();
+                info = (indexC < item.length) ? item[indexC++] : "";
+                txtCell.setText(info);
+                tableRow.addView(txtCell, newTableRowParams());
+            }
         }
         tableLayout.addView(tableRow,data.size());//Se quito el -1 despues de size para corregir
         reColoring();
@@ -88,8 +106,13 @@ public class TableDynamic {private TableLayout tableLayout;
         for (indexR=1; indexR<=data.size(); indexR++){
             multiColor=!multiColor;
             for (indexC=0; indexC<header.length; indexC++){
-                txtCell=getCell(indexR,indexC);
-                txtCell.setBackgroundColor((multiColor)?firtColor:secondColor);
+                if(header[indexC].equals("Acción")){
+
+                }
+                else {
+                    txtCell = getCell(indexR, indexC);
+                    txtCell.setBackgroundColor((multiColor) ? firtColor : secondColor);
+                }
             }
         }
         this.firtColor=firtColor;
@@ -104,7 +127,12 @@ public class TableDynamic {private TableLayout tableLayout;
     public void textColorData(int color){
         for (indexR=1; indexR<=data.size(); indexR++){
             for (indexC=0; indexC<header.length; indexC++){
-                getCell(indexR,indexC).setTextColor(color);
+                if(header[indexC].equals("Acción")){
+
+                }
+                else {
+                    getCell(indexR, indexC).setTextColor(color);
+                }
             }
         }
         this.textColor=color;
@@ -119,9 +147,15 @@ public class TableDynamic {private TableLayout tableLayout;
         indexC=0;
         multiColor=!multiColor;
         while (indexC<header.length){
-            txtCell=getCell(data.size(),indexC++);//Se quito el -1 despues de size
-            txtCell.setBackgroundColor((multiColor)?firtColor:secondColor);
-            txtCell.setTextColor(textColor);
+            if(header[indexC].equals("Acción")){
+                btnAccionI.setBackgroundColor((multiColor) ? firtColor : secondColor);
+                indexC++;
+            }
+            else {
+                txtCell = getCell(data.size(), indexC++);//Se quito el -1 despues de size
+                txtCell.setBackgroundColor((multiColor) ? firtColor : secondColor);
+                txtCell.setTextColor(textColor);
+            }
         }
     }
     private TableRow getRow(int index){
