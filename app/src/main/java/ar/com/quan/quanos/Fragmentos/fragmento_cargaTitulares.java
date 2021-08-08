@@ -405,7 +405,7 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
 
     }
     private void agregaTelefono(){
-        String[]item = new String[]{telefono.getText().toString(),"Eliminar"};
+        String[]item = new String[]{telefono.getText().toString(),"EliminarModificar"};
         if (telefono.getText().toString().equals(""))
         {
             Toast.makeText(contexto, "Debe ingresar un número de teléfono", Toast.LENGTH_LONG).show();

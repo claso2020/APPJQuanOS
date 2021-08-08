@@ -8,9 +8,12 @@ import android.widget.ImageButton;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import java.util.ArrayList;
 
-public class TableDynamic  {private TableLayout tableLayout;
+public class TableDynamic implements View.OnClickListener  {
+    private TableLayout tableLayout;
     private Context context;
     private String[] header;
     private  ArrayList<String[]>data;
@@ -77,11 +80,36 @@ public class TableDynamic  {private TableLayout tableLayout;
             if(item[indexC].equals("Eliminar")){
                 //btnAccion=new Button(context);
                 btnAccionI=new ImageButton(context);
-               btnAccionI.setImageResource(R.drawable.borrar);
+               btnAccionI.setImageResource(R.drawable.borrarpeque);
                //btnAccion.setGravity(Gravity.CENTER);
                 //btnAccion.setText("X");
                 //tableRow.addView(btnAccion, newTableRowParams());
                 tableRow.addView(btnAccionI, newTableRowParams());
+
+                btnAccionI.setId(data.size());
+                btnAccionI.setOnClickListener(TableDynamic.this); // set TableRow onClickListner
+
+                indexC++;
+            }
+            else if(item[indexC].equals("EliminarModificar")){
+                //btnAccion=new Button(context);
+                btnAccionI=new ImageButton(context);
+                btnAccionI.setImageResource(R.drawable.borrarpeque);
+                //btnAccion.setGravity(Gravity.CENTER);
+                //btnAccion.setText("X");
+                //tableRow.addView(btnAccion, newTableRowParams());
+                tableRow.addView(btnAccionI, newTableRowParams());
+                btnAccionI.setId(data.size());
+                btnAccionI.setOnClickListener(TableDynamic.this); // set TableRow onClickListner
+
+                btnAccionI=new ImageButton(context);
+                btnAccionI.setImageResource(R.drawable.modificapeque);
+                //btnAccion.setGravity(Gravity.CENTER);
+                //btnAccion.setText("X");
+                //tableRow.addView(btnAccion, newTableRowParams());
+                tableRow.addView(btnAccionI, newTableRowParams());
+                btnAccionI.setId(data.size()+10000);
+                btnAccionI.setOnClickListener(TableDynamic.this); // set TableRow onClickListner
                 indexC++;
             }
             else {
@@ -170,5 +198,17 @@ public class TableDynamic  {private TableLayout tableLayout;
         params.setMargins(1,1,1,1);
         params.weight=1;
         return params;
+    }
+
+    @Override
+    public void onClick(View v) {
+        int clicked_id = v.getId();
+
+        String a=String.valueOf(clicked_id);
+/*        if(v.getId()==R.id.btnAccionI){
+
+        }*/
+        Toast.makeText(context, "Tocó un botlón:  " + a , Toast.LENGTH_LONG).show();
+
     }
 }
