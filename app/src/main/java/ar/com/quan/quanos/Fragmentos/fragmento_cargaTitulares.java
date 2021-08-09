@@ -27,8 +27,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import ar.com.quan.quanos.Fabrica.Dialogos;
@@ -39,6 +42,8 @@ import ar.com.quan.quanos.R;
 import ar.com.quan.quanos.TableDynamic;
 import ar.com.quan.quanos.WebService;
 
+
+
 public class fragmento_cargaTitulares extends Fragment  implements View.OnClickListener{
     private Dialog dialogo, dialogoNac, dialogoEstadoCivil, dialogoplanesPrestacionales
             , dialogoProvincias, dialogoDepartamentos, dialogoLocalidades, dialogoParentesco;
@@ -47,8 +52,9 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
     String idUsuario, token, idProvinciaSeleccionada, idDepartamentoSeleccionado;
     Button btnVolverAInicial, btnGuardaTitular;
 
-    EditText fecnac, telefono, direccion, mail, fecnacFam, apellidoFam, nombreFam, cuilFam
+    EditText apellido, nombre, cuil, fecnac,claveFiscal,cantGrupoFamiliar, telefono, direccion, mail, fecnacFam, apellidoFam, nombreFam, cuilFam
             ,razonSocial, cuit, fecIngreso, aporteOS, sac;
+
     Spinner sexos,nacionalidades, estadosCiviles, planesPrestacionales,
             provincias, departamentos, localidades, sexosFam, nacionalidadesFam, estadosCivilesFam
             ,parentescos;
@@ -124,7 +130,11 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
         btnGuardaTitular.setOnClickListener(this);
 
 
-
+        apellido= (EditText)  view.findViewById(R.id.apellido);
+        nombre=(EditText) view.findViewById(R.id.nombre);
+        cuil=(EditText) view.findViewById(R.id.cuil);
+        claveFiscal=(EditText) view.findViewById(R.id.claveFiscal);
+        cantGrupoFamiliar=(EditText) view.findViewById(R.id.cantGrupoFamiliar);
         telefono= (EditText) view.findViewById(R.id.telefono);
         direccion=(EditText) view.findViewById(R.id.direccion);
         mail=(EditText) view.findViewById(R.id.mail);
@@ -301,18 +311,36 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
     }
 
     private void agregaTitulares() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+        Date date = new Date();
+        String fechaCarga = dateFormat.format(date);
+        String idsexoSeleccionado = getKey(mapSexos,sexos.getSelectedItem().toString());
+        String idNacionalidadSeleccionado = getKey(mapNacionalidades,nacionalidades.getSelectedItem().toString());
+        String idEstCivilSeleccionado = getKey(mapEstadosCiviles,estadosCiviles.getSelectedItem().toString());
+        String idPlanPrestacionalSeleccionado = getKey(mapPlanesPrestacionales,planesPrestacionales.getSelectedItem().toString());
+
+        /// datos personales
+        String[] datos;
+        datos= new String[]{apellido.getText().toString(), nombre.getText().toString(),
+                fecnac.getText().toString(), cuil.getText().toString(), idsexoSeleccionado,
+                idEstCivilSeleccionado, claveFiscal.getText().toString(),
+                cantGrupoFamiliar.getText().toString(), idPlanPrestacionalSeleccionado };
+
         JSONObject jResult = new JSONObject();
         JSONArray jArray = new JSONArray();
         try {
 
         for (int i = 0; i < filasMails.size(); i++) {
             JSONObject jGroup = new JSONObject();
+            jGroup.put("idmail", "00000000-0000-0000-0000-000000000000");
+            jGroup.put("fechaCarga", fechaCarga);
             jGroup.put("mail", filasMails.get(i)[0]);
+            jGroup.put("comentario", "Comentario");
 
             jArray.put(jGroup);
         }
 
-        jResult.put("recordset", jArray);
+        jResult.put("dtContactosEmail", jArray);
 
     } catch (JSONException e) {
         e.printStackTrace();

@@ -7,6 +7,7 @@
       <root url="jar://$PROJECT_DIR$/../../../Kotlin NOTAS/Curso-Android-Kotlin-master/App1Kotlin/caches/transforms-2/files-2.1/53e075b3bec73fe3d64d75c20958e5c3/transition-1.2.0/annotations.zip!/" />
       <root url="jar://$PROJECT_DIR$/../../../Kotlin NOTAS/Curso-Android-Kotlin-master/App1Kotlin/caches/transforms-2/files-2.1/53e075b3bec73fe3d64d75c20958e5c3/transition-1.2.0/annotations.zip!/" />
       <root url="jar://$PROJECT_DIR$/../../../Kotlin NOTAS/Curso-Android-Kotlin-master/App1Kotlin/caches/transforms-2/files-2.1/53e075b3bec73fe3d64d75c20958e5c3/transition-1.2.0/annotations.zip!/" />
+      <root url="jar://$PROJECT_DIR$/../../../../Kotlin NOTAS/Curso-Android-Kotlin-master/App1Kotlin/caches/transforms-2/files-2.1/53e075b3bec73fe3d64d75c20958e5c3/transition-1.2.0/annotations.zip!/" />
     </ANNOTATIONS>
     <CLASSES>
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/53e075b3bec73fe3d64d75c20958e5c3/transition-1.2.0/jars/classes.jar!/" />
@@ -27,6 +28,9 @@
       <root url="file://$PROJECT_DIR$/../../../Kotlin NOTAS/Curso-Android-Kotlin-master/App1Kotlin/caches/transforms-2/files-2.1/53e075b3bec73fe3d64d75c20958e5c3/transition-1.2.0/AndroidManifest.xml" />
       <root url="file://$PROJECT_DIR$/../../../Kotlin NOTAS/Curso-Android-Kotlin-master/App1Kotlin/caches/transforms-2/files-2.1/53e075b3bec73fe3d64d75c20958e5c3/transition-1.2.0/res" />
       <root url="jar://$PROJECT_DIR$/../../../Kotlin NOTAS/Curso-Android-Kotlin-master/App1Kotlin/caches/transforms-2/files-2.1/53e075b3bec73fe3d64d75c20958e5c3/transition-1.2.0/jars/classes.jar!/" />
+      <root url="file://$PROJECT_DIR$/../../../../Kotlin NOTAS/Curso-Android-Kotlin-master/App1Kotlin/caches/transforms-2/files-2.1/53e075b3bec73fe3d64d75c20958e5c3/transition-1.2.0/AndroidManifest.xml" />
+      <root url="file://$PROJECT_DIR$/../../../../Kotlin NOTAS/Curso-Android-Kotlin-master/App1Kotlin/caches/transforms-2/files-2.1/53e075b3bec73fe3d64d75c20958e5c3/transition-1.2.0/res" />
+      <root url="jar://$PROJECT_DIR$/../../../../Kotlin NOTAS/Curso-Android-Kotlin-master/App1Kotlin/caches/transforms-2/files-2.1/53e075b3bec73fe3d64d75c20958e5c3/transition-1.2.0/jars/classes.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
@@ -35,7 +39,7 @@
       <root url="jar://$PROJECT_DIR$/../../../Kotlin NOTAS/Curso-Android-Kotlin-master/App1Kotlin/caches/modules-2/files-2.1/androidx.transition/transition/1.2.0/65d2a5dab39f120d3f584fdead252ce81ec7dbee/transition-1.2.0-sources.jar!/" />
       <root url="jar://$PROJECT_DIR$/../../../Kotlin NOTAS/Curso-Android-Kotlin-master/App1Kotlin/caches/modules-2/files-2.1/androidx.transition/transition/1.2.0/65d2a5dab39f120d3f584fdead252ce81ec7dbee/transition-1.2.0-sources.jar!/" />
       <root url="jar://$PROJECT_DIR$/../../../Kotlin NOTAS/Curso-Android-Kotlin-master/App1Kotlin/caches/modules-2/files-2.1/androidx.transition/transition/1.2.0/65d2a5dab39f120d3f584fdead252ce81ec7dbee/transition-1.2.0-sources.jar!/" />
-      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/androidx.transition/transition/1.2.0/65d2a5dab39f120d3f584fdead252ce81ec7dbee/transition-1.2.0-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../../../Kotlin NOTAS/Curso-Android-Kotlin-master/App1Kotlin/caches/modules-2/files-2.1/androidx.transition/transition/1.2.0/65d2a5dab39f120d3f584fdead252ce81ec7dbee/transition-1.2.0-sources.jar!/" />
     </SOURCES>
   </library>
 </component>
