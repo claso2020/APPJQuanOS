@@ -359,11 +359,7 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
             e.printStackTrace();
         }
         String a ="";
-
-
     }
-
-
     private void agregaRelacionLaboral(){
         String[]itemRelLab = new String[]{razonSocial.getText().toString()
                 ,cuit.getText().toString()
@@ -496,7 +492,7 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
                 , new SuccessResponseHandler<JSONObject>() {
                     @Override
                     public void onSuccess(JSONObject resultado) {
-                        dialogoProvincias.dismiss();
+                        dialogoLocalidades.dismiss();
                         try {
                             JSONObject completo =new JSONObject(resultado.getString("resultado"));
                             String datos =completo.getString("localidades");
@@ -508,7 +504,7 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
                                 String id = arrayFila.getString("idLocalidad");
                                 String nombre = arrayFila.getString("nombreLocalidad");
                                 listaLocalidades.add(i+1,nombre);
-                                mapDepartamentos.put(id,nombre);
+                                mapLocalidades.put(id,nombre);
                             }
                             adapterLocalidades = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, listaLocalidades);
                             adapterLocalidades.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
