@@ -185,19 +185,30 @@
                         android:layout_height="match_parent"
                         android:orientation="vertical">
 
+                        <EditText
+                            android:id="@+id/telefono"
+                            android:layout_width="270dp"
+                            android:layout_height="30dp"
+                            android:layout_marginEnd="5dp"
+                            android:inputType="number"
+                            android:background="@drawable/edittex_style"
+                            android:hint=" Ingrese teléfono"
+                            android:visibility="visible" />
+
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center_vertical">
 
                             <EditText
-                                android:id="@+id/telefono"
+                                android:id="@+id/comentarioTelefono"
                                 android:layout_width="270dp"
-                                android:layout_height="30dp"
                                 android:layout_marginEnd="5dp"
                                 android:background="@drawable/edittex_style"
-                                android:hint=" Ingrese teléfono"
-                                android:visibility="visible" />
+                                android:maxLines="4"
+                                android:hint=" Ingrese comentario"
+                                android:visibility="visible"
+                                android:layout_height="wrap_content" />
 
                             <ImageButton
                                 android:id="@+id/btnGuardaTelefono"
@@ -258,25 +269,31 @@
                             android:layout_height="30dp"
                             android:layout_marginTop="10dp"
                             android:background="@drawable/edittex_style" />
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="center_horizontal">
 
-                        </LinearLayout>
+                        <EditText
+                            android:id="@+id/direccion"
+                            android:layout_width="270dp"
+                            android:layout_height="30dp"
+                            android:layout_marginTop="10dp"
+                            android:background="@drawable/edittex_style"
+                            android:hint=" Ingrese dirección"
+                            android:visibility="visible" />
+
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center_vertical">
 
+
                             <EditText
-                                android:id="@+id/direccion"
+                                android:id="@+id/comentarioDireccion"
                                 android:layout_width="270dp"
-                                android:layout_height="30dp"
                                 android:layout_marginEnd="5dp"
                                 android:background="@drawable/edittex_style"
-                                android:hint=" Ingrese dirección"
-                                android:visibility="visible" />
+                                android:maxLines="4"
+                                android:hint=" Ingrese comentario"
+                                android:visibility="visible"
+                                android:layout_height="wrap_content" />
 
                             <ImageButton
                                 android:id="@+id/btnGuardaDireccion"

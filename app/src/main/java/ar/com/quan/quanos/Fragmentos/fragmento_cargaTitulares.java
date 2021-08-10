@@ -52,7 +52,8 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
     String idUsuario, token, idProvinciaSeleccionada, idDepartamentoSeleccionado;
     Button btnVolverAInicial, btnGuardaTitular;
 
-    EditText apellido, nombre, cuil, fecnac,claveFiscal,cantGrupoFamiliar, telefono, direccion, mail, fecnacFam, apellidoFam, nombreFam, cuilFam
+    EditText apellido, nombre, cuil, fecnac,claveFiscal,cantGrupoFamiliar, telefono, comentarioTelefono,
+            direccion, comentarioDireccion, mail, fecnacFam, apellidoFam, nombreFam, cuilFam
             ,razonSocial, cuit, fecIngreso, aporteOS, sac;
 
     Spinner sexos,nacionalidades, estadosCiviles, planesPrestacionales,
@@ -81,7 +82,7 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
     ImageButton btnGuardaTelefono, btnGuardaDireccion, btnGuardaMail, btnGuardaFamiliares, btnGuardaRelLab;
     TableLayout tablaTelefono, tablaDireccion, tablaMail, tablaFamiliares, tablaRelLab;
 
-    String [] encabezado = {"Teléfonos ","Acción"}, encabezadoDireccion={"Dirección", "Localidad"}
+    String [] encabezado = {"Teléfonos ","Comentario","Acción"}, encabezadoDireccion={"Dirección", "Localidad","Comentario"}
             , encabezadoMail={"Mail"}
             , encabezadoFamiliares={"Apellido", "nombre","Fecha Nac.","CUIL","Sexo","Nacionalidad","EstadoCivil", "Parentesco"}
             ,encabezadoRelLab={"Razón Social", "Cuit", "Fecha ingreso", "Aporte OS", "SAC"};
@@ -136,7 +137,10 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
         claveFiscal=(EditText) view.findViewById(R.id.claveFiscal);
         cantGrupoFamiliar=(EditText) view.findViewById(R.id.cantGrupoFamiliar);
         telefono= (EditText) view.findViewById(R.id.telefono);
+        comentarioTelefono=(EditText)  view.findViewById(R.id.comentarioTelefono);
+
         direccion=(EditText) view.findViewById(R.id.direccion);
+        comentarioDireccion=(EditText) view.findViewById(R.id.comentarioDireccion);
         mail=(EditText) view.findViewById(R.id.mail);
         apellidoFam=(EditText) view.findViewById(R.id.apellidoFam);
         nombreFam=(EditText) view.findViewById(R.id.nombreFam);
@@ -341,6 +345,22 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        JSONArray dtContactosTelefonos = new JSONArray();
+        try {
+
+            for (int i = 0; i < filasTelefono.size(); i++) {
+                JSONObject jGroupTel = new JSONObject();
+                jGroupTel.put("idTelefono", "00000000-0000-0000-0000-000000000000");
+                jGroupTel.put("fechaCarga", fechaCarga);
+                jGroupTel.put("telefono", filasTelefono.get(i)[0]);
+                jGroupTel.put("comentario",  filasTelefono.get(i)[1]);
+
+                dtContactosTelefonos.put(jGroupTel);
+            }
+            // --Este no haría falta ----- jResult.put("dtContactosEmail", jArray);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         JSONArray dtContactosDomicilio = new JSONArray();
         try {
 
@@ -349,7 +369,7 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
                 jGroupDom.put("idDomicilio", "00000000-0000-0000-0000-000000000000");
                 jGroupDom.put("fechaCarga", fechaCarga);
                 jGroupDom.put("domicilio", filasDomicilio.get(i)[0]);
-                jGroupDom.put("comentario", "Comentario");
+                jGroupDom.put("comentario", filasDomicilio.get(i)[2]);
                 jGroupDom.put("idLocalidad", getKey(mapLocalidades,filasDomicilio.get(i)[1]));
 
                 dtContactosDomicilio.put(jGroupDom);
@@ -423,7 +443,8 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
 
     }
     private void agregaDireccion(){
-        String[]itemDireccion = new String[]{direccion.getText().toString(), localidades.getSelectedItem().toString()};
+        String[]itemDireccion = new String[]{direccion.getText().toString(), localidades.getSelectedItem().toString()
+                , comentarioDireccion.getText().toString()};
         if (direccion.getText().toString().equals(""))
         {
             Toast.makeText(contexto, "Debe ingresar una dirección", Toast.LENGTH_LONG).show();
@@ -436,7 +457,7 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
 
     }
     private void agregaTelefono(){
-        String[]item = new String[]{telefono.getText().toString(),"EliminarModificar"};
+        String[]item = new String[]{telefono.getText().toString(), comentarioTelefono.getText().toString(), "EliminarModificar"};
         if (telefono.getText().toString().equals(""))
         {
             Toast.makeText(contexto, "Debe ingresar un número de teléfono", Toast.LENGTH_LONG).show();
