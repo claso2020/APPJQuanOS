@@ -164,7 +164,6 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
         nacionalidadesFam=(Spinner) view.findViewById(R.id.nacionalidadesFam);
         estadosCivilesFam=(Spinner) view.findViewById(R.id.estadosCivilesFam);
         parentescos=(Spinner) view.findViewById(R.id.parentescos);
-
         departamentos.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View v, int i, long l) {
@@ -174,7 +173,6 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
                     idDepartamentoSeleccionado= getKey(mapDepartamentos,sel);
                     llenaLocalidades(idDepartamentoSeleccionado);
                 }
-
             }
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
@@ -326,32 +324,41 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
                 idEstCivilSeleccionado, claveFiscal.getText().toString(),
                 cantGrupoFamiliar.getText().toString(), idPlanPrestacionalSeleccionado };
 
-        JSONObject jResult = new JSONObject();
-        JSONArray jArray = new JSONArray();
+        //JSONObject jResult = new JSONObject();
+        JSONArray dtContactosEmail = new JSONArray();
         try {
 
-        for (int i = 0; i < filasMails.size(); i++) {
-            JSONObject jGroup = new JSONObject();
-            jGroup.put("idmail", "00000000-0000-0000-0000-000000000000");
-            jGroup.put("fechaCarga", fechaCarga);
-            jGroup.put("mail", filasMails.get(i)[0]);
-            jGroup.put("comentario", "Comentario");
+            for (int i = 0; i < filasMails.size(); i++) {
+                JSONObject jGroup = new JSONObject();
+                jGroup.put("idmail", "00000000-0000-0000-0000-000000000000");
+                jGroup.put("fechaCarga", fechaCarga);
+                jGroup.put("mail", filasMails.get(i)[0]);
+                jGroup.put("comentario", "Comentario");
 
-            jArray.put(jGroup);
+                dtContactosEmail.put(jGroup);
+            }
+        // --Este no haría falta ----- jResult.put("dtContactosEmail", jArray);
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
+        JSONArray dtContactosDomicilio = new JSONArray();
+        try {
 
-        jResult.put("dtContactosEmail", jArray);
+            for (int i = 0; i < filasDomicilio.size(); i++) {
+                JSONObject jGroupDom = new JSONObject();
+                jGroupDom.put("idDomicilio", "00000000-0000-0000-0000-000000000000");
+                jGroupDom.put("fechaCarga", fechaCarga);
+                jGroupDom.put("domicilio", filasDomicilio.get(i)[0]);
+                jGroupDom.put("comentario", "Comentario");
+                jGroupDom.put("idLocalidad", getKey(mapLocalidades,filasDomicilio.get(i)[1]));
 
-    } catch (JSONException e) {
-        e.printStackTrace();
-    }
-
-     /*   JSONArray jsArray = new JSONArray(filasMails);
-        JSONArray jsonArray = new JSONArray();
-        for (int i=0; i < filasMails.size(); i++) {
-            jsonArray.put(filasMails.get(i)[0]);
-        };
-        String a = "22";*/
+                dtContactosDomicilio.put(jGroupDom);
+            }
+            // --Este no haría falta ----- jResult.put("dtContactosEmail", jArray);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        String a ="";
 
 
     }
