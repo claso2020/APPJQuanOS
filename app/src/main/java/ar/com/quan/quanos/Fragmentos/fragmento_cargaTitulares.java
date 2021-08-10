@@ -517,32 +517,38 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
         TabHost.TabSpec spec = tabs.newTabSpec("tabs");
         spec.setContent(R.id.tab1);
         spec.setIndicator("Datos personales");
+        spec.setIndicator("",getResources().getDrawable(R.drawable.datospersonalespeque));
 
         tabs.addTab(spec);
 
         spec = tabs.newTabSpec("tag2");
         spec.setContent(R.id.tab2);
         spec.setIndicator("Teléfonos");
+        spec.setIndicator("",getResources().getDrawable(R.drawable.telefonopeque));
         tabs.addTab(spec);
 
         spec = tabs.newTabSpec("tag3");
         spec.setContent(R.id.tab3);
         spec.setIndicator("Direción");
+        spec.setIndicator("",getResources().getDrawable(R.drawable.direpeque));
         tabs.addTab(spec);
 
         spec = tabs.newTabSpec("tag4");
         spec.setContent(R.id.tab4);
         spec.setIndicator("Mail");
+        spec.setIndicator("",getResources().getDrawable(R.drawable.mailpeque));
         tabs.addTab(spec);
 
         spec = tabs.newTabSpec("tag5");
         spec.setContent(R.id.tab5);
         spec.setIndicator("Familiares");
+        spec.setIndicator("",getResources().getDrawable(R.drawable.fampeque));
         tabs.addTab(spec);
 
         spec = tabs.newTabSpec("tag6");
         spec.setContent(R.id.tab6);
         spec.setIndicator("Realción laboral");
+        spec.setIndicator("",getResources().getDrawable(R.drawable.rellabpeque));
         tabs.addTab(spec);
 
     }
