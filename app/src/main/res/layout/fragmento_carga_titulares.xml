@@ -8,15 +8,19 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:layout_marginBottom="5dp">
 
-        <Button
+        <ImageButton
             android:id="@+id/btnVolverAInicial"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@drawable/sombra_imagen"
             android:layout_marginStart="3dp"
             android:layout_marginEnd="17dp"
-            android:text="VOLVER" />
+            android:text="VOLVER"
+
+            android:src="@drawable/volvernegro" />
 
         <TextView
             android:id="@+id/textView"

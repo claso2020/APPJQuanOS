@@ -50,7 +50,7 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
     private Context contexto;
     FragmentChangeTrigger trigger;
     String idUsuario, token, idProvinciaSeleccionada, idDepartamentoSeleccionado;
-    Button btnVolverAInicial, btnGuardaTitular;
+    Button  btnGuardaTitular;
 
     EditText apellido, nombre, cuil, fecnac,claveFiscal,cantGrupoFamiliar, telefono, comentarioTelefono,
             direccion, comentarioDireccion, mail, comentarioMail, fecnacFam, apellidoFam, nombreFam, cuilFam
@@ -79,7 +79,7 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
             , mapNacionalidadesFam= new HashMap<>(),mapEstadosCivilesFam= new HashMap<>()
             ,mapParentesco= new HashMap<>();
 
-    ImageButton btnGuardaTelefono, btnGuardaDireccion, btnGuardaMail, btnGuardaFamiliares, btnGuardaRelLab;
+    ImageButton btnVolverAInicial,btnGuardaTelefono, btnGuardaDireccion, btnGuardaMail, btnGuardaFamiliares, btnGuardaRelLab;
     TableLayout tablaTelefono, tablaDireccion, tablaMail, tablaFamiliares, tablaRelLab;
 
     String [] encabezado = {"Teléfonos ","Comentario","Acción"}, encabezadoDireccion={"Dirección", "Localidad","Comentario"}
@@ -113,7 +113,7 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
         super.onViewCreated(view, savedInstanceState);
         contexto=view.getContext();
 
-        btnVolverAInicial =(Button) view.findViewById(R.id.btnVolverAInicial);
+        btnVolverAInicial =(ImageButton) view.findViewById(R.id.btnVolverAInicial);
         btnVolverAInicial.setOnClickListener(this);
         btnGuardaTelefono= (ImageButton) view.findViewById(R.id.btnGuardaTelefono);
         btnGuardaTelefono.setOnClickListener(this);
