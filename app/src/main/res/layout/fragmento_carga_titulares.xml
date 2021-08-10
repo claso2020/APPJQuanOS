@@ -336,6 +336,14 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:orientation="vertical">
+                        <EditText
+                            android:id="@+id/mail"
+                            android:layout_width="270dp"
+                            android:layout_height="30dp"
+                            android:background="@drawable/edittex_style"
+                            android:layout_marginTop="10dp"
+                            android:hint=" Ingrese mail"
+                            android:visibility="visible" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -343,13 +351,14 @@
                             android:gravity="center_vertical">
 
                             <EditText
-                                android:id="@+id/mail"
+                                android:id="@+id/comentarioMail"
                                 android:layout_width="270dp"
-                                android:layout_height="30dp"
                                 android:layout_marginEnd="5dp"
                                 android:background="@drawable/edittex_style"
-                                android:hint=" Ingrese mail"
-                                android:visibility="visible" />
+                                android:maxLines="4"
+                                android:hint=" Ingrese comentario"
+                                android:visibility="visible"
+                                android:layout_height="wrap_content" />
 
                             <ImageButton
                                 android:id="@+id/btnGuardaMail"
@@ -435,6 +444,7 @@
                                 android:layout_height="30dp"
                                 android:layout_marginTop="10dp"
                                 android:background="@drawable/edittex_style"
+                                android:inputType="number"
                                 android:hint="  CUIL"
                                 android:visibility="visible" />
 
@@ -538,6 +548,7 @@
                                 android:layout_marginTop="10dp"
                                 android:layout_marginEnd="5dp"
                                 android:background="@drawable/edittex_style"
+                                android:inputType="number"
                                 android:hint=" Ingrese CUIT"
                                 android:visibility="visible" />
 
@@ -559,6 +570,7 @@
                                 android:layout_height="30dp"
                                 android:layout_marginTop="10dp"
                                 android:background="@drawable/edittex_style"
+                                android:inputType="number"
                                 android:hint="  Aportes OS/Recibo"
                                 android:visibility="visible" />
 
@@ -573,6 +585,7 @@
                                     android:layout_height="30dp"
                                     android:layout_marginTop="10dp"
                                     android:background="@drawable/edittex_style"
+                                    android:inputType="number"
                                     android:hint="  SAC/Vacaciones"
                                     android:visibility="visible" />
 

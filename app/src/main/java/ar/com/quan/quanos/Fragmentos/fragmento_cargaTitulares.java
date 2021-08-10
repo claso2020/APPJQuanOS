@@ -53,7 +53,7 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
     Button btnVolverAInicial, btnGuardaTitular;
 
     EditText apellido, nombre, cuil, fecnac,claveFiscal,cantGrupoFamiliar, telefono, comentarioTelefono,
-            direccion, comentarioDireccion, mail, fecnacFam, apellidoFam, nombreFam, cuilFam
+            direccion, comentarioDireccion, mail, comentarioMail, fecnacFam, apellidoFam, nombreFam, cuilFam
             ,razonSocial, cuit, fecIngreso, aporteOS, sac;
 
     Spinner sexos,nacionalidades, estadosCiviles, planesPrestacionales,
@@ -83,7 +83,7 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
     TableLayout tablaTelefono, tablaDireccion, tablaMail, tablaFamiliares, tablaRelLab;
 
     String [] encabezado = {"Teléfonos ","Comentario","Acción"}, encabezadoDireccion={"Dirección", "Localidad","Comentario"}
-            , encabezadoMail={"Mail"}
+            , encabezadoMail={"Mail", "Comentario"}
             , encabezadoFamiliares={"Apellido", "nombre","Fecha Nac.","CUIL","Sexo","Nacionalidad","EstadoCivil", "Parentesco"}
             ,encabezadoRelLab={"Razón Social", "Cuit", "Fecha ingreso", "Aporte OS", "SAC"};
 
@@ -102,13 +102,11 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
     public fragmento_cargaTitulares() {
         // Required empty public constructor
     }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragmento_carga_titulares, container, false);
-
     }
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -138,10 +136,10 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
         cantGrupoFamiliar=(EditText) view.findViewById(R.id.cantGrupoFamiliar);
         telefono= (EditText) view.findViewById(R.id.telefono);
         comentarioTelefono=(EditText)  view.findViewById(R.id.comentarioTelefono);
-
         direccion=(EditText) view.findViewById(R.id.direccion);
         comentarioDireccion=(EditText) view.findViewById(R.id.comentarioDireccion);
         mail=(EditText) view.findViewById(R.id.mail);
+        comentarioMail=(EditText) view.findViewById(R.id.comentarioMail);
         apellidoFam=(EditText) view.findViewById(R.id.apellidoFam);
         nombreFam=(EditText) view.findViewById(R.id.nombreFam);
         cuilFam=(EditText) view.findViewById(R.id.cuilFam);
@@ -255,7 +253,7 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
         tablaDinamicaMail.textColorHeader(Color.BLUE);
 
         tablaDinamicaFamiliares.addHeader(encabezadoFamiliares);
-        tablaDinamicaFamiliares.addData(filasMails);
+        tablaDinamicaFamiliares.addData(filasFamiliares);
         tablaDinamicaFamiliares.backgroundHeader(Color.parseColor("#819FF7"));
         tablaDinamicaFamiliares.backgroundData(Color.parseColor("#95cbf5"), Color.parseColor("#68879e"));
         tablaDinamicaFamiliares.lineColor(Color.BLACK);
@@ -263,14 +261,13 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
         tablaDinamicaFamiliares.textColorHeader(Color.BLUE);
 
         tablaDinamicaRelLab.addHeader(encabezadoRelLab);
-        tablaDinamicaRelLab.addData(filasMails);
+        tablaDinamicaRelLab.addData(filasRellab);
         tablaDinamicaRelLab.backgroundHeader(Color.parseColor("#819FF7"));
         tablaDinamicaRelLab.backgroundData(Color.parseColor("#95cbf5"), Color.parseColor("#68879e"));
         tablaDinamicaRelLab.lineColor(Color.BLACK);
         tablaDinamicaRelLab.textColorData(Color.WHITE);
         tablaDinamicaRelLab.textColorHeader(Color.BLUE);
     }
-
 
     @Override
     public void onClick(View v) {
@@ -337,7 +334,7 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
                 jGroup.put("idmail", "00000000-0000-0000-0000-000000000000");
                 jGroup.put("fechaCarga", fechaCarga);
                 jGroup.put("mail", filasMails.get(i)[0]);
-                jGroup.put("comentario", "Comentario");
+                jGroup.put("comentario", filasMails.get(i)[1]);
 
                 dtContactosEmail.put(jGroup);
             }
@@ -378,6 +375,50 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        JSONArray dtFamiliares = new JSONArray();
+        try {
+            for (int i = 0; i < filasFamiliares.size(); i++) {
+                JSONObject jGroupFam = new JSONObject();
+                jGroupFam.put("idFamiliar", "00000000-0000-0000-0000-000000000000");
+                jGroupFam.put("apellido", filasFamiliares.get(i)[0]);
+                jGroupFam.put("nombre",  filasFamiliares.get(i)[1]);
+                jGroupFam.put("fecNac",  filasFamiliares.get(i)[2]);
+                jGroupFam.put("cuil",  filasFamiliares.get(i)[3]);
+                jGroupFam.put("idSexo", getKey(mapSexos,filasFamiliares.get(i)[4]));
+                jGroupFam.put("idNacionalidad", getKey(mapNacionalidades,filasFamiliares.get(i)[5]));
+                jGroupFam.put("idEstadoCivil", getKey(mapEstadosCiviles,filasFamiliares.get(i)[6]));
+                jGroupFam.put("idParentesco", getKey(mapParentesco,filasFamiliares.get(i)[7]));
+                jGroupFam.put("idEstadoAfiliacion", "00000000-0000-0000-0000-000000000000");
+                jGroupFam.put("perAlta", "00000000-0000-0000-0000-000000000000");
+                jGroupFam.put("perBaja", "00000000-0000-0000-0000-000000000000");
+
+                dtFamiliares.put(jGroupFam);
+            }
+            // --Este no haría falta ----- jResult.put("dtContactosEmail", jArray);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JSONArray dtRelacionesLaborales = new JSONArray();
+        try {
+
+            for (int i = 0; i < filasRellab.size(); i++) {
+                JSONObject jGroupRelLab = new JSONObject();
+                jGroupRelLab.put("idEmpleador", "00000000-0000-0000-0000-000000000000");
+                jGroupRelLab.put("idTipoRelacionLaboral", "00000000-0000-0000-0000-000000000000");
+                jGroupRelLab.put("razonSocial",  filasRellab.get(i)[0]);
+                jGroupRelLab.put("cuit",  filasRellab.get(i)[1]);
+                jGroupRelLab.put("fecIngreso",  filasRellab.get(i)[2]);
+                jGroupRelLab.put("aporteOs", filasRellab.get(i)[3]);
+                jGroupRelLab.put("sac", filasRellab.get(i)[4]);
+
+                dtRelacionesLaborales.put(jGroupRelLab);
+            }
+            // --Este no haría falta ----- jResult.put("dtContactosEmail", jArray);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
         String a ="";
     }
     private void agregaRelacionLaboral(){
@@ -403,7 +444,7 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
 
     }
     private void agregaMail(){
-        String[]itemMail = new String[]{mail.getText().toString()};
+        String[]itemMail = new String[]{mail.getText().toString(), comentarioMail.getText().toString()};
         if (mail.getText().toString().equals(""))
         {
             Toast.makeText(contexto, "Debe ingresar un mail", Toast.LENGTH_LONG).show();
