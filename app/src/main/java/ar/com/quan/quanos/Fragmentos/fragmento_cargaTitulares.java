@@ -3,6 +3,8 @@ package ar.com.quan.quanos.Fragmentos;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 
@@ -38,6 +40,7 @@ import ar.com.quan.quanos.Fabrica.Dialogos;
 import ar.com.quan.quanos.Interfaces.ErrorResponseHandler;
 import ar.com.quan.quanos.Interfaces.FragmentChangeTrigger;
 import ar.com.quan.quanos.Interfaces.SuccessResponseHandler;
+import ar.com.quan.quanos.Principal;
 import ar.com.quan.quanos.R;
 import ar.com.quan.quanos.TableDynamic;
 import ar.com.quan.quanos.WebService;
@@ -45,12 +48,12 @@ import ar.com.quan.quanos.WebService;
 
 
 public class fragmento_cargaTitulares extends Fragment  implements View.OnClickListener{
+    //region Declaraciones
     private Dialog dialogo, dialogoNac, dialogoEstadoCivil, dialogoplanesPrestacionales
             , dialogoProvincias, dialogoDepartamentos, dialogoLocalidades, dialogoParentesco;
     private Context contexto;
     FragmentChangeTrigger trigger;
     String idUsuario, token, idProvinciaSeleccionada, idDepartamentoSeleccionado;
-    Button  btnGuardaTitular;
 
     EditText apellido, nombre, cuil, fecnac,claveFiscal,cantGrupoFamiliar, telefono, comentarioTelefono,
             direccion, comentarioDireccion, mail, comentarioMail, fecnacFam, apellidoFam, nombreFam, cuilFam
@@ -79,7 +82,8 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
             , mapNacionalidadesFam= new HashMap<>(),mapEstadosCivilesFam= new HashMap<>()
             ,mapParentesco= new HashMap<>();
 
-    ImageButton btnVolverAInicial,btnGuardaTelefono, btnGuardaDireccion, btnGuardaMail, btnGuardaFamiliares, btnGuardaRelLab;
+    ImageButton btnVolverAInicial,btnGuardaTelefono, btnGuardaDireccion, btnGuardaMail,
+            btnGuardaFamiliares, btnGuardaRelLab, btnGuardaTitular ;
     TableLayout tablaTelefono, tablaDireccion, tablaMail, tablaFamiliares, tablaRelLab;
 
     String [] encabezado = {"Teléfonos ","Comentario","Acción"}, encabezadoDireccion={"Dirección", "Localidad","Comentario"}
@@ -98,6 +102,7 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
     TableDynamic tablaDinamicaMail;// =new TableDynamic(tablaMail,getContext());
     TableDynamic tablaDinamicaFamiliares;// =new TableDynamic(tablaMail,getContext());
     TableDynamic tablaDinamicaRelLab;// =new TableDynamic(tablaMail,getContext());
+    //endregion
 
     public fragmento_cargaTitulares() {
         // Required empty public constructor
@@ -112,7 +117,7 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         contexto=view.getContext();
-
+        //region declaraciones
         btnVolverAInicial =(ImageButton) view.findViewById(R.id.btnVolverAInicial);
         btnVolverAInicial.setOnClickListener(this);
         btnGuardaTelefono= (ImageButton) view.findViewById(R.id.btnGuardaTelefono);
@@ -125,9 +130,8 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
         btnGuardaFamiliares.setOnClickListener(this);
         btnGuardaRelLab=(ImageButton) view.findViewById(R.id.btnGuardaRelLab);
         btnGuardaRelLab.setOnClickListener(this);
-        btnGuardaTitular =(Button) view.findViewById(R.id.btnGuardaTitular);
+        btnGuardaTitular =(ImageButton) view.findViewById(R.id.btnGuardaTitular);
         btnGuardaTitular.setOnClickListener(this);
-
 
         apellido= (EditText)  view.findViewById(R.id.apellido);
         nombre=(EditText) view.findViewById(R.id.nombre);
@@ -166,6 +170,20 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
         nacionalidadesFam=(Spinner) view.findViewById(R.id.nacionalidadesFam);
         estadosCivilesFam=(Spinner) view.findViewById(R.id.estadosCivilesFam);
         parentescos=(Spinner) view.findViewById(R.id.parentescos);
+
+        tablaTelefono =view.findViewById(R.id.tablaTelefono);
+        tablaDinamicaTelefono =new TableDynamic(tablaTelefono,contexto);
+        tablaDireccion =view.findViewById(R.id.tablaDireccion);
+        tablaDinamicaDomicilio =new TableDynamic(tablaDireccion,contexto);
+        tablaMail =view.findViewById(R.id.tablaMail);
+        tablaDinamicaMail =new TableDynamic(tablaMail,contexto);
+        tablaFamiliares =view.findViewById(R.id.tablaFamiliares);
+        tablaDinamicaFamiliares =new TableDynamic(tablaFamiliares,contexto);
+        tablaRelLab =view.findViewById(R.id.tablaRelLab);
+        tablaDinamicaRelLab =new TableDynamic(tablaRelLab,contexto);
+
+        //endregion
+
         departamentos.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View v, int i, long l) {
@@ -198,25 +216,15 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
             }
         });
 
-        tablaTelefono =view.findViewById(R.id.tablaTelefono);
-        tablaDinamicaTelefono =new TableDynamic(tablaTelefono,contexto);
-        tablaDireccion =view.findViewById(R.id.tablaDireccion);
-        tablaDinamicaDomicilio =new TableDynamic(tablaDireccion,contexto);
-        tablaMail =view.findViewById(R.id.tablaMail);
-        tablaDinamicaMail =new TableDynamic(tablaMail,contexto);
-        tablaFamiliares =view.findViewById(R.id.tablaFamiliares);
-        tablaDinamicaFamiliares =new TableDynamic(tablaFamiliares,contexto);
-        tablaRelLab =view.findViewById(R.id.tablaRelLab);
-        tablaDinamicaRelLab =new TableDynamic(tablaRelLab,contexto);
-
         creaTabs ();
+        //region Llena spinners
         llenaSexos();
         llenaNacionalidades();
         llenaEstadoCiviles();
         llenaPlanesPrestacionales();
         llenaProvincias();
         llenaParentescos();
-
+        //endregion
         iniciaTablas();
 
 
@@ -304,9 +312,6 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
         if(v.getId()==R.id.btnGuardaTitular){
             agregaTitulares();
         }
-
-
-
     }
 
     private void agregaTitulares() {
@@ -318,14 +323,14 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
         String idEstCivilSeleccionado = getKey(mapEstadosCiviles,estadosCiviles.getSelectedItem().toString());
         String idPlanPrestacionalSeleccionado = getKey(mapPlanesPrestacionales,planesPrestacionales.getSelectedItem().toString());
 
-        /// datos personales
+        //region datos personales
+
         String[] datos;
         datos= new String[]{apellido.getText().toString(), nombre.getText().toString(),
                 fecnac.getText().toString(), cuil.getText().toString(), idsexoSeleccionado,
                 idEstCivilSeleccionado, claveFiscal.getText().toString(),
                 cantGrupoFamiliar.getText().toString(), idPlanPrestacionalSeleccionado };
 
-        //JSONObject jResult = new JSONObject();
         JSONArray dtContactosEmail = new JSONArray();
         try {
 
@@ -342,6 +347,9 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        //endregion
+
+        //region Datos teléfono
         JSONArray dtContactosTelefonos = new JSONArray();
         try {
 
@@ -354,10 +362,12 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
 
                 dtContactosTelefonos.put(jGroupTel);
             }
-            // --Este no haría falta ----- jResult.put("dtContactosEmail", jArray);
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        //endregion
+
+        //region Domilicios
         JSONArray dtContactosDomicilio = new JSONArray();
         try {
 
@@ -371,10 +381,11 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
 
                 dtContactosDomicilio.put(jGroupDom);
             }
-            // --Este no haría falta ----- jResult.put("dtContactosEmail", jArray);
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        //endregion
+        //region Grupo familiar
         JSONArray dtFamiliares = new JSONArray();
         try {
             for (int i = 0; i < filasFamiliares.size(); i++) {
@@ -394,12 +405,13 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
 
                 dtFamiliares.put(jGroupFam);
             }
-            // --Este no haría falta ----- jResult.put("dtContactosEmail", jArray);
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        //endregion
 
-        JSONArray dtRelacionesLaborales = new JSONArray();
+        //region Relación laboral
+            JSONArray dtRelacionesLaborales = new JSONArray();
         try {
 
             for (int i = 0; i < filasRellab.size(); i++) {
@@ -414,13 +426,59 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
 
                 dtRelacionesLaborales.put(jGroupRelLab);
             }
-            // --Este no haría falta ----- jResult.put("dtContactosEmail", jArray);
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        //endregion
+
+        WebService.modificarDatosTitulares(getActivity()
+                ,"00000000-0000-0000-0000-000000000000"
+                ,apellido.getText().toString()
+                ,nombre.getText().toString()
+                ,fecnac.getText().toString()
+                ,cuil.getText().toString()
+                ,idsexoSeleccionado
+                ,idNacionalidadSeleccionado
+                ,idEstCivilSeleccionado
+                ,claveFiscal.getText().toString()
+                ,cantGrupoFamiliar.getText().toString()
+                ,idPlanPrestacionalSeleccionado
+                ,"Comentario ingreso titular"
+                ,dtContactosDomicilio.toString()
+                ,dtContactosTelefonos.toString()
+                ,dtContactosEmail.toString()
+                ,dtFamiliares.toString()
+                ,"REL" //"00000000-0000-0000-0000-000000000000"
+                ,dtRelacionesLaborales.toString()
+                ,"dtArchivosAdjuntos"
+                ,"cuentaVerificacionCUILTitular"
+                ,"noVerificarCuilTitular"
+                ,"origenPeticion"
+                ,""//"00000000-0000-0000-0000-000000000000"
+                ,"perAlta"
+                ,"perBaja"
+
+                , new SuccessResponseHandler<JSONObject>()  {
+                    @Override
+                    public void onSuccess(JSONObject valores) {
+                        dialogo.dismiss();
+                        try {
+
+                        } catch (Exception errEx) {
+                            dialogo = Dialogos.dlgError(contexto,errEx.getMessage());
+                        }
+                    }
+                }, new ErrorResponseHandler() {
+                    @Override
+                    public void onError(String msg) {
+                        dialogo.dismiss();
+                        dialogo = Dialogos.dlgError(contexto,msg);
+                    }
+                });
 
         String a ="";
     }
+    //region agrega a tablas visibles
     private void agregaRelacionLaboral(){
         String[]itemRelLab = new String[]{razonSocial.getText().toString()
                 ,cuit.getText().toString()
@@ -552,8 +610,8 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
         tabs.addTab(spec);
 
     }
-
-    //LLenado de spinners
+    //endregion
+    //region LLenado de spinners
     public void llenaLocalidades(String idDepartamentoSeleccionado ){
         dialogoLocalidades = Dialogos.dlgBuscando(getActivity(),"Recuperando Localidades");
         WebService.leerLocalidades(getActivity(), idDepartamentoSeleccionado
@@ -897,7 +955,7 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
                     }
                 });
     }
-    //Fin llenado spinners
+    //endregion
 
     public <K, V> K getKey(Map<K, V> map, V value) {
         for (Map.Entry<K, V> entry : map.entrySet()) {

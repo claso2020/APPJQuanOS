@@ -43,6 +43,8 @@ public class Principal extends AppCompatActivity implements FragmentChangeTrigge
                 pantActual="MainActivity";
                 break;
             case "inicial_btnCargaTitulares":
+                transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out, R.anim.fade_in, R.anim.fade_out);
+
                 pantCargaTitulares = new fragmento_cargaTitulares();
                 pantCargaTitulares.setTrigger(this);
                 pantActual="pantCargaTitulares";
@@ -51,6 +53,7 @@ public class Principal extends AppCompatActivity implements FragmentChangeTrigge
                         .commit();
                 break;
             case "cargaTitulares_btnVolverAInicial":
+                transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out, R.anim.fade_in, R.anim.fade_out);
                 fragmentManager.beginTransaction()
                         .replace(R.id.frg_pantallaActual, pantInicial)
                         .commit();

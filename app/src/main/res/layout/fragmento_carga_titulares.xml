@@ -4,7 +4,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Fragmentos.fragmento_cargaTitulares">
-
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="5dp">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -15,30 +19,38 @@
             android:id="@+id/btnVolverAInicial"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/sombra_imagen"
-            android:layout_marginStart="3dp"
-            android:layout_marginEnd="17dp"
-            android:text="VOLVER"
-
-            android:src="@drawable/volvernegro" />
+            android:layout_marginStart="1dp"
+            android:layout_weight="1"
+            android:backgroundTint="@android:color/transparent"
+            android:src="@drawable/volvernegro"
+            android:tooltipText="Volver"
+            android:text="VOLVER" />
 
         <TextView
             android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
             android:layout_marginTop="3dp"
-            android:layout_marginEnd="27dp"
-            android:text="Ingreso de datos" />
-        <Button
+            android:layout_weight="10"
+            android:text="Ingreso de datos"
+            android:textAlignment="center"
+            android:textColor="@color/design_default_color_primary_dark"
+            android:textStyle="bold" />
+
+
+        <ImageButton
             android:id="@+id/btnGuardaTitular"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="3dp"
-            android:layout_marginEnd="17dp"
-            android:text="Guardar" />
+            android:backgroundTint="@android:color/transparent"
+            android:src="@drawable/guardatitular"
+            android:tooltipText="Almacenar datos"
+            android:text="Guardar" />/>
 
     </LinearLayout>
-
+    </LinearLayout>
     <TabHost
         android:id="@+id/tabHost"
         android:layout_width="match_parent"
@@ -188,7 +200,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:orientation="vertical">
-
                         <EditText
                             android:id="@+id/telefono"
                             android:layout_width="270dp"
@@ -198,12 +209,10 @@
                             android:background="@drawable/edittex_style"
                             android:hint=" Ingrese teléfono"
                             android:visibility="visible" />
-
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center_vertical">
-
                             <EditText
                                 android:id="@+id/comentarioTelefono"
                                 android:layout_width="270dp"
@@ -213,7 +222,6 @@
                                 android:hint=" Ingrese comentario"
                                 android:visibility="visible"
                                 android:layout_height="wrap_content" />
-
                             <ImageButton
                                 android:id="@+id/btnGuardaTelefono"
                                 android:layout_width="wrap_content"
@@ -221,19 +229,17 @@
                                 android:layout_marginBottom="5dp"
                                 android:background="#90FFFFFF"
                                 android:contentDescription="Guardar teléfono"
-                                android:src="@drawable/guardam48" />
+                                android:src="@drawable/guardardatos"/>
+                                <!--android:src="@drawable/guardam48" -->
                         </LinearLayout>
-
                         <ScrollView
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_gravity="center_vertical">
-
                             <TableLayout
                                 android:id="@+id/tablaTelefono"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent">
-
                             </TableLayout>
                         </ScrollView>
 
@@ -306,7 +312,7 @@
                                 android:layout_marginBottom="5dp"
                                 android:background="#90FFFFFF"
                                 android:contentDescription="Guardar dirección"
-                                android:src="@drawable/guardam48" />
+                                android:src="@drawable/guardardatos"/>
                         </LinearLayout>
 
                         <ScrollView
@@ -371,7 +377,7 @@
                                 android:layout_marginBottom="5dp"
                                 android:background="#90FFFFFF"
                                 android:contentDescription="Guardar mail"
-                                android:src="@drawable/guardam48" />
+                                android:src="@drawable/guardardatos" />
                         </LinearLayout>
 
                         <ScrollView
@@ -493,7 +499,7 @@
                                     android:layout_marginBottom="5dp"
                                     android:background="#90FFFFFF"
                                     android:contentDescription="Guardar dirección"
-                                    android:src="@drawable/guardam48" />
+                                    android:src="@drawable/guardardatos" />
                             </LinearLayout>
 
                             <ScrollView
@@ -567,7 +573,6 @@
                                 android:hint="  Fecha ingreso"
                                 android:inputType="date"
                                 android:maxLines="1" />
-
                             <EditText
                                 android:id="@+id/aporteOS"
                                 android:layout_width="270dp"
@@ -577,44 +582,41 @@
                                 android:inputType="number"
                                 android:hint="  Aportes OS/Recibo"
                                 android:visibility="visible" />
-
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:gravity="center_vertical">
-
                                 <EditText
                                     android:id="@+id/sac"
                                     android:layout_width="270dp"
-                                    android:layout_height="30dp"
+                                    android:layout_height="wrap_content"
                                     android:layout_marginTop="10dp"
                                     android:background="@drawable/edittex_style"
                                     android:inputType="number"
                                     android:hint="  SAC/Vacaciones"
+                                    android:autofillHints="SAC/Vacaciones"
                                     android:visibility="visible" />
-
                                 <ImageButton
                                     android:id="@+id/btnGuardaRelLab"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginBottom="5dp"
+
                                     android:background="#90FFFFFF"
                                     android:contentDescription="Guardar realación laboral"
-                                    android:src="@drawable/guardam48" />
+                                    android:src="@drawable/guardardatos" />
                             </LinearLayout>
-
                             <ScrollView
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:layout_gravity="center_vertical">
                                 <HorizontalScrollView
                                     android:layout_width="fill_parent"
-                                    android:layout_height="fill_parent">
+                                    android:layout_height="wrap_content">
                                     <TableLayout
                                         android:id="@+id/tablaRelLab"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="match_parent">
-                                    </TableLayout>
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="match_parent"></TableLayout>
                                 </HorizontalScrollView>
                             </ScrollView>
 
@@ -627,5 +629,7 @@
 
             </FrameLayout>
         </LinearLayout>
+
+
     </TabHost>
 </FrameLayout>

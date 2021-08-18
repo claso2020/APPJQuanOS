@@ -8,5 +8,5 @@
         android:right="0dp"
         android:bottom="0dp"
         />
-    <stroke android:width="2dp" android:color="#f5b342"/>
+    <stroke android:width="2dp" android:color="#673AB7"/>
 </shape>
