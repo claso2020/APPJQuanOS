@@ -22,7 +22,7 @@ public class TableDynamic implements View.OnClickListener {
     private TableRow tableRow;
     private TextView txtCell;
     private Button btnAccion;
-    private ImageButton btnAccionI;
+    private ImageButton btnAccionI,btnAccionII;
     private int indexC;
     private int indexR;
     private boolean multiColor = false;
@@ -72,34 +72,33 @@ public class TableDynamic implements View.OnClickListener {
         for (indexR = 1; indexR <= data.size(); indexR++) {
             newRow();
             for (indexC = 0; indexC < header.length; indexC++) {
-                String[] columns = data.get(indexR - 1);
+                String[] columns = data.get(indexR-1 );
                 info = (indexC < columns.length) ? columns[indexC] : "";
 
-                if (info.equals("Eliminar")) {
+               if (info.equals("Eliminar")) {
+                   btnAccionII = new ImageButton(context);
+                   btnAccionII.setImageResource(R.drawable.borragrilla);
+                    tableRow.addView(btnAccionII, newTableRowParams());
+                   btnAccionII.setId(indexR);
+                   btnAccionII.setOnClickListener(TableDynamic.this); // set TableRow onClickListner
 
-                    btnAccionI = new ImageButton(context);
-                    btnAccionI.setImageResource(R.drawable.borrarpeque);
+                } else if (info.equals("Modificar")) {
+/*                   btnAccionI = new ImageButton(context);
+                    btnAccionI.setImageResource(R.drawable.borragrilla);
                     tableRow.addView(btnAccionI, newTableRowParams());
                     btnAccionI.setId(indexR);
-                    btnAccionI.setOnClickListener(TableDynamic.this); // set TableRow onClickListner
-                    indexC++;
-                } else if (info.equals("EliminarModificar")) {
+                    btnAccionI.setOnClickListener(TableDynamic.this); // set TableRow onClickListner*/
                     btnAccionI = new ImageButton(context);
-                    btnAccionI.setImageResource(R.drawable.borrarpeque);
-                    tableRow.addView(btnAccionI, newTableRowParams());
-                    btnAccionI.setId(indexR);
-                    btnAccionI.setOnClickListener(TableDynamic.this); // set TableRow onClickListner
-                    btnAccionI = new ImageButton(context);
-                    btnAccionI.setImageResource(R.drawable.modificapeque);
+                    btnAccionI.setImageResource(R.drawable.modificagrilla);
                     tableRow.addView(btnAccionI, newTableRowParams());
                     btnAccionI.setId(indexR + 10000);
                     btnAccionI.setOnClickListener(TableDynamic.this); // set TableRow onClickListner
-                    indexC++;
+
                 } else {
                     newCell();
-
                     txtCell.setText(info);
                     tableRow.addView(txtCell, newTableRowParams());
+
                 }
             }
             tableLayout.addView(tableRow);
@@ -114,20 +113,20 @@ public class TableDynamic implements View.OnClickListener {
         newRow();
         while (indexC < header.length) {
             if (item[indexC].equals("Eliminar")) {
-                btnAccionI = new ImageButton(context);
-                btnAccionI.setImageResource(R.drawable.borrarpeque);
-                tableRow.addView(btnAccionI, newTableRowParams());
-                btnAccionI.setId(data.size());
-                btnAccionI.setOnClickListener(TableDynamic.this); // set TableRow onClickListner
+                btnAccionII = new ImageButton(context);
+                btnAccionII.setImageResource(R.drawable.borragrilla);
+                tableRow.addView(btnAccionII, newTableRowParams());
+                btnAccionII.setId(data.size());
+                btnAccionII.setOnClickListener(TableDynamic.this); // set TableRow onClickListner
                 indexC++;
-            } else if (item[indexC].equals("EliminarModificar")) {
-                btnAccionI = new ImageButton(context);
-                btnAccionI.setImageResource(R.drawable.borrarpeque);
+            } else if (item[indexC].equals("Modificar")) {
+                /*btnAccionI = new ImageButton(context);
+                btnAccionI.setImageResource(R.drawable.borragrilla);
                 tableRow.addView(btnAccionI, newTableRowParams());
                 btnAccionI.setId(data.size());
-                btnAccionI.setOnClickListener(TableDynamic.this); // set TableRow onClickListner
+                btnAccionI.setOnClickListener(TableDynamic.this); // set TableRow onClickListner*/
                 btnAccionI = new ImageButton(context);
-                btnAccionI.setImageResource(R.drawable.modificapeque);
+                btnAccionI.setImageResource(R.drawable.modificagrilla);
                 tableRow.addView(btnAccionI, newTableRowParams());
                 btnAccionI.setId(data.size() + 10000);
                 btnAccionI.setOnClickListener(TableDynamic.this); // set TableRow onClickListner
@@ -156,7 +155,7 @@ public class TableDynamic implements View.OnClickListener {
         for (indexR = 1; indexR <= data.size(); indexR++) {
             multiColor = !multiColor;
             for (indexC = 0; indexC < header.length; indexC++) {
-                if (header[indexC].equals("Acción")) {
+                if (header[indexC].equals("Eliminar")||header[indexC].equals("Modificar")) {
 
                 } else {
                     txtCell = getCell(indexR, indexC);
@@ -178,7 +177,7 @@ public class TableDynamic implements View.OnClickListener {
     public void textColorData(int color) {
         for (indexR = 1; indexR <= data.size(); indexR++) {
             for (indexC = 0; indexC < header.length; indexC++) {
-                if (header[indexC].equals("Acción")) {
+                if (header[indexC].equals("Eliminar")||header[indexC].equals("Modificar")) {
 
                 } else {
                     getCell(indexR, indexC).setTextColor(color);
@@ -199,10 +198,19 @@ public class TableDynamic implements View.OnClickListener {
         indexC = 0;
         multiColor = !multiColor;
         while (indexC < header.length) {
-            if (header[indexC].equals("Acción")) {
+
+            if (header[indexC].equals("Eliminar"))
+            {
+                btnAccionII.setBackgroundColor((multiColor) ? firtColor : secondColor);
+
+
+            }
+            else if (header[indexC].equals("Modificar"))
+            {
                 btnAccionI.setBackgroundColor((multiColor) ? firtColor : secondColor);
 
-            } else {
+
+            }else {
                 txtCell = getCell(data.size(), indexC);//Se quito el -1 despues de size
                 txtCell.setBackgroundColor((multiColor) ? firtColor : secondColor);
                 txtCell.setTextColor(textColor);
@@ -217,8 +225,16 @@ public class TableDynamic implements View.OnClickListener {
             indexC = 0;
             //multiColor = !multiColor;
             while (indexC < header.length) {
-                if (header[indexC].equals("Acción")) {
+                if (header[indexC].equals("Eliminar"))
+                {
+                    btnAccionII.setBackgroundColor((multiColor) ? firtColor : secondColor);
+
+
+                }
+                else if (header[indexC].equals("Modificar"))
+                {
                     btnAccionI.setBackgroundColor((multiColor) ? firtColor : secondColor);
+
 
                 } else {
                     txtCell = getCell(indexR, indexC);//Se quito el -1 despues de size
