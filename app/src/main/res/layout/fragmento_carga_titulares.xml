@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Fragmentos.fragmento_cargaTitulares">
@@ -227,10 +228,12 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginBottom="5dp"
+                                android:layout_marginTop="5dp"
+                                android:layout_marginLeft="10dp"
                                 android:background="#90FFFFFF"
                                 android:contentDescription="Guardar teléfono"
                                 android:src="@drawable/guardardatos"/>
-                                <!--android:src="@drawable/guardam48" -->
+
                         </LinearLayout>
                         <ScrollView
                             android:layout_width="match_parent"
@@ -310,6 +313,8 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginBottom="5dp"
+                                android:layout_marginTop="5dp"
+                                android:layout_marginLeft="10dp"
                                 android:background="#90FFFFFF"
                                 android:contentDescription="Guardar dirección"
                                 android:src="@drawable/guardardatos"/>
@@ -354,12 +359,10 @@
                             android:layout_marginTop="10dp"
                             android:hint=" Ingrese mail"
                             android:visibility="visible" />
-
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center_vertical">
-
                             <EditText
                                 android:id="@+id/comentarioMail"
                                 android:layout_width="270dp"
@@ -375,6 +378,8 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginBottom="5dp"
+                                android:layout_marginTop="5dp"
+                                android:layout_marginLeft="10dp"
                                 android:background="#90FFFFFF"
                                 android:contentDescription="Guardar mail"
                                 android:src="@drawable/guardardatos" />
@@ -383,12 +388,13 @@
                         <ScrollView
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:layout_gravity="center_vertical">
-
+                            android:layout_gravity="center_vertical"
+                            >
                             <TableLayout
                                 android:id="@+id/tablaMail"
                                 android:layout_width="match_parent"
-                                android:layout_height="match_parent">
+                                android:layout_height="match_parent"
+                                android:layout_marginTop="5dp">
 
                             </TableLayout>
                         </ScrollView>
@@ -483,13 +489,15 @@
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:gravity="center_vertical">
+                                android:gravity="center_vertical"
+                                android:layout_marginBottom="5dp">
 
                                 <Spinner
                                     android:id="@+id/parentescos"
                                     android:layout_width="270dp"
                                     android:layout_height="30dp"
                                     android:layout_marginTop="10dp"
+                                    android:layout_marginBottom="10dp"
                                     android:background="@drawable/edittex_style" />
 
                                 <ImageButton
@@ -497,6 +505,8 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginBottom="5dp"
+                                    android:layout_marginTop="5dp"
+                                    android:layout_marginLeft="10dp"
                                     android:background="#90FFFFFF"
                                     android:contentDescription="Guardar dirección"
                                     android:src="@drawable/guardardatos" />
@@ -505,14 +515,16 @@
                             <ScrollView
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:layout_gravity="center_vertical">
+                                android:layout_gravity="center_vertical"
+                                >
                                 <HorizontalScrollView
                                     android:layout_width="fill_parent"
                                     android:layout_height="fill_parent">
                                     <TableLayout
                                         android:id="@+id/tablaFamiliares"
                                         android:layout_width="match_parent"
-                                        android:layout_height="match_parent">
+                                        android:layout_height="match_parent"
+                                        >
                                     </TableLayout>
                                 </HorizontalScrollView>
                             </ScrollView>
@@ -591,6 +603,7 @@
                                     android:layout_width="270dp"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="10dp"
+                                    android:layout_marginBottom="10dp"
                                     android:background="@drawable/edittex_style"
                                     android:inputType="number"
                                     android:hint="  SAC/Vacaciones"
@@ -601,7 +614,8 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginBottom="5dp"
-
+                                    android:layout_marginTop="5dp"
+                                    android:layout_marginLeft="10dp"
                                     android:background="#90FFFFFF"
                                     android:contentDescription="Guardar realación laboral"
                                     android:src="@drawable/guardardatos" />
@@ -626,7 +640,57 @@
 
                 </LinearLayout>
 
+                <LinearLayout
+                    android:id="@+id/tab7"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:overScrollMode="always"
+                    android:scrollbarStyle="insideOverlay"
+                    android:scrollbars="vertical">
 
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                            <ImageButton
+                            android:id="@+id/btnGuardaArchivo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginLeft="10dp"
+                            android:background="#90FFFFFF"
+                            android:contentDescription="Guardar archivo"
+                            android:src="@drawable/agregaimagen" />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/lnFotos"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/round_lila_dialog_bg_brown"
+                        android:paddingTop="10dp"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginLeft="70dp"
+                        android:layout_marginRight="20dp">
+                        <com.jama.carouselview.CarouselView
+                            android:id="@+id/carouselView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:carouselOffset="center"
+                            app:enableSnapping="true"
+                            app:indicatorAnimationType="drop"
+                            app:indicatorPadding="5"
+                            app:indicatorRadius="5"
+                            app:indicatorSelectedColor="@color/colorAccent"
+                            app:indicatorUnselectedColor="@color/colorPrimary"
+                            app:resource="@layout/image_carousel_item"
+                            app:scaleOnScroll="false"
+                            app:setAutoPlay="true"
+                            app:setAutoPlayDelay="3000"
+                            app:size="10"
+                            app:spacing="10" />
+                    </LinearLayout>
+                </LinearLayout>
             </FrameLayout>
         </LinearLayout>
 

@@ -227,13 +227,13 @@ public class TableDynamic implements View.OnClickListener {
             while (indexC < header.length) {
                 if (header[indexC].equals("Eliminar"))
                 {
-                    btnAccionII.setBackgroundColor((multiColor) ? firtColor : secondColor);
+                    //btnAccionII.setBackgroundColor((multiColor) ? firtColor : secondColor);
 
 
                 }
                 else if (header[indexC].equals("Modificar"))
                 {
-                    btnAccionI.setBackgroundColor((multiColor) ? firtColor : secondColor);
+                   // btnAccionI.setBackgroundColor((multiColor) ? firtColor : secondColor);
 
 
                 } else {

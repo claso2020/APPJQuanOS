@@ -5,7 +5,10 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -20,21 +23,28 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TabHost;
 import android.widget.TableLayout;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.jama.carouselview.enums.IndicatorAnimationType;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.UUID;
 
 import ar.com.quan.quanos.Fabrica.Dialogos;
 import ar.com.quan.quanos.Interfaces.ErrorResponseHandler;
@@ -45,6 +55,12 @@ import ar.com.quan.quanos.R;
 import ar.com.quan.quanos.TableDynamic;
 import ar.com.quan.quanos.WebService;
 
+import static android.app.Activity.RESULT_CANCELED;
+import static android.app.Activity.RESULT_OK;
+import com.jama.carouselview.CarouselView;
+import com.jama.carouselview.CarouselViewListener;
+import com.jama.carouselview.enums.IndicatorAnimationType;
+import com.jama.carouselview.enums.OffsetType;
 
 
 public class fragmento_cargaTitulares extends Fragment  implements View.OnClickListener{
@@ -53,11 +69,11 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
             , dialogoProvincias, dialogoDepartamentos, dialogoLocalidades, dialogoParentesco;
     private Context contexto;
     FragmentChangeTrigger trigger;
-    String idUsuario, token, idProvinciaSeleccionada, idDepartamentoSeleccionado;
+    String idUsuario, token, idProvinciaSeleccionada, idDepartamentoSeleccionado, nombreImagen="";
 
     EditText apellido, nombre, cuil, fecnac,claveFiscal,cantGrupoFamiliar, telefono, comentarioTelefono,
             direccion, comentarioDireccion, mail, comentarioMail, fecnacFam, apellidoFam, nombreFam, cuilFam
-            ,razonSocial, cuit, fecIngreso, aporteOS, sac;
+            ,razonSocial, cuit, fecIngreso, aporteOS, sac, archivo;
 
     Spinner sexos,nacionalidades, estadosCiviles, planesPrestacionales,
             provincias, departamentos, localidades, sexosFam, nacionalidadesFam, estadosCivilesFam
@@ -83,7 +99,7 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
             ,mapParentesco= new HashMap<>();
 
     ImageButton btnVolverAInicial,btnGuardaTelefono, btnGuardaDireccion, btnGuardaMail,
-            btnGuardaFamiliares, btnGuardaRelLab, btnGuardaTitular ;
+            btnGuardaFamiliares, btnGuardaRelLab, btnGuardaTitular, btnGuardaArchivo ;
     TableLayout tablaTelefono, tablaDireccion, tablaMail, tablaFamiliares, tablaRelLab;
 
     String [] encabezado = {"Teléfonos ","Comentario","Eliminar", "Modificar"}, encabezadoDireccion={"Dirección", "Localidad","Comentario"}
@@ -102,11 +118,20 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
     TableDynamic tablaDinamicaMail;// =new TableDynamic(tablaMail,getContext());
     TableDynamic tablaDinamicaFamiliares;// =new TableDynamic(tablaMail,getContext());
     TableDynamic tablaDinamicaRelLab;// =new TableDynamic(tablaMail,getContext());
+
+    int VALOR_RETORNO = 1;
+    private ArrayList<imagenes> arrayImagenes= new ArrayList<imagenes>();
+    ImageView btnSiguiente;
+    private LinearLayout lnFotos,lnBotonesConfirmar;
+    private CarouselView carouselView;
+
     //endregion
+
 
     public fragmento_cargaTitulares() {
         // Required empty public constructor
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -132,6 +157,9 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
         btnGuardaRelLab.setOnClickListener(this);
         btnGuardaTitular =(ImageButton) view.findViewById(R.id.btnGuardaTitular);
         btnGuardaTitular.setOnClickListener(this);
+        btnGuardaArchivo =(ImageButton) view.findViewById(R.id.btnGuardaArchivo);
+        btnGuardaArchivo.setOnClickListener(this);
+
 
         apellido= (EditText)  view.findViewById(R.id.apellido);
         nombre=(EditText) view.findViewById(R.id.nombre);
@@ -154,6 +182,7 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
         cuit= (EditText) view.findViewById(R.id.cuit);
         aporteOS=(EditText) view.findViewById(R.id.aporteOS);
         sac=(EditText) view.findViewById(R.id.sac);
+        //archivo=(EditText) view.findViewById(R.id.archivo);
 
         fecnacFam.setOnClickListener(this);
         fecnac.setOnClickListener(this);
@@ -181,6 +210,12 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
         tablaDinamicaFamiliares =new TableDynamic(tablaFamiliares,contexto);
         tablaRelLab =view.findViewById(R.id.tablaRelLab);
         tablaDinamicaRelLab =new TableDynamic(tablaRelLab,contexto);
+
+        carouselView = view.findViewById(R.id.carouselView);
+        carouselView.setVisibility(View.GONE);
+        //btnSiguiente=view.findViewById(R.id.btnSiguiente);
+        lnFotos=view.findViewById(R.id.lnFotos);
+        //lnBotonesConfirmar=view.findViewById(R.id.lnBotonesConfirmar);
 
         //endregion
 
@@ -226,6 +261,7 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
         llenaParentescos();
         //endregion
         iniciaTablas();
+        mostrarImagenes();
 
 
     }
@@ -233,6 +269,7 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
         {
             return filas;
         }*/
+
     private void iniciaTablas(){
 
         //telefono=view.findViewById(R.id.telefono);
@@ -311,6 +348,113 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
         }
         if(v.getId()==R.id.btnGuardaTitular){
             agregaTitulares();
+        }
+        if(v.getId()==R.id.btnGuardaArchivo){
+            String a ="";
+
+            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+            intent.setType("*/*");
+            startActivityForResult(Intent.createChooser(intent, "Choose File"), VALOR_RETORNO);
+
+        }
+
+    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_CANCELED) {
+            //Cancelado por el usuario x
+        }
+        if ((resultCode == RESULT_OK ) && (requestCode == VALOR_RETORNO)) {
+            try {
+                nombreImagen = UUID.randomUUID().toString();
+                Uri selectedImage = data.getData();
+                InputStream imageStream = getContext().getContentResolver().openInputStream(selectedImage);
+                imagenes imagenLocal = new imagenes(nombreImagen, BitmapFactory.decodeStream(imageStream));
+                arrayImagenes.add(0,imagenLocal);
+                mostrarImagenes();
+
+            } catch (Exception errorEx) {
+                dialogo = Dialogos.dlgError(getContext(), "Error al agregar la imágen la galería:\n\t" + errorEx.getMessage());
+            }
+        }
+
+    }
+    private void mostrarImagenes(){
+        if (arrayImagenes.size()==0){
+            lnFotos.setVisibility(View.GONE);
+            //lnBotonesConfirmar.setVisibility(View.GONE);
+            return;
+        }
+        carouselView.setSize(arrayImagenes.size());
+        carouselView.setResource(R.layout.center_carousel_item);
+        carouselView.setAutoPlay(false);
+        carouselView.setIndicatorAnimationType(IndicatorAnimationType.THIN_WORM);
+        carouselView.setCarouselOffset(OffsetType.CENTER);
+        carouselView.setCarouselViewListener(new CarouselViewListener() {
+            @Override
+            public void onBindView(View view, int position) {
+                // Example here is setting up a full image carousel
+                final String idImagen=arrayImagenes.get(position).idImagen;
+                ImageView imageView = view.findViewById(R.id.imageView);
+                Glide.with(getContext()).load(arrayImagenes.get(position).imagen).into(imageView);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        eliminarFoto(idImagen);
+                    }
+                });
+            }
+        });
+        // After you finish setting up, show the CarouselView
+        try {
+            carouselView.show();
+        }catch (Exception ex){
+            String a="";
+        }
+        carouselView.setVisibility(View.VISIBLE);
+        lnFotos.setVisibility(View.VISIBLE);
+        //lnBotonesConfirmar.setVisibility(View.VISIBLE);
+    }
+    private void eliminarFoto(String idImagen){
+        ArrayList<imagenes> arrayImagenesLocales= new ArrayList<imagenes>();
+        for (int i = 0; i < arrayImagenes.size(); i++) {
+            if (!arrayImagenes.get(i).idImagen.equals(idImagen)) {
+                imagenes imagenLocal = new imagenes(arrayImagenes.get(i).idImagen,arrayImagenes.get(i).imagen);
+                arrayImagenesLocales.add(imagenLocal);
+            }
+        }
+        arrayImagenes=arrayImagenesLocales;
+        mostrarImagenes();
+    }
+    public class imagenes {
+        private String idImagen;
+        private Bitmap imagen;
+
+        public imagenes(String idImagen, Bitmap imagen) {
+
+            this.idImagen = idImagen;
+            this.imagen = imagen;
+        }
+
+        public String getIdImagen() {
+
+            return idImagen;
+        }
+
+        public void setIdImagen(Bitmap imagen) {
+
+            this.imagen = imagen;
+        }
+
+        public Bitmap getIamgen() {
+
+            return imagen;
+        }
+
+        public void setImagen(Bitmap imagen) {
+
+            this.imagen = imagen;
         }
     }
 
@@ -607,6 +751,12 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
         spec.setContent(R.id.tab6);
         spec.setIndicator("Realción laboral");
         spec.setIndicator("",getResources().getDrawable(R.drawable.rellabpeque));
+        tabs.addTab(spec);
+
+        spec = tabs.newTabSpec("tag7");
+        spec.setContent(R.id.tab7);
+        spec.setIndicator("Adjuntar archivos");
+        spec.setIndicator("",getResources().getDrawable(R.drawable.adjunto));
         tabs.addTab(spec);
 
     }
