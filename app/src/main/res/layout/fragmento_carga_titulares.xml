@@ -654,14 +654,23 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
                             <ImageButton
-                            android:id="@+id/btnGuardaArchivo"
+                            android:id="@+id/btnSeleccionaFoto"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
                             android:layout_marginLeft="10dp"
                             android:background="#90FFFFFF"
-                            android:contentDescription="Guardar archivo"
+                            android:contentDescription="Seleccion foto de galería"
                             android:src="@drawable/agregaimagen" />
+                        <ImageButton
+                            android:id="@+id/btnSeleccionaFotoCamara"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginLeft="10dp"
+                            android:background="#90FFFFFF"
+                            android:contentDescription="Foto desde camara"
+                            android:src="@drawable/imagencamara" />
                     </LinearLayout>
                     <LinearLayout
                         android:id="@+id/lnFotos"
@@ -670,8 +679,8 @@
                         android:background="@drawable/round_lila_dialog_bg_brown"
                         android:paddingTop="10dp"
                         android:layout_marginTop="20dp"
-                        android:layout_marginLeft="70dp"
-                        android:layout_marginRight="20dp">
+                        android:layout_marginLeft="7dp"
+                        android:layout_marginRight="7dp">
                         <com.jama.carouselview.CarouselView
                             android:id="@+id/carouselView"
                             android:layout_width="match_parent"

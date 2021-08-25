@@ -14,6 +14,8 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.os.Environment;
+import android.os.StrictMode;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +39,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -99,7 +102,7 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
             ,mapParentesco= new HashMap<>();
 
     ImageButton btnVolverAInicial,btnGuardaTelefono, btnGuardaDireccion, btnGuardaMail,
-            btnGuardaFamiliares, btnGuardaRelLab, btnGuardaTitular, btnGuardaArchivo ;
+            btnGuardaFamiliares, btnGuardaRelLab, btnGuardaTitular, btnSeleccionaFoto, btnSeleccionaFotoCamara ;
     TableLayout tablaTelefono, tablaDireccion, tablaMail, tablaFamiliares, tablaRelLab;
 
     String [] encabezado = {"Teléfonos ","Comentario","Eliminar", "Modificar"}, encabezadoDireccion={"Dirección", "Localidad","Comentario"}
@@ -157,8 +160,10 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
         btnGuardaRelLab.setOnClickListener(this);
         btnGuardaTitular =(ImageButton) view.findViewById(R.id.btnGuardaTitular);
         btnGuardaTitular.setOnClickListener(this);
-        btnGuardaArchivo =(ImageButton) view.findViewById(R.id.btnGuardaArchivo);
-        btnGuardaArchivo.setOnClickListener(this);
+        btnSeleccionaFoto =(ImageButton) view.findViewById(R.id.btnSeleccionaFoto);
+        btnSeleccionaFoto.setOnClickListener(this);
+        btnSeleccionaFotoCamara =(ImageButton) view.findViewById(R.id.btnSeleccionaFotoCamara);
+        btnSeleccionaFotoCamara.setOnClickListener(this);
 
 
         apellido= (EditText)  view.findViewById(R.id.apellido);
@@ -349,15 +354,26 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
         if(v.getId()==R.id.btnGuardaTitular){
             agregaTitulares();
         }
-        if(v.getId()==R.id.btnGuardaArchivo){
-            String a ="";
+        if(v.getId()==R.id.btnSeleccionaFoto){
 
             Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
             intent.setType("*/*");
-            startActivityForResult(Intent.createChooser(intent, "Choose File"), VALOR_RETORNO);
-
+            startActivityForResult(Intent.createChooser(intent, "Seleccione una imagen"), VALOR_RETORNO);
+        }
+        if(v.getId()==R.id.btnSeleccionaFotoCamara){
+            buscarImagenDeCamara();
+            mostrarImagenes();
         }
 
+
+
+    }
+    private void buscarImagenDeCamara() {
+        nombreImagen = UUID.randomUUID().toString();
+        Intent cameraIntent = new Intent("android.media.action.IMAGE_CAPTURE");
+        StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().build());
+        cameraIntent.putExtra("output", Uri.fromFile(new File(Environment.getExternalStorageDirectory() + File.separator + this.nombreImagen + ".jpg")));
+        startActivityForResult(cameraIntent, 112);
     }
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -376,6 +392,16 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
 
             } catch (Exception errorEx) {
                 dialogo = Dialogos.dlgError(getContext(), "Error al agregar la imágen la galería:\n\t" + errorEx.getMessage());
+            }
+        }
+        else if ((requestCode == 112 && resultCode == -1)) {
+            try {
+                File file = new File(Environment.getExternalStorageDirectory() + File.separator + this.nombreImagen + ".jpg");
+                imagenes imagenLocal = new imagenes(nombreImagen, BitmapFactory.decodeFile(file.getAbsolutePath()));
+                arrayImagenes.add(0, imagenLocal);
+                mostrarImagenes();
+            }catch (Exception errorEx) {
+                dialogo = Dialogos.dlgError(getContext(), "Error al agregar la imágen la cámara:\n\t" + errorEx.getMessage());
             }
         }
 
