@@ -61,7 +61,7 @@ public class WebService {
         String idConexion =globales.getString("idUsuario", null);
 
         String url =contexto.getResources().getString(R.string.srvLocProduccion);
-        url=url+"sistema/modificarDatosTitularesAfiliado";
+        url=url+"sistema/modificarDatosTitularesAfiliado_APP";
         //"40D50A31-6DC9-443F-BA5C-705DC5E96403&soloHabilitados=true";
 
         StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {

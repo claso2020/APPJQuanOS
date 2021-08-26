@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment;
 
 import android.os.Environment;
 import android.os.StrictMode;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,6 +40,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
@@ -600,6 +602,31 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
             e.printStackTrace();
         }
         //endregion
+        //region Archivos adjuntos
+        JSONArray dtArchivosAdjuntos = new JSONArray();
+        try {
+            for (int i = 0; i < arrayImagenes.size(); i++) {
+                ByteArrayOutputStream bao=null;
+                bao = new ByteArrayOutputStream();
+                arrayImagenes.get(i).imagen.compress(Bitmap.CompressFormat.JPEG, 50, bao);
+                byte[] ba = bao.toByteArray();
+                String imgFin=Base64.encodeToString(ba, Base64.NO_WRAP);
+
+                JSONObject jArchivosAdjuntos = new JSONObject();
+                jArchivosAdjuntos.put("idArchivo", arrayImagenes.get(i).idImagen);
+                jArchivosAdjuntos.put("ubicacionArchivo", "LOCAL");
+                jArchivosAdjuntos.put("tipoArchivo", "IMG");
+                jArchivosAdjuntos.put("archivo", imgFin);
+                jArchivosAdjuntos.put("titulo",  "");
+                jArchivosAdjuntos.put("tipoArchivoTitulo",  "");
+                jArchivosAdjuntos.put("extension",  "jpg");
+
+                dtArchivosAdjuntos.put(jArchivosAdjuntos);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        //endregion
 
         WebService.modificarDatosTitulares(getActivity()
                 ,"00000000-0000-0000-0000-000000000000"
@@ -620,7 +647,7 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
                 ,dtFamiliares.toString()
                 ,"REL" //"00000000-0000-0000-0000-000000000000"
                 ,dtRelacionesLaborales.toString()
-                ,"dtArchivosAdjuntos"
+                ,dtArchivosAdjuntos.toString()
                 ,"cuentaVerificacionCUILTitular"
                 ,"noVerificarCuilTitular"
                 ,"origenPeticion"

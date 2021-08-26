@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">QuanOS</string>
-    <string name="srvLocProduccion">http://wstraspasos.quan.com.ar/api/</string>
+    <string name="srvLocProduccion1">http://wstraspasos.quan.com.ar/api/</string>
+    <string name="srvLocProduccion">http://192.168.11.102:53666/api/</string>
+    <string name="srvLocProduccioncasa">http://192.168.100.38:53666/api/</string>
     <string name="msgErrorConexion">Error de conexión, por favor verifique su conexión a internet.</string>
     <string name="msgErrorServidor">Error en el servidor, por favor reintente en unos minutos.</string>
     <string name="msgErrorSinConexion">No hay conexión hacia el servidor, por favor verifique su conexión a internet.</string>
