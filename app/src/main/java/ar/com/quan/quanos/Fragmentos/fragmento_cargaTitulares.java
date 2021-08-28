@@ -68,7 +68,7 @@ import com.jama.carouselview.enums.IndicatorAnimationType;
 import com.jama.carouselview.enums.OffsetType;
 
 
-public class fragmento_cargaTitulares extends Fragment  implements View.OnClickListener{
+public  class fragmento_cargaTitulares extends Fragment  implements View.OnClickListener{
     //region Declaraciones
     private Dialog dialogo, dialogoNac, dialogoEstadoCivil, dialogoplanesPrestacionales
             , dialogoProvincias, dialogoDepartamentos, dialogoLocalidades, dialogoParentesco;
@@ -208,21 +208,52 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
         parentescos=(Spinner) view.findViewById(R.id.parentescos);
 
         tablaTelefono =view.findViewById(R.id.tablaTelefono);
-        tablaDinamicaTelefono =new TableDynamic(tablaTelefono,contexto);
+        tablaDinamicaTelefono =new TableDynamic(tablaTelefono,contexto,"tablaTelefono"){
+            @Override
+            public void onClick(View v) {
+                int clicked_id = v.getId();
+                int puntero = clicked_id - 1;
+                String a = String.valueOf(clicked_id);
+                if (clicked_id < 10000) { //Botón de eliminar
+                    data.remove(puntero);
+                    tableLayout.removeAllViews();
+                    this.addHeader(header);
+                    this.addData(data);
+                    this.backgroundHeader(Color.parseColor("#819FF7"));
+                    this.textColorData(Color.WHITE);
+                    this.textColorHeader(Color.BLUE);
+                    this.reColoringAll();
+                }
+                if (clicked_id > 10000) { //Botón modificar
+                    String[] dataSeleccionada;
+                    dataSeleccionada=data.get(puntero-10000); //Guardo los datos seleccionados
+                    data.remove(puntero-10000);
+                    tableLayout.removeAllViews();
+                    this.addHeader(header);
+                    this.addData(data);
+                    this.backgroundHeader(Color.parseColor("#819FF7"));
+                    this.textColorData(Color.WHITE);
+                    this.textColorHeader(Color.BLUE);
+                    this.reColoringAll();
+                    //despues de eliminarlos los pongo en los EditText
+                    llenadatosModificaTelefono(dataSeleccionada);
+                }
+            }
+        };
+
         tablaDireccion =view.findViewById(R.id.tablaDireccion);
-        tablaDinamicaDomicilio =new TableDynamic(tablaDireccion,contexto);
+        tablaDinamicaDomicilio =new TableDynamic(tablaDireccion,contexto,"tablaDireccion");
         tablaMail =view.findViewById(R.id.tablaMail);
-        tablaDinamicaMail =new TableDynamic(tablaMail,contexto);
+        tablaDinamicaMail =new TableDynamic(tablaMail,contexto,"tablaMail");
         tablaFamiliares =view.findViewById(R.id.tablaFamiliares);
-        tablaDinamicaFamiliares =new TableDynamic(tablaFamiliares,contexto);
+        tablaDinamicaFamiliares =new TableDynamic(tablaFamiliares,contexto,"tablaFamiliares");
         tablaRelLab =view.findViewById(R.id.tablaRelLab);
-        tablaDinamicaRelLab =new TableDynamic(tablaRelLab,contexto);
+        tablaDinamicaRelLab =new TableDynamic(tablaRelLab,contexto, "tablaRelLab");
 
         carouselView = view.findViewById(R.id.carouselView);
         carouselView.setVisibility(View.GONE);
-        //btnSiguiente=view.findViewById(R.id.btnSiguiente);
         lnFotos=view.findViewById(R.id.lnFotos);
-        //lnBotonesConfirmar=view.findViewById(R.id.lnBotonesConfirmar);
+
 
         //endregion
 
@@ -268,25 +299,30 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
         llenaParentescos();
         //endregion
         iniciaTablas();
+///        tablaDinamicaTelefono.btnAccionII.setOnClickListener(this);
         mostrarImagenes();
 
 
     }
-    /*    private ArrayList<String[]> buscaDatosTablas()
-        {
-            return filas;
-        }*/
-
+    //region tratamiento de las acciones de los botones de las grillas
+    public void llenadatosModificaTelefono(String[] datosSeleccionados){
+        String[] datosS=datosSeleccionados;
+        this.telefono.setText(datosS[0].toString());
+        comentarioTelefono.setText(datosS[1].toString());
+    }
+    //endregion
     private void iniciaTablas(){
 
         //telefono=view.findViewById(R.id.telefono);
 
         tablaDinamicaTelefono.addHeader(encabezado);
+
         tablaDinamicaTelefono.addData(filasTelefono); //le paso filas vacia sino ir a buscaDatosTablas()
         tablaDinamicaTelefono.backgroundHeader(Color.parseColor("#819FF7"));
         tablaDinamicaTelefono.backgroundData(Color.parseColor("#95cbf5"), Color.parseColor("#68879e"));
         tablaDinamicaTelefono.lineColor(Color.BLACK);
         tablaDinamicaTelefono.textColorData(Color.WHITE);
+
 
         tablaDinamicaDomicilio.addHeader(encabezadoDireccion);
         tablaDinamicaDomicilio.addData(filasDomicilio);
@@ -320,7 +356,6 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
         tablaDinamicaRelLab.textColorData(Color.WHITE);
         tablaDinamicaRelLab.textColorHeader(Color.BLUE);
     }
-
     @Override
     public void onClick(View v) {
         if(v.getId()==R.id.btnVolverAInicial){
@@ -370,6 +405,7 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
 
 
     }
+    //region Imagenes
     private void buscarImagenDeCamara() {
         nombreImagen = UUID.randomUUID().toString();
         Intent cameraIntent = new Intent("android.media.action.IMAGE_CAPTURE");
@@ -485,7 +521,7 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
             this.imagen = imagen;
         }
     }
-
+    //endregion
     private void agregaTitulares() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
         Date date = new Date();
@@ -520,7 +556,6 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
             e.printStackTrace();
         }
         //endregion
-
         //region Datos teléfono
         JSONArray dtContactosTelefonos = new JSONArray();
         try {
@@ -538,7 +573,6 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
             e.printStackTrace();
         }
         //endregion
-
         //region Domilicios
         JSONArray dtContactosDomicilio = new JSONArray();
         try {
@@ -581,7 +615,6 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
             e.printStackTrace();
         }
         //endregion
-
         //region Relación laboral
             JSONArray dtRelacionesLaborales = new JSONArray();
         try {
@@ -1168,7 +1201,7 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
         }
         return null;
     }
-    //Selector de fechas
+    //region Selector de fechas
     private void showDatePickerDialog(EditText fechaDestino ) {
         DatePickerFragment newFragment =
                 DatePickerFragment.newInstance(new DatePickerDialog.OnDateSetListener() {
@@ -1185,7 +1218,8 @@ public class fragmento_cargaTitulares extends Fragment  implements View.OnClickL
     private String twoDigits(int n) {
         return (n<=9) ? ("0"+n) : String.valueOf(n);
     }
-    //Fin selector de fechas
+    //endregion
+
     public void setTrigger(FragmentChangeTrigger trigger) {
         this.trigger = trigger;
     }

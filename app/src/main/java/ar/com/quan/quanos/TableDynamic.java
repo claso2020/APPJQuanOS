@@ -14,15 +14,18 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import ar.com.quan.quanos.Fragmentos.fragmento_cargaTitulares;
+
 public class TableDynamic implements View.OnClickListener {
-    private TableLayout tableLayout;
+    public TableLayout tableLayout;
     private Context context;
-    private String[] header;
-    private ArrayList<String[]> data;
+    private String ambito;
+    public String[] header;
+    public ArrayList<String[]> data;
     private TableRow tableRow;
     private TextView txtCell;
     private Button btnAccion;
-    private ImageButton btnAccionI,btnAccionII;
+    public ImageButton btnAccionI,btnAccionII;
     private int indexC;
     private int indexR;
     private boolean multiColor = false;
@@ -30,10 +33,12 @@ public class TableDynamic implements View.OnClickListener {
     int secondColor;
     int textColor;
     private TableRow filaEliminar;
+    String[] dataSeleccionada;
 
-    public TableDynamic(TableLayout tableLayout, Context context) {
+    public TableDynamic(TableLayout tableLayout, Context context,String ambito) {
         this.tableLayout = tableLayout;
         this.context = context;
+        this.ambito=ambito;
     }
 
     public void addHeader(String[] header) {
@@ -280,9 +285,14 @@ public class TableDynamic implements View.OnClickListener {
             this.textColorHeader(Color.BLUE);
             this.reColoringAll();
             //Toast.makeText(context, "boton apretado "+ clicked_id +" puntero "+puntero, Toast.LENGTH_LONG).show();
+       }
+        if (clicked_id > 10000) {
+            //this.dataSeleccionada= new String[];
+            this.dataSeleccionada=data.get(puntero-10000);
+
+            //fragmento_cargaTitulares.seleccionodato(ambito,dataSeleccionada );
 
         }
-
     }
 
 
