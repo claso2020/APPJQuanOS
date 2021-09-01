@@ -107,7 +107,7 @@ public  class fragmento_cargaTitulares extends Fragment  implements View.OnClick
             btnGuardaFamiliares, btnGuardaRelLab, btnGuardaTitular, btnSeleccionaFoto, btnSeleccionaFotoCamara ;
     TableLayout tablaTelefono, tablaDireccion, tablaMail, tablaFamiliares, tablaRelLab;
 
-    String [] encabezado = {"Teléfonos ","Comentario","Eliminar", "Modificar"}, encabezadoDireccion={"Dirección", "Localidad","Comentario"}
+    String [] encabezado = {"Teléfonos ","Comentario","Eliminar", "Modificar"}, encabezadoDireccion={"Dirección", "Localidad","Comentario","Eliminar", "Modificar"}
             , encabezadoMail={"Mail", "Comentario"}
             , encabezadoFamiliares={"Apellido", "nombre","Fecha Nac.","CUIL","Sexo","Nacionalidad","EstadoCivil", "Parentesco"}
             ,encabezadoRelLab={"Razón Social", "Cuit", "Fecha ingreso", "Aporte OS", "SAC"};
@@ -124,7 +124,7 @@ public  class fragmento_cargaTitulares extends Fragment  implements View.OnClick
     TableDynamic tablaDinamicaFamiliares;// =new TableDynamic(tablaMail,getContext());
     TableDynamic tablaDinamicaRelLab;// =new TableDynamic(tablaMail,getContext());
 
-    int VALOR_RETORNO = 1;
+    int VALOR_RETORNO = 1, noActualizarDepartamento=0, noActualizarLocalidad=0;
     private ArrayList<imagenes> arrayImagenes= new ArrayList<imagenes>();
     ImageView btnSiguiente;
     private LinearLayout lnFotos,lnBotonesConfirmar;
@@ -214,35 +214,32 @@ public  class fragmento_cargaTitulares extends Fragment  implements View.OnClick
                 int clicked_id = v.getId();
                 int puntero = clicked_id - 1;
                 String a = String.valueOf(clicked_id);
-                if (clicked_id < 10000) { //Botón de eliminar
-                    data.remove(puntero);
-                    tableLayout.removeAllViews();
-                    this.addHeader(header);
-                    this.addData(data);
-                    this.backgroundHeader(Color.parseColor("#819FF7"));
-                    this.textColorData(Color.WHITE);
-                    this.textColorHeader(Color.BLUE);
-                    this.reColoringAll();
-                }
                 if (clicked_id > 10000) { //Botón modificar
                     String[] dataSeleccionada;
                     dataSeleccionada=data.get(puntero-10000); //Guardo los datos seleccionados
-                    data.remove(puntero-10000);
-                    tableLayout.removeAllViews();
-                    this.addHeader(header);
-                    this.addData(data);
-                    this.backgroundHeader(Color.parseColor("#819FF7"));
-                    this.textColorData(Color.WHITE);
-                    this.textColorHeader(Color.BLUE);
-                    this.reColoringAll();
-                    //despues de eliminarlos los pongo en los EditText
+                    puntero=puntero-10000;
                     llenadatosModificaTelefono(dataSeleccionada);
                 }
+                tablaDinamicaTelefono.BorraFila(puntero);
             }
         };
 
         tablaDireccion =view.findViewById(R.id.tablaDireccion);
-        tablaDinamicaDomicilio =new TableDynamic(tablaDireccion,contexto,"tablaDireccion");
+        tablaDinamicaDomicilio =new TableDynamic(tablaDireccion,contexto,"tablaDireccion"){
+            @Override
+            public void onClick(View v) {
+                int clicked_id = v.getId();
+                int puntero = clicked_id - 1;
+                String a = String.valueOf(clicked_id);
+                if (clicked_id > 10000) { //Botón modificar
+                    String[] dataSeleccionada;
+                    dataSeleccionada=data.get(puntero-10000); //Guardo los datos seleccionados
+                    puntero=puntero-10000;
+                    llenadatosModificaDomicilio(dataSeleccionada);
+                }
+                tablaDinamicaDomicilio.BorraFila(puntero);
+            }
+        };
         tablaMail =view.findViewById(R.id.tablaMail);
         tablaDinamicaMail =new TableDynamic(tablaMail,contexto,"tablaMail");
         tablaFamiliares =view.findViewById(R.id.tablaFamiliares);
@@ -264,7 +261,14 @@ public  class fragmento_cargaTitulares extends Fragment  implements View.OnClick
                 {
                     String sel = listaDepartamentos.get(i).toString();
                     idDepartamentoSeleccionado= getKey(mapDepartamentos,sel);
-                    llenaLocalidades(idDepartamentoSeleccionado);
+                    if (noActualizarLocalidad==0)
+                    {
+                        llenaLocalidades(idDepartamentoSeleccionado);
+                    }
+                    else
+                    {
+                        noActualizarLocalidad=0;
+                    }
                 }
             }
             @Override
@@ -279,7 +283,14 @@ public  class fragmento_cargaTitulares extends Fragment  implements View.OnClick
                 {
                     String sel = listaProvincias.get(i).toString();
                     idProvinciaSeleccionada= getKey(mapProvincias,sel);
-                    llenaDepartamentos(idProvinciaSeleccionada);
+                    if (noActualizarDepartamento==0)
+                    {
+                        llenaDepartamentos(idProvinciaSeleccionada);
+                    }
+                    else
+                    {
+                        noActualizarDepartamento=0;
+                    }
                 }
 
             }
@@ -309,6 +320,19 @@ public  class fragmento_cargaTitulares extends Fragment  implements View.OnClick
         String[] datosS=datosSeleccionados;
         this.telefono.setText(datosS[0].toString());
         comentarioTelefono.setText(datosS[1].toString());
+    }
+
+    public void llenadatosModificaDomicilio(String[] datosSeleccionados){
+        String[] datosS=datosSeleccionados;
+        this.direccion.setText(datosS[0].toString());
+        this.comentarioDireccion.setText(datosS[2].toString());
+        noActualizarLocalidad=1;
+        noActualizarDepartamento=1;
+
+        this.provincias.setSelection(adapterProvincias.getPosition(datosS[6].toString()));
+        this.departamentos.setSelection(adapterDepartamentos.getPosition(datosS[5].toString()));
+        this.localidades.setSelection(adapterLocalidades.getPosition(datosS[1].toString()));
+        //aqui poner los datos en los spinners
     }
     //endregion
     private void iniciaTablas(){
@@ -773,7 +797,8 @@ public  class fragmento_cargaTitulares extends Fragment  implements View.OnClick
     }
     private void agregaDireccion(){
         String[]itemDireccion = new String[]{direccion.getText().toString(), localidades.getSelectedItem().toString()
-                , comentarioDireccion.getText().toString()};
+                , comentarioDireccion.getText().toString(), "Eliminar","Modificar"
+                ,departamentos.getSelectedItem().toString(), provincias.getSelectedItem().toString()};
         if (direccion.getText().toString().equals(""))
         {
             Toast.makeText(contexto, "Debe ingresar una dirección", Toast.LENGTH_LONG).show();

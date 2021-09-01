@@ -268,6 +268,16 @@ public class TableDynamic implements View.OnClickListener {
         params.weight = 1;
         return params;
     }
+    public void BorraFila (int puntero){
+        data.remove(puntero);
+        tableLayout.removeAllViews();
+        this.addHeader(header);
+        this.addData(data);
+        this.backgroundHeader(Color.parseColor("#819FF7"));
+        this.textColorData(Color.WHITE);
+        this.textColorHeader(Color.BLUE);
+        this.reColoringAll();
+    }
 
     @Override
     public void onClick(View v) {
