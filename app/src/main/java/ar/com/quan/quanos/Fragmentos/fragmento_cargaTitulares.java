@@ -66,8 +66,6 @@ import com.jama.carouselview.CarouselView;
 import com.jama.carouselview.CarouselViewListener;
 import com.jama.carouselview.enums.IndicatorAnimationType;
 import com.jama.carouselview.enums.OffsetType;
-
-
 public  class fragmento_cargaTitulares extends Fragment  implements View.OnClickListener{
     //region Declaraciones
     private Dialog dialogo, dialogoNac, dialogoEstadoCivil, dialogoplanesPrestacionales
@@ -251,9 +249,7 @@ public  class fragmento_cargaTitulares extends Fragment  implements View.OnClick
         carouselView.setVisibility(View.GONE);
         lnFotos=view.findViewById(R.id.lnFotos);
 
-
         //endregion
-
         departamentos.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View v, int i, long l) {
@@ -263,7 +259,7 @@ public  class fragmento_cargaTitulares extends Fragment  implements View.OnClick
                     idDepartamentoSeleccionado= getKey(mapDepartamentos,sel);
                     if (noActualizarLocalidad==0)
                     {
-                        llenaLocalidades(idDepartamentoSeleccionado);
+                        llenaLocalidades(idDepartamentoSeleccionado,"");
                     }
                     else
                     {
@@ -285,7 +281,7 @@ public  class fragmento_cargaTitulares extends Fragment  implements View.OnClick
                     idProvinciaSeleccionada= getKey(mapProvincias,sel);
                     if (noActualizarDepartamento==0)
                     {
-                        llenaDepartamentos(idProvinciaSeleccionada);
+                        llenaDepartamentos(idProvinciaSeleccionada,"");
                     }
                     else
                     {
@@ -299,7 +295,7 @@ public  class fragmento_cargaTitulares extends Fragment  implements View.OnClick
                 Toast.makeText(contexto,"No selection",Toast.LENGTH_LONG).show();
             }
         });
-
+        adapterLocalidades = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, listaLocalidades);
         creaTabs ();
         //region Llena spinners
         llenaSexos();
@@ -312,8 +308,6 @@ public  class fragmento_cargaTitulares extends Fragment  implements View.OnClick
         iniciaTablas();
 ///        tablaDinamicaTelefono.btnAccionII.setOnClickListener(this);
         mostrarImagenes();
-
-
     }
     //region tratamiento de las acciones de los botones de las grillas
     public void llenadatosModificaTelefono(String[] datosSeleccionados){
@@ -321,17 +315,41 @@ public  class fragmento_cargaTitulares extends Fragment  implements View.OnClick
         this.telefono.setText(datosS[0].toString());
         comentarioTelefono.setText(datosS[1].toString());
     }
-
     public void llenadatosModificaDomicilio(String[] datosSeleccionados){
         String[] datosS=datosSeleccionados;
         this.direccion.setText(datosS[0].toString());
         this.comentarioDireccion.setText(datosS[2].toString());
         noActualizarLocalidad=1;
         noActualizarDepartamento=1;
-
         this.provincias.setSelection(adapterProvincias.getPosition(datosS[6].toString()));
-        this.departamentos.setSelection(adapterDepartamentos.getPosition(datosS[5].toString()));
-        this.localidades.setSelection(adapterLocalidades.getPosition(datosS[1].toString()));
+        if(adapterDepartamentos.getPosition(datosS[5].toString())==-1)
+        {
+            //noActualizarDepartamento=0;
+            String sel = datosS[6].toString();
+            idProvinciaSeleccionada= getKey(mapProvincias,sel);
+            llenaDepartamentos(idProvinciaSeleccionada, datosS[6].toString());
+
+        }
+        else
+        {
+            this.departamentos.setSelection(adapterDepartamentos.getPosition(datosS[5].toString()));
+        }
+
+
+        if (adapterLocalidades.getPosition(datosS[1].toString())==-1)
+        {
+            //noActualizarLocalidad=0;
+            ////ver porque no esta funcionando el
+            String sel = datosS[5].toString();
+            idDepartamentoSeleccionado= getKey(mapDepartamentos,sel);
+            llenaLocalidades(idDepartamentoSeleccionado, datosS[1].toString());
+            //this.localidades.setSelection(adapterLocalidades.getPosition(datosS[1].toString()));
+        }
+        else
+        {
+            this.localidades.setSelection(adapterLocalidades.getPosition(datosS[1].toString()));
+        }
+
         //aqui poner los datos en los spinners
     }
     //endregion
@@ -873,13 +891,14 @@ public  class fragmento_cargaTitulares extends Fragment  implements View.OnClick
     }
     //endregion
     //region LLenado de spinners
-    public void llenaLocalidades(String idDepartamentoSeleccionado ){
+    public void llenaLocalidades(String idDepartamentoSeleccionado, String selecionado ){
         dialogoLocalidades = Dialogos.dlgBuscando(getActivity(),"Recuperando Localidades");
         WebService.leerLocalidades(getActivity(), idDepartamentoSeleccionado
                 , new SuccessResponseHandler<JSONObject>() {
                     @Override
                     public void onSuccess(JSONObject resultado) {
                         dialogoLocalidades.dismiss();
+                        listaLocalidades.clear();
                         try {
                             JSONObject completo =new JSONObject(resultado.getString("resultado"));
                             String datos =completo.getString("localidades");
@@ -893,11 +912,15 @@ public  class fragmento_cargaTitulares extends Fragment  implements View.OnClick
                                 listaLocalidades.add(i+1,nombre);
                                 mapLocalidades.put(id,nombre);
                             }
-                            adapterLocalidades = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, listaLocalidades);
+                            //adapterLocalidades = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, listaLocalidades);
                             adapterLocalidades.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                             localidades.setAdapter(adapterLocalidades);
                             dialogoLocalidades.dismiss();
                             //String a = getKey(mapSexos,"Femenino");
+                            if(selecionado!="")
+                            {
+                                localidades.setSelection(adapterLocalidades.getPosition(selecionado));
+                            }
 
                         } catch (Exception errEx) {
                             dialogoLocalidades = Dialogos.dlgError(getActivity(),errEx.getMessage());
@@ -911,7 +934,7 @@ public  class fragmento_cargaTitulares extends Fragment  implements View.OnClick
                     }
                 });
     }
-    public void llenaDepartamentos(String idProvinciaSeleccionada ){
+    public void llenaDepartamentos(String idProvinciaSeleccionada, String provSeleccionada ){
         dialogoDepartamentos = Dialogos.dlgBuscando(getActivity(),"Recuperando Departamentos");
         WebService.leerDepartamentos(getActivity(), idProvinciaSeleccionada
                 , new SuccessResponseHandler<JSONObject>() {
@@ -936,6 +959,10 @@ public  class fragmento_cargaTitulares extends Fragment  implements View.OnClick
                             departamentos.setAdapter(adapterDepartamentos);
                             dialogoDepartamentos.dismiss();
                             //String a = getKey(mapSexos,"Femenino");
+                            if (provSeleccionada!="")
+                            {
+                                departamentos.setSelection(adapterDepartamentos.getPosition(provSeleccionada));
+                            }
 
                         } catch (Exception errEx) {
                             dialogoDepartamentos = Dialogos.dlgError(getActivity(),errEx.getMessage());
