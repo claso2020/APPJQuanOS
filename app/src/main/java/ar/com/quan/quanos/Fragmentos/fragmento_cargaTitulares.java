@@ -13,6 +13,7 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Environment;
 import android.os.StrictMode;
@@ -52,6 +53,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import ar.com.quan.quanos.Fabrica.Dialogos;
+import ar.com.quan.quanos.Fabrica.datosCompartidos;
 import ar.com.quan.quanos.Interfaces.ErrorResponseHandler;
 import ar.com.quan.quanos.Interfaces.FragmentChangeTrigger;
 import ar.com.quan.quanos.Interfaces.SuccessResponseHandler;
@@ -68,11 +70,21 @@ import com.jama.carouselview.enums.IndicatorAnimationType;
 import com.jama.carouselview.enums.OffsetType;
 public  class fragmento_cargaTitulares extends Fragment  implements View.OnClickListener{
     //region Declaraciones
+    SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+    Date date = new Date();
+    String fechaCargaGeneral = dateFormat.format(date);
+
     private Dialog dialogo, dialogoNac, dialogoEstadoCivil, dialogoplanesPrestacionales
-            , dialogoProvincias, dialogoDepartamentos, dialogoLocalidades, dialogoParentesco;
+            , dialogoProvincias, dialogoDepartamentos, dialogoLocalidades, dialogoParentesco,
+        dialogoCargaDatosMod;
     private Context contexto;
     FragmentChangeTrigger trigger;
-    String idUsuario, token, idProvinciaSeleccionada, idDepartamentoSeleccionado, nombreImagen="";
+    String idUsuario, token, idProvinciaSeleccionada, idDepartamentoSeleccionado, nombreImagen="",
+             idSexoSeleccionado
+            ,idMail="00000000-0000-0000-0000-000000000000", fechaCargaMail=fechaCargaGeneral
+            ,idDomicilio="00000000-0000-0000-0000-000000000000", fechaCargaDomicilio=fechaCargaGeneral
+            ,idTitular="00000000-0000-0000-0000-000000000000"
+            ,idTelefono="00000000-0000-0000-0000-000000000000", fechaCargaTelefono=fechaCargaGeneral;
 
     EditText apellido, nombre, cuil, fecnac,claveFiscal,cantGrupoFamiliar, telefono, comentarioTelefono,
             direccion, comentarioDireccion, mail, comentarioMail, fecnacFam, apellidoFam, nombreFam, cuilFam
@@ -82,12 +94,12 @@ public  class fragmento_cargaTitulares extends Fragment  implements View.OnClick
             provincias, departamentos, localidades, sexosFam, nacionalidadesFam, estadosCivilesFam
             ,parentescos;
 
-    ArrayList<String> listaSexos= new ArrayList<String>(),listaNacionalidades= new ArrayList<String>()
-            ,listaEstadosCiviles= new ArrayList<String>(),listaPlanesPrestacionales= new ArrayList<String>()
-            ,listaProvincias= new ArrayList<String>(),listaDepartamentos= new ArrayList<String>()
-            ,listaLocalidades= new ArrayList<String>(),listaSexosFam= new ArrayList<String>()
-            ,listaNacionalidadesFam= new ArrayList<String>(),listaEstadosCivilesFam= new ArrayList<String>()
-            ,listaparentesco= new ArrayList<String>();
+    ArrayList<String> listaSexos= new ArrayList<>(),listaNacionalidades= new ArrayList<>()
+            ,listaEstadosCiviles= new ArrayList<>(),listaPlanesPrestacionales= new ArrayList<>()
+            ,listaProvincias= new ArrayList<>(),listaDepartamentos= new ArrayList<>()
+            ,listaLocalidades= new ArrayList<>(),listaSexosFam= new ArrayList<>()
+            ,listaNacionalidadesFam= new ArrayList<>(),listaEstadosCivilesFam= new ArrayList<>()
+            ,listaparentesco= new ArrayList<>();
 
     ArrayAdapter<String> adapterSexos,adapterNacionalidades, adapterEstadosCiviles
             ,adapterplanesPrestacionales,adapterProvincias,adapterDepartamentos
@@ -105,10 +117,11 @@ public  class fragmento_cargaTitulares extends Fragment  implements View.OnClick
             btnGuardaFamiliares, btnGuardaRelLab, btnGuardaTitular, btnSeleccionaFoto, btnSeleccionaFotoCamara ;
     TableLayout tablaTelefono, tablaDireccion, tablaMail, tablaFamiliares, tablaRelLab;
 
-    String [] encabezado = {"Teléfonos ","Comentario","Eliminar", "Modificar"}, encabezadoDireccion={"Dirección", "Localidad","Comentario","Eliminar", "Modificar"}
-            , encabezadoMail={"Mail", "Comentario"}
-            , encabezadoFamiliares={"Apellido", "nombre","Fecha Nac.","CUIL","Sexo","Nacionalidad","EstadoCivil", "Parentesco"}
-            ,encabezadoRelLab={"Razón Social", "Cuit", "Fecha ingreso", "Aporte OS", "SAC"};
+    String [] encabezado = {"Cargado","Teléfonos ","Comentario","Eliminar", "Modificar"}
+            ,encabezadoDireccion={"Cargado","Dirección", "Localidad","Comentario","Eliminar", "Modificar"}
+            , encabezadoMail={"Cargado","Mail", "Comentario","Eliminar", "Modificar"}
+            , encabezadoFamiliares={"Apellido", "nombre","Fecha Nac.","CUIL","Sexo","Nacionalidad","EstadoCivil", "Parentesco","Eliminar", "Modificar"}
+            ,encabezadoRelLab={"Razón Social", "Cuit", "Fecha ingreso", "Aporte OS", "SAC", "Eliminar", "Modificar"};
 
     ArrayList<String[]> filasTelefono = new ArrayList<String[]>();
     ArrayList<String[]> filasDomicilio = new ArrayList<String[]>();
@@ -127,6 +140,7 @@ public  class fragmento_cargaTitulares extends Fragment  implements View.OnClick
     ImageView btnSiguiente;
     private LinearLayout lnFotos,lnBotonesConfirmar;
     private CarouselView carouselView;
+    private datosCompartidos dtCompartidos;
 
     //endregion
 
@@ -238,12 +252,57 @@ public  class fragmento_cargaTitulares extends Fragment  implements View.OnClick
                 tablaDinamicaDomicilio.BorraFila(puntero);
             }
         };
+
         tablaMail =view.findViewById(R.id.tablaMail);
-        tablaDinamicaMail =new TableDynamic(tablaMail,contexto,"tablaMail");
+        tablaDinamicaMail =new TableDynamic(tablaMail,contexto,"tablaMail"){
+            @Override
+            public void onClick(View v) {
+                int clicked_id = v.getId();
+                int puntero = clicked_id - 1;
+                String a = String.valueOf(clicked_id);
+                if (clicked_id > 10000) { //Botón modificar
+                    String[] dataSeleccionada;
+                    dataSeleccionada=data.get(puntero-10000); //Guardo los datos seleccionados
+                    puntero=puntero-10000;
+                    llenadatosModificaMail(dataSeleccionada);
+                }
+                tablaDinamicaMail.BorraFila(puntero);
+            }
+        };
+
         tablaFamiliares =view.findViewById(R.id.tablaFamiliares);
-        tablaDinamicaFamiliares =new TableDynamic(tablaFamiliares,contexto,"tablaFamiliares");
+        tablaDinamicaFamiliares =new TableDynamic(tablaFamiliares,contexto,"tablaFamiliares"){
+            @Override
+            public void onClick(View v) {
+                int clicked_id = v.getId();
+                int puntero = clicked_id - 1;
+                String a = String.valueOf(clicked_id);
+                if (clicked_id > 10000) { //Botón modificar
+                    String[] dataSeleccionada;
+                    dataSeleccionada=data.get(puntero-10000); //Guardo los datos seleccionados
+                    puntero=puntero-10000;
+                    llenadatosModificaFam(dataSeleccionada);
+                }
+                tablaDinamicaFamiliares.BorraFila(puntero);
+            }
+        };
+
         tablaRelLab =view.findViewById(R.id.tablaRelLab);
-        tablaDinamicaRelLab =new TableDynamic(tablaRelLab,contexto, "tablaRelLab");
+        tablaDinamicaRelLab =new TableDynamic(tablaRelLab,contexto, "tablaRelLab"){
+            @Override
+            public void onClick(View v) {
+                int clicked_id = v.getId();
+                int puntero = clicked_id - 1;
+                String a = String.valueOf(clicked_id);
+                if (clicked_id > 10000) { //Botón modificar
+                    String[] dataSeleccionada;
+                    dataSeleccionada=data.get(puntero-10000); //Guardo los datos seleccionados
+                    puntero=puntero-10000;
+                    llenadatosModificaRelLab(dataSeleccionada);
+                }
+                tablaDinamicaRelLab.BorraFila(puntero);
+            }
+        };
 
         carouselView = view.findViewById(R.id.carouselView);
         carouselView.setVisibility(View.GONE);
@@ -281,7 +340,7 @@ public  class fragmento_cargaTitulares extends Fragment  implements View.OnClick
                     idProvinciaSeleccionada= getKey(mapProvincias,sel);
                     if (noActualizarDepartamento==0)
                     {
-                        llenaDepartamentos(idProvinciaSeleccionada,"");
+                        llenaDepartamentos(idProvinciaSeleccionada,"","");
                     }
                     else
                     {
@@ -297,68 +356,279 @@ public  class fragmento_cargaTitulares extends Fragment  implements View.OnClick
         });
         adapterLocalidades = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, listaLocalidades);
         creaTabs ();
-        //region Llena spinners
-        llenaSexos();
-        llenaNacionalidades();
-        llenaEstadoCiviles();
-        llenaPlanesPrestacionales();
-        llenaProvincias();
-        llenaParentescos();
-        //endregion
         iniciaTablas();
-///        tablaDinamicaTelefono.btnAccionII.setOnClickListener(this);
         mostrarImagenes();
+
+        llenaProvincias("","","");
+        llenaParentescos();
+        dtCompartidos= new ViewModelProvider(getActivity()).get(datosCompartidos.class);
+        if (dtCompartidos.getIdGeneral().getValue()!=null )
+        {
+            idTitular=dtCompartidos.getIdGeneral().getValue();
+            leerDatosTitulares(idTitular);
+            dtCompartidos.setIdGeneral(null);
+        }
+        else
+        {
+
+            //region Llena spinners
+            llenaSexos("");
+            llenaNacionalidades("");
+            llenaEstadoCiviles("");
+            llenaPlanesPrestacionales("");
+
+            //endregion
+
+
+
+        }
+
+
+
+    }
+    public void leerDatosTitulares(String idTitular){
+
+        dialogoCargaDatosMod = Dialogos.dlgBuscando(getActivity(),"Recuperando datos del titular seleccionado");
+        WebService.leerTitularDato(getActivity(), idTitular
+                , new SuccessResponseHandler<JSONObject>() {
+                    @Override
+                    public void onSuccess(JSONObject resultado) {
+                        dialogoCargaDatosMod.dismiss();
+                        try {
+                            JSONObject completo =new JSONObject(resultado.getString("resultado"));
+                            JSONObject datos =new JSONObject(completo.getString("msgError"));
+                            apellido.setText(datos.getString("apellido"));
+                            nombre.setText(datos.getString("nombres"));
+                            cuil.setText(datos.getString("cuil"));
+                            fecnac.setText(datos.getString("fechaNacimiento"));
+
+                            String sel = datos.getString("nombreSexoActual");
+                            llenaSexos(sel);
+                            //sexos.setSelection(adapterSexos.getPosition(sel));
+                            sel = datos.getString("nombreNacionalidadActual");
+                            llenaNacionalidades(sel);
+                            //nacionalidades.setSelection(adapterNacionalidades.getPosition(sel));
+                            sel = datos.getString("nombreEstadoCivilActual");
+                            llenaEstadoCiviles(sel);
+                            //estadosCiviles.setSelection(adapterEstadosCiviles.getPosition(sel));
+                            claveFiscal.setText(datos.getString("claveFiscal"));
+                            cantGrupoFamiliar.setText(datos.getString("cantGrupoFam"));
+                            sel = datos.getString("nombrePlanPrestacionalActual");
+                            llenaPlanesPrestacionales(sel);
+                            //planesPrestacionales.setSelection(adapterplanesPrestacionales.getPosition(sel));
+
+                            try {
+                                String telefonos=completo.getString("telefonos");
+                                JSONArray arrayCompleto = new JSONArray(telefonos);
+                                for (int i = 0; i < arrayCompleto.length(); i++) {
+                                    JSONObject arrayFila = arrayCompleto.getJSONObject(i);
+                                    String FechaCargatelefono = arrayFila.getString("fechaCarga");
+                                    String telefono = arrayFila.getString("telefono");
+                                    String comentarioTelefono="";
+                                    String idTelefono = arrayFila.getString("idTelefono");
+
+                                    String[]itemTelefonos = new String[]{FechaCargatelefono,
+                                            telefono, comentarioTelefono, "Eliminar", "Modificar", idTelefono
+                                    };
+                                    tablaDinamicaTelefono.addItems(itemTelefonos);
+
+                                }
+                            } catch (Exception errEx) {
+
+                            }
+                            try {
+                                String domicilios=completo.getString("domicilios");
+                                JSONArray arrayCompletodom = new JSONArray(domicilios);
+                                for (int i = 0; i < arrayCompletodom.length(); i++) {
+                                    JSONObject arrayFila = arrayCompletodom.getJSONObject(i);
+                                    String idDomicilio =arrayFila.getString("idDomicilio");
+                                    String FechaCargaDomicilio = arrayFila.getString("fechaCarga");
+                                    String domicilio = arrayFila.getString("domicilio");
+                                    String comentarioTelefono=arrayFila.getString("comentario");
+                                    String localidad=arrayFila.getString("localidad");
+                                    String departamento1=arrayFila.getString("departamento");
+                                    String provincia1=arrayFila.getString("provincia");
+                                    String[]itemDomicilio = new String[]{FechaCargaDomicilio,
+                                            domicilio, localidad, comentarioTelefono, "Eliminar", "Modificar"
+                                            , departamento1, provincia1,idDomicilio};
+                                    tablaDinamicaDomicilio.addItems(itemDomicilio);
+
+                                }
+                            } catch (Exception errEx) {
+
+                            }
+                            try{
+                                String emails=completo.getString("emails");
+                                JSONArray arrayCompletomails = new JSONArray(emails);
+                                for (int i = 0; i < arrayCompletomails.length(); i++) {
+                                    JSONObject arrayFila = arrayCompletomails.getJSONObject(i);
+                                    String idmail = arrayFila.getString("idMail");
+                                    String FechaCargamail = arrayFila.getString("fecha");
+                                    String mail = arrayFila.getString("mail");
+                                    String comentarioMail=arrayFila.getString("comentario");
+                                    if (comentarioMail == null) {
+                                        comentarioMail="";
+                                    }
+                                    String[]itemMails = new String[]{FechaCargamail,mail, comentarioMail
+                                            ,"Eliminar", "Modificar",idmail
+                                    };
+                                    tablaDinamicaMail.addItems(itemMails);
+
+                                }
+                            } catch (Exception errEx) {
+                                String a = errEx.toString();
+
+                            }
+                            try{
+                                String familiares=completo.getString("familiares");
+                                JSONArray arrayCompletoFamiliares = new JSONArray(familiares);
+                                for (int i = 0; i < arrayCompletoFamiliares.length(); i++) {
+                                    JSONObject arrayFila = arrayCompletoFamiliares.getJSONObject(i);
+                                    String idfamiliar = arrayFila.getString("idFamiliar");
+                                    String apellido = arrayFila.getString("apellido");
+                                    String nombre = arrayFila.getString("nombre");
+                                    String fecNac=arrayFila.getString("fecNac");
+                                    String cuil=arrayFila.getString("cuil");
+                                    String sexo=arrayFila.getString("sexo");
+                                    String nacionalidad=arrayFila.getString("nacionalidad");
+                                    String estadoCivil=arrayFila.getString("estadoCivil");
+                                    String parentesco=arrayFila.getString("parentesco");
+                                    String[]itemFam = new String[]{
+                                            apellido, nombre,fecNac,cuil, sexo,nacionalidad,
+                                            estadoCivil,parentesco, "Eliminar", "Modificar",idfamiliar
+                                    };
+                                    tablaDinamicaFamiliares.addItems(itemFam);
+                                }
+                            } catch (Exception errEx) {
+
+                            }
+                            try{
+                                String empleadores=completo.getString("empleadores");
+                                JSONArray arrayCompletoEmpleadores = new JSONArray(empleadores);
+                                for (int i = 0; i < arrayCompletoEmpleadores.length(); i++) {
+                                    JSONObject arrayFila = arrayCompletoEmpleadores.getJSONObject(i);
+                                    String idEmpleador = arrayFila.getString("idEmpleador");
+                                    String tipoRelLaboral = arrayFila.getString("tipoRelLaboral");
+                                    String razonSocial = arrayFila.getString("razonSocial");
+                                    String cuit=arrayFila.getString("cuit");
+                                    String fecIngreso=arrayFila.getString("fecIngreso");
+                                    String aporteOS=arrayFila.getString("aporteOS");
+                                    String sac=arrayFila.getString("sac");
+                                    String[]itemEmpleador = new String[]{
+                                            razonSocial, cuit,fecIngreso,aporteOS, sac,
+                                            "Eliminar", "Modificar",idEmpleador
+                                    };
+                                    tablaDinamicaRelLab.addItems(itemEmpleador);
+                                }
+                            } catch (Exception errEx) {
+
+                            }
+
+                        } catch (Exception errEx) {
+                            dialogoCargaDatosMod = Dialogos.dlgError(getActivity(),errEx.getMessage());
+                        }
+                    }
+                }, new ErrorResponseHandler() {
+                    @Override
+                    public void onError(String msg) {
+                        dialogoCargaDatosMod.dismiss();
+                        dialogoCargaDatosMod = Dialogos.dlgError(getActivity(),msg);
+                    }
+                });
     }
     //region tratamiento de las acciones de los botones de las grillas
     public void llenadatosModificaTelefono(String[] datosSeleccionados){
         String[] datosS=datosSeleccionados;
-        this.telefono.setText(datosS[0].toString());
-        comentarioTelefono.setText(datosS[1].toString());
+        fechaCargaTelefono=datosS[0].toString();
+        this.telefono.setText(datosS[1].toString());
+        comentarioTelefono.setText(datosS[2].toString());
+        idTelefono=datosS[5].toString();
     }
     public void llenadatosModificaDomicilio(String[] datosSeleccionados){
         String[] datosS=datosSeleccionados;
-        this.direccion.setText(datosS[0].toString());
-        this.comentarioDireccion.setText(datosS[2].toString());
+        fechaCargaDomicilio=datosS[0].toString();
+        this.direccion.setText(datosS[1].toString());
+        this.comentarioDireccion.setText(datosS[3].toString());
         noActualizarLocalidad=1;
         noActualizarDepartamento=1;
-        this.provincias.setSelection(adapterProvincias.getPosition(datosS[6].toString()));
-        if(adapterDepartamentos.getPosition(datosS[5].toString())==-1)
+        String provSeleccionada=datosS[7].toString();
+        String dtoSeleccionado= datosS[6].toString();
+        String locSeleccionada=datosS[2].toString();
+        idDomicilio=datosS[8].toString();
+        llenaProvincias(provSeleccionada,dtoSeleccionado,locSeleccionada);
+        /*//this.provincias.setSelection(adapterProvincias.getPosition(datosS[7].toString()));
+        //aca falla!!!!adapterDepartamentos es null
+        *//*String sel = datosS[7].toString();
+        idProvinciaSeleccionada= getKey(mapProvincias,sel);
+        llenaDepartamentos(idProvinciaSeleccionada, datosS[6].toString());
+        sel = datosS[6].toString();
+        idDepartamentoSeleccionado= getKey(mapDepartamentos,sel);
+        llenaLocalidades(idDepartamentoSeleccionado*//*, datosS[2].toString());
+       *//* if(adapterDepartamentos.getPosition(datosS[6].toString())==-1)
         {
             //noActualizarDepartamento=0;
-            String sel = datosS[6].toString();
+            String sel = datosS[7].toString();
             idProvinciaSeleccionada= getKey(mapProvincias,sel);
-            llenaDepartamentos(idProvinciaSeleccionada, datosS[6].toString());
+            llenaDepartamentos(idProvinciaSeleccionada, datosS[7].toString());
 
         }
         else
         {
-            this.departamentos.setSelection(adapterDepartamentos.getPosition(datosS[5].toString()));
-        }
+            this.departamentos.setSelection(adapterDepartamentos.getPosition(datosS[6].toString()));
+        }*//*
 
 
-        if (adapterLocalidades.getPosition(datosS[1].toString())==-1)
+      *//*  if (adapterLocalidades.getPosition(datosS[2].toString())==-1)
         {
             //noActualizarLocalidad=0;
             ////ver porque no esta funcionando el
-            String sel = datosS[5].toString();
+            String sel = datosS[6].toString();
             idDepartamentoSeleccionado= getKey(mapDepartamentos,sel);
-            llenaLocalidades(idDepartamentoSeleccionado, datosS[1].toString());
+            llenaLocalidades(idDepartamentoSeleccionado, datosS[2].toString());
             //this.localidades.setSelection(adapterLocalidades.getPosition(datosS[1].toString()));
         }
         else
         {
-            this.localidades.setSelection(adapterLocalidades.getPosition(datosS[1].toString()));
-        }
+            this.localidades.setSelection(adapterLocalidades.getPosition(datosS[2].toString()));
+        }*//*
 
-        //aqui poner los datos en los spinners
+        //aqui poner los datos en los spinners*/
     }
+    public void llenadatosModificaMail(String[] datosSeleccionados){
+        String[] datosS=datosSeleccionados;
+        fechaCargaMail=datosS[0].toString();
+        this.mail.setText(datosS[1].toString());
+        comentarioMail.setText(datosS[2].toString());
+        idMail=datosS[5].toString();
+    }
+    public void llenadatosModificaFam(String[] datosSeleccionados){
+        String[] datosS=datosSeleccionados;
+        apellidoFam.setText(datosS[0].toString());
+        nombreFam.setText(datosS[1].toString());
+        fecnacFam.setText(datosS[2].toString());
+        cuilFam.setText(datosS[3].toString());
+        sexosFam.setSelection(adapterSexosFam.getPosition(datosS[4].toString()));
+        nacionalidadesFam.setSelection(adapterNacionalidadesFam.getPosition(datosS[5].toString()));
+        estadosCivilesFam.setSelection(adapterEstadosCivilesFam.getPosition(datosS[6].toString()));
+        parentescos.setSelection(adapterParentesco.getPosition(datosS[7].toString()));
+    }
+    public void llenadatosModificaRelLab(String[] datosSeleccionados){
+        String[] datosS=datosSeleccionados;
+        razonSocial.setText(datosS[0].toString());
+        cuit.setText(datosS[1].toString());
+        fecIngreso.setText(datosS[2].toString());
+        aporteOS.setText(datosS[3].toString());
+        sac.setText(datosS[4].toString());
+
+
+    }
+
     //endregion
     private void iniciaTablas(){
 
         //telefono=view.findViewById(R.id.telefono);
 
         tablaDinamicaTelefono.addHeader(encabezado);
-
         tablaDinamicaTelefono.addData(filasTelefono); //le paso filas vacia sino ir a buscaDatosTablas()
         tablaDinamicaTelefono.backgroundHeader(Color.parseColor("#819FF7"));
         tablaDinamicaTelefono.backgroundData(Color.parseColor("#95cbf5"), Color.parseColor("#68879e"));
@@ -568,187 +838,232 @@ public  class fragmento_cargaTitulares extends Fragment  implements View.OnClick
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
         Date date = new Date();
         String fechaCarga = dateFormat.format(date);
-        String idsexoSeleccionado = getKey(mapSexos,sexos.getSelectedItem().toString());
-        String idNacionalidadSeleccionado = getKey(mapNacionalidades,nacionalidades.getSelectedItem().toString());
-        String idEstCivilSeleccionado = getKey(mapEstadosCiviles,estadosCiviles.getSelectedItem().toString());
-        String idPlanPrestacionalSeleccionado = getKey(mapPlanesPrestacionales,planesPrestacionales.getSelectedItem().toString());
-
-        //region datos personales
-
+        String idsexoSeleccionado = getKey(mapSexos, sexos.getSelectedItem().toString());
+        String idNacionalidadSeleccionado = getKey(mapNacionalidades, nacionalidades.getSelectedItem().toString());
+        String idEstCivilSeleccionado = getKey(mapEstadosCiviles, estadosCiviles.getSelectedItem().toString());
+        String idPlanPrestacionalSeleccionado = getKey(mapPlanesPrestacionales, planesPrestacionales.getSelectedItem().toString());
         String[] datos;
-        datos= new String[]{apellido.getText().toString(), nombre.getText().toString(),
+        datos = new String[]{apellido.getText().toString(), nombre.getText().toString(),
                 fecnac.getText().toString(), cuil.getText().toString(), idsexoSeleccionado,
                 idEstCivilSeleccionado, claveFiscal.getText().toString(),
-                cantGrupoFamiliar.getText().toString(), idPlanPrestacionalSeleccionado };
+                cantGrupoFamiliar.getText().toString(), idPlanPrestacionalSeleccionado};
 
-        JSONArray dtContactosEmail = new JSONArray();
-        try {
+        if(idTitular!="00000000-0000-0000-0000-000000000000")
+            {
+                //region Modificacion titular Existente
 
-            for (int i = 0; i < filasMails.size(); i++) {
-                JSONObject jGroup = new JSONObject();
-                jGroup.put("idmail", "00000000-0000-0000-0000-000000000000");
-                jGroup.put("fechaCarga", fechaCarga);
-                jGroup.put("mail", filasMails.get(i)[0]);
-                jGroup.put("comentario", filasMails.get(i)[1]);
-
-                dtContactosEmail.put(jGroup);
+                //endregion
             }
-        // --Este no haría falta ----- jResult.put("dtContactosEmail", jArray);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        //endregion
-        //region Datos teléfono
-        JSONArray dtContactosTelefonos = new JSONArray();
-        try {
-
-            for (int i = 0; i < filasTelefono.size(); i++) {
-                JSONObject jGroupTel = new JSONObject();
-                jGroupTel.put("idTelefono", "00000000-0000-0000-0000-000000000000");
-                jGroupTel.put("fechaCarga", fechaCarga);
-                jGroupTel.put("telefono", filasTelefono.get(i)[0]);
-                jGroupTel.put("comentario",  filasTelefono.get(i)[1]);
-
-                dtContactosTelefonos.put(jGroupTel);
+        else
+            {
             }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        //endregion
-        //region Domilicios
-        JSONArray dtContactosDomicilio = new JSONArray();
-        try {
+                //region datos personales
+                JSONArray dtContactosEmail = new JSONArray();
+                try {
 
-            for (int i = 0; i < filasDomicilio.size(); i++) {
-                JSONObject jGroupDom = new JSONObject();
-                jGroupDom.put("idDomicilio", "00000000-0000-0000-0000-000000000000");
-                jGroupDom.put("fechaCarga", fechaCarga);
-                jGroupDom.put("domicilio", filasDomicilio.get(i)[0]);
-                jGroupDom.put("comentario", filasDomicilio.get(i)[2]);
-                jGroupDom.put("idLocalidad", getKey(mapLocalidades,filasDomicilio.get(i)[1]));
-
-                dtContactosDomicilio.put(jGroupDom);
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        //endregion
-        //region Grupo familiar
-        JSONArray dtFamiliares = new JSONArray();
-        try {
-            for (int i = 0; i < filasFamiliares.size(); i++) {
-                JSONObject jGroupFam = new JSONObject();
-                jGroupFam.put("idFamiliar", "00000000-0000-0000-0000-000000000000");
-                jGroupFam.put("apellido", filasFamiliares.get(i)[0]);
-                jGroupFam.put("nombre",  filasFamiliares.get(i)[1]);
-                jGroupFam.put("fecNac",  filasFamiliares.get(i)[2]);
-                jGroupFam.put("cuil",  filasFamiliares.get(i)[3]);
-                jGroupFam.put("idSexo", getKey(mapSexos,filasFamiliares.get(i)[4]));
-                jGroupFam.put("idNacionalidad", getKey(mapNacionalidades,filasFamiliares.get(i)[5]));
-                jGroupFam.put("idEstadoCivil", getKey(mapEstadosCiviles,filasFamiliares.get(i)[6]));
-                jGroupFam.put("idParentesco", getKey(mapParentesco,filasFamiliares.get(i)[7]));
-                jGroupFam.put("idEstadoAfiliacion", "00000000-0000-0000-0000-000000000000");
-                jGroupFam.put("perAlta", "00000000-0000-0000-0000-000000000000");
-                jGroupFam.put("perBaja", "00000000-0000-0000-0000-000000000000");
-
-                dtFamiliares.put(jGroupFam);
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        //endregion
-        //region Relación laboral
-            JSONArray dtRelacionesLaborales = new JSONArray();
-        try {
-
-            for (int i = 0; i < filasRellab.size(); i++) {
-                JSONObject jGroupRelLab = new JSONObject();
-                jGroupRelLab.put("idEmpleador", "00000000-0000-0000-0000-000000000000");
-                jGroupRelLab.put("idTipoRelacionLaboral", "00000000-0000-0000-0000-000000000000");
-                jGroupRelLab.put("razonSocial",  filasRellab.get(i)[0]);
-                jGroupRelLab.put("cuit",  filasRellab.get(i)[1]);
-                jGroupRelLab.put("fecIngreso",  filasRellab.get(i)[2]);
-                jGroupRelLab.put("aporteOs", filasRellab.get(i)[3]);
-                jGroupRelLab.put("sac", filasRellab.get(i)[4]);
-
-                dtRelacionesLaborales.put(jGroupRelLab);
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        //endregion
-        //region Archivos adjuntos
-        JSONArray dtArchivosAdjuntos = new JSONArray();
-        try {
-            for (int i = 0; i < arrayImagenes.size(); i++) {
-                ByteArrayOutputStream bao=null;
-                bao = new ByteArrayOutputStream();
-                arrayImagenes.get(i).imagen.compress(Bitmap.CompressFormat.JPEG, 50, bao);
-                byte[] ba = bao.toByteArray();
-                String imgFin=Base64.encodeToString(ba, Base64.NO_WRAP);
-
-                JSONObject jArchivosAdjuntos = new JSONObject();
-                jArchivosAdjuntos.put("idArchivo", arrayImagenes.get(i).idImagen);
-                jArchivosAdjuntos.put("ubicacionArchivo", "LOCAL");
-                jArchivosAdjuntos.put("tipoArchivo", "IMG");
-                jArchivosAdjuntos.put("archivo", imgFin);
-                jArchivosAdjuntos.put("titulo",  "");
-                jArchivosAdjuntos.put("tipoArchivoTitulo",  "");
-                jArchivosAdjuntos.put("extension",  "jpg");
-
-                dtArchivosAdjuntos.put(jArchivosAdjuntos);
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        //endregion
-
-        WebService.modificarDatosTitulares(getActivity()
-                ,"00000000-0000-0000-0000-000000000000"
-                ,apellido.getText().toString()
-                ,nombre.getText().toString()
-                ,fecnac.getText().toString()
-                ,cuil.getText().toString()
-                ,idsexoSeleccionado
-                ,idNacionalidadSeleccionado
-                ,idEstCivilSeleccionado
-                ,claveFiscal.getText().toString()
-                ,cantGrupoFamiliar.getText().toString()
-                ,idPlanPrestacionalSeleccionado
-                ,"Comentario ingreso titular"
-                ,dtContactosDomicilio.toString()
-                ,dtContactosTelefonos.toString()
-                ,dtContactosEmail.toString()
-                ,dtFamiliares.toString()
-                ,"REL" //"00000000-0000-0000-0000-000000000000"
-                ,dtRelacionesLaborales.toString()
-                ,dtArchivosAdjuntos.toString()
-                ,"cuentaVerificacionCUILTitular"
-                ,"noVerificarCuilTitular"
-                ,"origenPeticion"
-                ,""//"00000000-0000-0000-0000-000000000000"
-                ,"perAlta"
-                ,"perBaja"
-
-                , new SuccessResponseHandler<JSONObject>()  {
-                    @Override
-                    public void onSuccess(JSONObject valores) {
-                        dialogo.dismiss();
-                        try {
-
-                        } catch (Exception errEx) {
-                            dialogo = Dialogos.dlgError(contexto,errEx.getMessage());
+                    for (int i = 0; i < filasMails.size(); i++) {
+                        String idMail;
+                        if(filasMails.get(i)[5]=="00000000-0000-0000-0000-000000000000")
+                        {
+                            String uniqueID = UUID.randomUUID().toString();
+                            idMail=uniqueID;
                         }
-                    }
-                }, new ErrorResponseHandler() {
-                    @Override
-                    public void onError(String msg) {
-                        dialogo.dismiss();
-                        dialogo = Dialogos.dlgError(contexto,msg);
-                    }
-                });
+                        else
+                        {
+                            idMail=filasMails.get(i)[5];
+                        }
+                        String uniqueID = UUID.randomUUID().toString();
+                        JSONObject jGroup = new JSONObject();
+                        jGroup.put("idmail", idMail);//"00000000-0000-0000-0000-000000000000");
+                        jGroup.put("fechaCarga", filasMails.get(i)[0]);
+                        jGroup.put("mail", filasMails.get(i)[1]);
+                        jGroup.put("comentario", filasMails.get(i)[2]);
 
-        String a ="";
+                        dtContactosEmail.put(jGroup);
+                    }
+                    // --Este no haría falta ----- jResult.put("dtContactosEmail", jArray);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                //endregion
+                //region Datos teléfono
+                JSONArray dtContactosTelefonos = new JSONArray();
+                try {
+
+                    for (int i = 0; i < filasTelefono.size(); i++) {
+                        String idTel;
+                        if(filasTelefono.get(i)[5]=="00000000-0000-0000-0000-000000000000")
+                        {
+                            String uniqueID = UUID.randomUUID().toString();
+                            idTel=uniqueID;
+                        }
+                        else
+                        {
+                            idTel=filasTelefono.get(i)[5];
+                        }
+
+                        JSONObject jGroupTel = new JSONObject();
+
+                        jGroupTel.put("idTelefono", idTel);//"00000000-0000-0000-0000-000000000000");
+                        jGroupTel.put("fechaCarga", filasTelefono.get(i)[0]);
+                        jGroupTel.put("telefono", filasTelefono.get(i)[1]);
+                        jGroupTel.put("comentario", filasTelefono.get(i)[2]);
+
+                        dtContactosTelefonos.put(jGroupTel);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                //endregion
+                //region Domilicios
+                JSONArray dtContactosDomicilio = new JSONArray();
+                try {
+                    String idDire;
+
+
+                    for (int i = 0; i < filasDomicilio.size(); i++) {
+                        if(filasDomicilio.get(i)[8]=="00000000-0000-0000-0000-000000000000")
+                        {
+                            String uniqueID = UUID.randomUUID().toString();
+                            idDire=uniqueID;
+                        }
+                        else
+                        {
+                            idDire=filasDomicilio.get(i)[8];
+                        }
+                        String uniqueID = UUID.randomUUID().toString();
+                        JSONObject jGroupDom = new JSONObject();
+                        jGroupDom.put("idDomicilio", idDire);//"00000000-0000-0000-0000-000000000000");
+                        jGroupDom.put("fechaCarga", filasDomicilio.get(i)[0]);
+                        jGroupDom.put("domicilio", filasDomicilio.get(i)[1]);
+                        jGroupDom.put("comentario", filasDomicilio.get(i)[3]);
+                        jGroupDom.put("idLocalidad", getKey(mapLocalidades, filasDomicilio.get(i)[2]));
+
+                        dtContactosDomicilio.put(jGroupDom);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                //endregion
+                //region Grupo familiar
+                JSONArray dtFamiliares = new JSONArray();
+                try {
+                    for (int i = 0; i < filasFamiliares.size(); i++) {
+                        JSONObject jGroupFam = new JSONObject();
+                        String uniqueID = UUID.randomUUID().toString();
+                        jGroupFam.put("idFamiliar", uniqueID);//"00000000-0000-0000-0000-000000000000");
+                        jGroupFam.put("apellido", filasFamiliares.get(i)[0]);
+                        jGroupFam.put("nombre", filasFamiliares.get(i)[1]);
+                        jGroupFam.put("fecNac", filasFamiliares.get(i)[2]);
+                        jGroupFam.put("cuil", filasFamiliares.get(i)[3]);
+                        jGroupFam.put("idSexo", getKey(mapSexos, filasFamiliares.get(i)[4]));
+                        jGroupFam.put("idNacionalidad", getKey(mapNacionalidades, filasFamiliares.get(i)[5]));
+                        jGroupFam.put("idEstadoCivil", getKey(mapEstadosCiviles, filasFamiliares.get(i)[6]));
+                        jGroupFam.put("idParentesco", getKey(mapParentesco, filasFamiliares.get(i)[7]));
+                        jGroupFam.put("idEstadoAfiliacion", "00000000-0000-0000-0000-000000000000");
+                        jGroupFam.put("perAlta", "00000000-0000-0000-0000-000000000000");
+                        jGroupFam.put("perBaja", "00000000-0000-0000-0000-000000000000");
+
+                        dtFamiliares.put(jGroupFam);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                //endregion
+                //region Relación laboral
+                JSONArray dtRelacionesLaborales = new JSONArray();
+                try {
+
+                    for (int i = 0; i < filasRellab.size(); i++) {
+                        JSONObject jGroupRelLab = new JSONObject();
+                        String uniqueID = UUID.randomUUID().toString();
+                        jGroupRelLab.put("idEmpleador", uniqueID);//"00000000-0000-0000-0000-000000000000");
+                        jGroupRelLab.put("idTipoRelacionLaboral", "00000000-0000-0000-0000-000000000000");
+                        jGroupRelLab.put("razonSocial", filasRellab.get(i)[0]);
+                        jGroupRelLab.put("cuit", filasRellab.get(i)[1]);
+                        jGroupRelLab.put("fecIngreso", filasRellab.get(i)[2]);
+                        jGroupRelLab.put("aporteOs", filasRellab.get(i)[3]);
+                        jGroupRelLab.put("sac", filasRellab.get(i)[4]);
+
+                        dtRelacionesLaborales.put(jGroupRelLab);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                //endregion
+                //region Archivos adjuntos
+                JSONArray dtArchivosAdjuntos = new JSONArray();
+                try {
+                    for (int i = 0; i < arrayImagenes.size(); i++) {
+                        ByteArrayOutputStream bao = null;
+                        bao = new ByteArrayOutputStream();
+                        arrayImagenes.get(i).imagen.compress(Bitmap.CompressFormat.JPEG, 50, bao);
+                        byte[] ba = bao.toByteArray();
+                        String imgFin = Base64.encodeToString(ba, Base64.NO_WRAP);
+
+                        JSONObject jArchivosAdjuntos = new JSONObject();
+                        jArchivosAdjuntos.put("idArchivo", arrayImagenes.get(i).idImagen);
+                        jArchivosAdjuntos.put("ubicacionArchivo", "LOCAL");
+                        jArchivosAdjuntos.put("tipoArchivo", "IMG");
+                        jArchivosAdjuntos.put("archivo", imgFin);
+                        jArchivosAdjuntos.put("titulo", "");
+                        jArchivosAdjuntos.put("tipoArchivoTitulo", "");
+                        jArchivosAdjuntos.put("extension", "jpg");
+
+                        dtArchivosAdjuntos.put(jArchivosAdjuntos);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                //endregion
+
+                WebService.modificarDatosTitulares(getActivity()
+                        , "00000000-0000-0000-0000-000000000000"
+                        , apellido.getText().toString()
+                        , nombre.getText().toString()
+                        , fecnac.getText().toString()
+                        , cuil.getText().toString()
+                        , idsexoSeleccionado
+                        , idNacionalidadSeleccionado
+                        , idEstCivilSeleccionado
+                        , claveFiscal.getText().toString()
+                        , cantGrupoFamiliar.getText().toString()
+                        , idPlanPrestacionalSeleccionado
+                        , "Comentario ingreso titular"
+                        , dtContactosDomicilio.toString()
+                        , dtContactosTelefonos.toString()
+                        , dtContactosEmail.toString()
+                        , dtFamiliares.toString()
+                        , "REL" //"00000000-0000-0000-0000-000000000000"
+                        , dtRelacionesLaborales.toString()
+                        , dtArchivosAdjuntos.toString()
+                        , "cuentaVerificacionCUILTitular"
+                        , "noVerificarCuilTitular"
+                        , "origenPeticion"
+                        , ""//"00000000-0000-0000-0000-000000000000"
+                        , "perAlta"
+                        , "perBaja"
+
+                        , new SuccessResponseHandler<JSONObject>() {
+                            @Override
+                            public void onSuccess(JSONObject valores) {
+                                dialogo.dismiss();
+                                try {
+
+                                } catch (Exception errEx) {
+                                    dialogo = Dialogos.dlgError(contexto, errEx.getMessage());
+                                }
+                            }
+                        }, new ErrorResponseHandler() {
+                            @Override
+                            public void onError(String msg) {
+                                dialogo.dismiss();
+                                dialogo = Dialogos.dlgError(contexto, msg);
+                            }
+                        });
+
+                String a = "";
+
     }
     //region agrega a tablas visibles
     private void agregaRelacionLaboral(){
@@ -757,6 +1072,7 @@ public  class fragmento_cargaTitulares extends Fragment  implements View.OnClick
                 ,fecIngreso.getText().toString()
                 ,aporteOS.getText().toString()
                 ,sac.getText().toString()
+                ,"Eliminar", "Modificar"
                 };
         if (razonSocial.getText().toString().equals("") ||
                 cuit.getText().toString().equals("") ||
@@ -774,7 +1090,8 @@ public  class fragmento_cargaTitulares extends Fragment  implements View.OnClick
 
     }
     private void agregaMail(){
-        String[]itemMail = new String[]{mail.getText().toString(), comentarioMail.getText().toString()};
+
+        String[]itemMail = new String[]{fechaCargaMail,mail.getText().toString(), comentarioMail.getText().toString(), "Eliminar","Modificar",idMail};
         if (mail.getText().toString().equals(""))
         {
             Toast.makeText(contexto, "Debe ingresar un mail", Toast.LENGTH_LONG).show();
@@ -783,6 +1100,9 @@ public  class fragmento_cargaTitulares extends Fragment  implements View.OnClick
         {
             tablaDinamicaMail.addItems(itemMail);
             mail.setText("");
+            comentarioMail.setText("");
+            idMail="";
+            fechaCargaMail=fechaCargaGeneral;
         }
     }
     private void agregaFamiliares(){
@@ -794,6 +1114,7 @@ public  class fragmento_cargaTitulares extends Fragment  implements View.OnClick
                 ,nacionalidadesFam.getSelectedItem().toString()
                 ,estadosCivilesFam.getSelectedItem().toString()
                 ,parentescos.getSelectedItem().toString()
+                , "Eliminar","Modificar"
         };
         if (apellidoFam.getText().toString().equals("") ||
                 nombreFam.getText().toString().equals("") ||
@@ -810,13 +1131,20 @@ public  class fragmento_cargaTitulares extends Fragment  implements View.OnClick
         {
             tablaDinamicaFamiliares.addItems(itemFam);
             direccion.setText("");
+            nombreFam.setText("");
+            fecnacFam.setText("");
+            cuilFam.setText("");
+            sexosFam.setId(0);
+            nacionalidadesFam.setId(0);
+            estadosCivilesFam.setId(0);
+            parentescos.setId(0);
         }
 
     }
     private void agregaDireccion(){
-        String[]itemDireccion = new String[]{direccion.getText().toString(), localidades.getSelectedItem().toString()
+                String[]itemDireccion = new String[]{fechaCargaDomicilio,direccion.getText().toString(), localidades.getSelectedItem().toString()
                 , comentarioDireccion.getText().toString(), "Eliminar","Modificar"
-                ,departamentos.getSelectedItem().toString(), provincias.getSelectedItem().toString()};
+                ,departamentos.getSelectedItem().toString(), provincias.getSelectedItem().toString(),idDomicilio};
         if (direccion.getText().toString().equals(""))
         {
             Toast.makeText(contexto, "Debe ingresar una dirección", Toast.LENGTH_LONG).show();
@@ -825,11 +1153,17 @@ public  class fragmento_cargaTitulares extends Fragment  implements View.OnClick
         {
             tablaDinamicaDomicilio.addItems(itemDireccion);
             direccion.setText("");
+            comentarioDireccion.setText("");
+            idDomicilio="00000000-0000-0000-0000-000000000000";
+            fechaCargaDomicilio=fechaCargaGeneral;
         }
 
+        idDomicilio="";
     }
     private void agregaTelefono(){
-        String[]item = new String[]{telefono.getText().toString(), comentarioTelefono.getText().toString(), "Eliminar","Modificar"};
+
+        String[]item = new String[]{fechaCargaTelefono,telefono.getText().toString(), comentarioTelefono.getText().toString()
+                , "Eliminar","Modificar", idTelefono};
         if (telefono.getText().toString().equals(""))
         {
             Toast.makeText(contexto, "Debe ingresar un número de teléfono", Toast.LENGTH_LONG).show();
@@ -838,6 +1172,9 @@ public  class fragmento_cargaTitulares extends Fragment  implements View.OnClick
         {
             tablaDinamicaTelefono.addItems(item);
             telefono.setText("");
+            comentarioTelefono.setText("");
+            idTelefono="00000000-0000-0000-0000-000000000000";
+            fechaCargaTelefono=fechaCargaGeneral;
         }
 
     }
@@ -934,7 +1271,7 @@ public  class fragmento_cargaTitulares extends Fragment  implements View.OnClick
                     }
                 });
     }
-    public void llenaDepartamentos(String idProvinciaSeleccionada, String provSeleccionada ){
+    public void llenaDepartamentos(String idProvinciaSeleccionada, String depSeleccionado, String locSeleccionada ){
         dialogoDepartamentos = Dialogos.dlgBuscando(getActivity(),"Recuperando Departamentos");
         WebService.leerDepartamentos(getActivity(), idProvinciaSeleccionada
                 , new SuccessResponseHandler<JSONObject>() {
@@ -959,9 +1296,12 @@ public  class fragmento_cargaTitulares extends Fragment  implements View.OnClick
                             departamentos.setAdapter(adapterDepartamentos);
                             dialogoDepartamentos.dismiss();
                             //String a = getKey(mapSexos,"Femenino");
-                            if (provSeleccionada!="")
+                            if (depSeleccionado!="")
                             {
-                                departamentos.setSelection(adapterDepartamentos.getPosition(provSeleccionada));
+                                departamentos.setSelection(adapterDepartamentos.getPosition(depSeleccionado));
+                                idDepartamentoSeleccionado= getKey(mapDepartamentos,depSeleccionado);
+                                llenaLocalidades(idDepartamentoSeleccionado, locSeleccionada);
+
                             }
 
                         } catch (Exception errEx) {
@@ -976,7 +1316,7 @@ public  class fragmento_cargaTitulares extends Fragment  implements View.OnClick
                     }
                 });
     }
-    public void llenaProvincias(){
+    public void llenaProvincias(String proSeleccionada, String dtoSeleccionado, String locSeleccionada){
         dialogoProvincias = Dialogos.dlgBuscando(getActivity(),"Recuperando Provincias");
         WebService.leerProvincias(getActivity()
                 , new SuccessResponseHandler<JSONObject>() {
@@ -1001,6 +1341,12 @@ public  class fragmento_cargaTitulares extends Fragment  implements View.OnClick
                             provincias.setAdapter(adapterProvincias);
                             dialogoProvincias.dismiss();
                             //String a = getKey(mapSexos,"Femenino");
+                            if (proSeleccionada!="")
+                            {
+                                provincias.setSelection(adapterProvincias.getPosition(proSeleccionada));
+                                idProvinciaSeleccionada= getKey(mapProvincias,proSeleccionada);
+                                llenaDepartamentos(idProvinciaSeleccionada, dtoSeleccionado, locSeleccionada);
+                            }
 
                         } catch (Exception errEx) {
                             dialogoProvincias = Dialogos.dlgError(getActivity(),errEx.getMessage());
@@ -1055,7 +1401,7 @@ public  class fragmento_cargaTitulares extends Fragment  implements View.OnClick
                     }
                 });
     }
-    public void llenaSexos(){
+    public void llenaSexos(String sexoSeleccionado){
         dialogo = Dialogos.dlgBuscando(getActivity(),"Recuperando sexos");
         WebService.leerSexos(getActivity(),"true"
                 , new SuccessResponseHandler<JSONObject>() {
@@ -1089,6 +1435,10 @@ public  class fragmento_cargaTitulares extends Fragment  implements View.OnClick
 
                             dialogo.dismiss();
                             //String a = getKey(mapSexos,"Femenino");
+                            if (sexoSeleccionado!="")
+                            {
+                                sexos.setSelection(adapterSexos.getPosition(sexoSeleccionado));
+                            }
 
                         } catch (Exception errEx) {
                             dialogo = Dialogos.dlgError(getActivity(),errEx.getMessage());
@@ -1102,7 +1452,7 @@ public  class fragmento_cargaTitulares extends Fragment  implements View.OnClick
                     }
                 });
     }
-    public void llenaNacionalidades(){
+    public void llenaNacionalidades(String nacionalidadSeleccionada){
         dialogoNac = Dialogos.dlgBuscando(getActivity(),"Recuperando nacionalidades");
         WebService.leerNacionalidades(getActivity(),"true"
                 , new SuccessResponseHandler<JSONObject>() {
@@ -1139,6 +1489,10 @@ public  class fragmento_cargaTitulares extends Fragment  implements View.OnClick
 
                             dialogoNac.dismiss();
                             //String a = getKey(nacionalidades,"Argentina");
+                            if (nacionalidadSeleccionada!="")
+                            {
+                                nacionalidades.setSelection(adapterNacionalidades.getPosition(nacionalidadSeleccionada));
+                            }
 
                         } catch (Exception errEx) {
                             dialogoNac = Dialogos.dlgError(getActivity(),errEx.getMessage());
@@ -1152,7 +1506,7 @@ public  class fragmento_cargaTitulares extends Fragment  implements View.OnClick
                     }
                 });
     }
-    public void llenaEstadoCiviles(){
+    public void llenaEstadoCiviles(String estadoCivilSeleccionado){
         dialogoEstadoCivil = Dialogos.dlgBuscando(getActivity(),"Recuperando estados civiles");
         WebService.leerEstadosCiviles(getActivity(), "true"
                 , new SuccessResponseHandler<JSONObject>() {
@@ -1189,6 +1543,10 @@ public  class fragmento_cargaTitulares extends Fragment  implements View.OnClick
                             estadosCivilesFam.setAdapter(adapterEstadosCivilesFam);
 
                             dialogoEstadoCivil.dismiss();
+                            if (estadoCivilSeleccionado!="")
+                            {
+                                estadosCiviles.setSelection(adapterEstadosCiviles.getPosition(estadoCivilSeleccionado));
+                            }
 
                             //String a = getKey(nacionalidades,"Argentina");
 
@@ -1204,7 +1562,7 @@ public  class fragmento_cargaTitulares extends Fragment  implements View.OnClick
                     }
                 });
     }
-    public void llenaPlanesPrestacionales(){
+    public void llenaPlanesPrestacionales(String planPrestacionalSeleccionado){
         dialogoplanesPrestacionales = Dialogos.dlgBuscando(getActivity(),"Recuperando planes prestacionales");
         WebService.leerPlanesPrestacionales(getActivity(),"true"
                 , new SuccessResponseHandler<JSONObject>() {
@@ -1229,6 +1587,11 @@ public  class fragmento_cargaTitulares extends Fragment  implements View.OnClick
                             adapterplanesPrestacionales.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                             planesPrestacionales.setAdapter(adapterplanesPrestacionales);
                             dialogoplanesPrestacionales.dismiss();
+                            if (planPrestacionalSeleccionado!="")
+                            {
+                                planesPrestacionales.setSelection(adapterplanesPrestacionales.getPosition(planPrestacionalSeleccionado));
+                            }
+
                             //String a = getKey(nacionalidades,"Argentina");
 
                         } catch (Exception errEx) {

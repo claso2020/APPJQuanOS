@@ -58,7 +58,7 @@ public class TableDynamic implements View.OnClickListener {
     private void newCell() {
         txtCell = new TextView(context);
         txtCell.setGravity(Gravity.CENTER);
-        txtCell.setTextSize(17);
+        txtCell.setTextSize(13);
     }
 
     private void createHeader() {

@@ -48,7 +48,7 @@
             android:backgroundTint="@android:color/transparent"
             android:src="@drawable/guardatitular"
             android:tooltipText="Almacenar datos"
-            android:text="Guardar" />/>
+            android:text="Guardar" />
 
     </LinearLayout>
     </LinearLayout>

@@ -17,6 +17,7 @@ public class fragmento_inicial extends Fragment implements View.OnClickListener{
     FragmentChangeTrigger trigger;
     Button btnVolver;
     Button btnCargaTitulares;
+    Button btnMostrarTitulares;
 
     public fragmento_inicial() {
         // Required empty public constructor
@@ -36,8 +37,9 @@ public class fragmento_inicial extends Fragment implements View.OnClickListener{
         btnVolver.setOnClickListener(this);
         btnCargaTitulares =(Button) view.findViewById(R.id.btnCargaTitulares);
         btnCargaTitulares.setOnClickListener(this);
+        btnMostrarTitulares=(Button) view.findViewById(R.id.btnMostrarTitulares);
+        btnMostrarTitulares.setOnClickListener(this);
     }
-
     @Override
     public void onClick(View v) {
         if(v.getId()==R.id.btnVolver){
@@ -45,6 +47,9 @@ public class fragmento_inicial extends Fragment implements View.OnClickListener{
         }
         if(v.getId()==R.id.btnCargaTitulares){
             trigger.fireChange("inicial_btnCargaTitulares");
+        }
+        if(v.getId()==R.id.btnMostrarTitulares){
+            trigger.fireChange("inicial_btnMostrarTitulares");
         }
     }
 
