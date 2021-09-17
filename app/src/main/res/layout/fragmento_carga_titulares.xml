@@ -183,6 +183,15 @@
                                 android:layout_height="40dp"
                                 android:layout_marginTop="10dp"
                                 android:background="@drawable/edittex_style" />
+                            <EditText
+                                android:id="@+id/comentarioTitular"
+                                android:layout_width="284dp"
+                                android:layout_marginTop="10dp"
+                                android:maxLines="4"
+                                android:hint=" Ingrese comentario"
+                                android:background="@drawable/edittex_style"
+                                android:visibility="visible"
+                                android:layout_height="wrap_content" />
 
                         </LinearLayout>
                     </ScrollView>
@@ -239,11 +248,15 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_gravity="center_vertical">
-                            <TableLayout
-                                android:id="@+id/tablaTelefono"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent">
-                            </TableLayout>
+                            <HorizontalScrollView
+                                android:layout_width="fill_parent"
+                                android:layout_height="fill_parent">
+                                <TableLayout
+                                    android:id="@+id/tablaTelefono"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent">
+                                </TableLayout>
+                            </HorizontalScrollView>
                         </ScrollView>
 
                     </LinearLayout>
@@ -324,13 +337,16 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_gravity="center_vertical">
-
+                            <HorizontalScrollView
+                                android:layout_width="fill_parent"
+                                android:layout_height="fill_parent">
                             <TableLayout
                                 android:id="@+id/tablaDireccion"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent">
 
                             </TableLayout>
+                            </HorizontalScrollView>
                         </ScrollView>
 
                     </LinearLayout>
@@ -390,6 +406,9 @@
                             android:layout_height="match_parent"
                             android:layout_gravity="center_vertical"
                             >
+                            <HorizontalScrollView
+                                android:layout_width="fill_parent"
+                                android:layout_height="fill_parent">
                             <TableLayout
                                 android:id="@+id/tablaMail"
                                 android:layout_width="match_parent"
@@ -397,6 +416,7 @@
                                 android:layout_marginTop="5dp">
 
                             </TableLayout>
+                            </HorizontalScrollView>
                         </ScrollView>
 
                     </LinearLayout>

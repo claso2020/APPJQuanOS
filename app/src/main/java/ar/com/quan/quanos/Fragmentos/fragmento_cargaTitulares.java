@@ -84,11 +84,13 @@ public  class fragmento_cargaTitulares extends Fragment  implements View.OnClick
             ,idMail="00000000-0000-0000-0000-000000000000", fechaCargaMail=fechaCargaGeneral
             ,idDomicilio="00000000-0000-0000-0000-000000000000", fechaCargaDomicilio=fechaCargaGeneral
             ,idTitular="00000000-0000-0000-0000-000000000000"
-            ,idTelefono="00000000-0000-0000-0000-000000000000", fechaCargaTelefono=fechaCargaGeneral;
+            ,idTelefono="00000000-0000-0000-0000-000000000000", fechaCargaTelefono=fechaCargaGeneral
+            ,idFamiliar="00000000-0000-0000-0000-000000000000", fechaCargaFamiliar=fechaCargaGeneral
+            ,idEmpleador="00000000-0000-0000-0000-000000000000", fechaCargaEmpleador=fechaCargaGeneral;
 
     EditText apellido, nombre, cuil, fecnac,claveFiscal,cantGrupoFamiliar, telefono, comentarioTelefono,
             direccion, comentarioDireccion, mail, comentarioMail, fecnacFam, apellidoFam, nombreFam, cuilFam
-            ,razonSocial, cuit, fecIngreso, aporteOS, sac, archivo;
+            ,razonSocial, cuit, fecIngreso, aporteOS, sac, archivo, comentarioTitular;
 
     Spinner sexos,nacionalidades, estadosCiviles, planesPrestacionales,
             provincias, departamentos, localidades, sexosFam, nacionalidadesFam, estadosCivilesFam
@@ -120,8 +122,8 @@ public  class fragmento_cargaTitulares extends Fragment  implements View.OnClick
     String [] encabezado = {"Cargado","Teléfonos ","Comentario","Eliminar", "Modificar"}
             ,encabezadoDireccion={"Cargado","Dirección", "Localidad","Comentario","Eliminar", "Modificar"}
             , encabezadoMail={"Cargado","Mail", "Comentario","Eliminar", "Modificar"}
-            , encabezadoFamiliares={"Apellido", "nombre","Fecha Nac.","CUIL","Sexo","Nacionalidad","EstadoCivil", "Parentesco","Eliminar", "Modificar"}
-            ,encabezadoRelLab={"Razón Social", "Cuit", "Fecha ingreso", "Aporte OS", "SAC", "Eliminar", "Modificar"};
+            , encabezadoFamiliares={"Cargado","Apellido", "nombre","Fecha Nac.","CUIL","Sexo","Nacionalidad","EstadoCivil", "Parentesco","Eliminar", "Modificar"}
+            ,encabezadoRelLab={"Cargado","Razón Social", "Cuit", "Fecha ingreso", "Aporte OS", "SAC", "Eliminar", "Modificar"};
 
     ArrayList<String[]> filasTelefono = new ArrayList<String[]>();
     ArrayList<String[]> filasDomicilio = new ArrayList<String[]>();
@@ -201,6 +203,7 @@ public  class fragmento_cargaTitulares extends Fragment  implements View.OnClick
         cuit= (EditText) view.findViewById(R.id.cuit);
         aporteOS=(EditText) view.findViewById(R.id.aporteOS);
         sac=(EditText) view.findViewById(R.id.sac);
+        comentarioTitular=(EditText) view.findViewById(R.id.comentarioTelefono);
         //archivo=(EditText) view.findViewById(R.id.archivo);
 
         fecnacFam.setOnClickListener(this);
@@ -493,7 +496,8 @@ public  class fragmento_cargaTitulares extends Fragment  implements View.OnClick
                                     String nacionalidad=arrayFila.getString("nacionalidad");
                                     String estadoCivil=arrayFila.getString("estadoCivil");
                                     String parentesco=arrayFila.getString("parentesco");
-                                    String[]itemFam = new String[]{
+                                    String fechaCargaFam=arrayFila.getString("fecha");
+                                    String[]itemFam = new String[]{fechaCargaFam,
                                             apellido, nombre,fecNac,cuil, sexo,nacionalidad,
                                             estadoCivil,parentesco, "Eliminar", "Modificar",idfamiliar
                                     };
@@ -514,7 +518,8 @@ public  class fragmento_cargaTitulares extends Fragment  implements View.OnClick
                                     String fecIngreso=arrayFila.getString("fecIngreso");
                                     String aporteOS=arrayFila.getString("aporteOS");
                                     String sac=arrayFila.getString("sac");
-                                    String[]itemEmpleador = new String[]{
+                                    String fechaCargaEmp=arrayFila.getString("fechaCarga");
+                                    String[]itemEmpleador = new String[]{fechaCargaEmp,
                                             razonSocial, cuit,fecIngreso,aporteOS, sac,
                                             "Eliminar", "Modificar",idEmpleador
                                     };
@@ -603,24 +608,26 @@ public  class fragmento_cargaTitulares extends Fragment  implements View.OnClick
     }
     public void llenadatosModificaFam(String[] datosSeleccionados){
         String[] datosS=datosSeleccionados;
-        apellidoFam.setText(datosS[0].toString());
-        nombreFam.setText(datosS[1].toString());
-        fecnacFam.setText(datosS[2].toString());
-        cuilFam.setText(datosS[3].toString());
-        sexosFam.setSelection(adapterSexosFam.getPosition(datosS[4].toString()));
-        nacionalidadesFam.setSelection(adapterNacionalidadesFam.getPosition(datosS[5].toString()));
-        estadosCivilesFam.setSelection(adapterEstadosCivilesFam.getPosition(datosS[6].toString()));
-        parentescos.setSelection(adapterParentesco.getPosition(datosS[7].toString()));
+        fechaCargaFamiliar=datosS[0].toString();
+        apellidoFam.setText(datosS[1].toString());
+        nombreFam.setText(datosS[2].toString());
+        fecnacFam.setText(datosS[3].toString());
+        cuilFam.setText(datosS[4].toString());
+        sexosFam.setSelection(adapterSexosFam.getPosition(datosS[5].toString()));
+        nacionalidadesFam.setSelection(adapterNacionalidadesFam.getPosition(datosS[6].toString()));
+        estadosCivilesFam.setSelection(adapterEstadosCivilesFam.getPosition(datosS[7].toString()));
+        parentescos.setSelection(adapterParentesco.getPosition(datosS[8].toString()));
+        idFamiliar=datosS[11].toString();
     }
     public void llenadatosModificaRelLab(String[] datosSeleccionados){
         String[] datosS=datosSeleccionados;
-        razonSocial.setText(datosS[0].toString());
-        cuit.setText(datosS[1].toString());
-        fecIngreso.setText(datosS[2].toString());
-        aporteOS.setText(datosS[3].toString());
-        sac.setText(datosS[4].toString());
-
-
+        fechaCargaEmpleador=datosS[0].toString();
+        razonSocial.setText(datosS[1].toString());
+        cuit.setText(datosS[2].toString());
+        fecIngreso.setText(datosS[3].toString());
+        aporteOS.setText(datosS[4].toString());
+        sac.setText(datosS[5].toString());
+        idEmpleador=datosS[8].toString();
     }
 
     //endregion
@@ -843,20 +850,26 @@ public  class fragmento_cargaTitulares extends Fragment  implements View.OnClick
         String idEstCivilSeleccionado = getKey(mapEstadosCiviles, estadosCiviles.getSelectedItem().toString());
         String idPlanPrestacionalSeleccionado = getKey(mapPlanesPrestacionales, planesPrestacionales.getSelectedItem().toString());
         String[] datos;
-        datos = new String[]{apellido.getText().toString(), nombre.getText().toString(),
-                fecnac.getText().toString(), cuil.getText().toString(), idsexoSeleccionado,
-                idEstCivilSeleccionado, claveFiscal.getText().toString(),
-                cantGrupoFamiliar.getText().toString(), idPlanPrestacionalSeleccionado};
+        datos = new String[]{
+                apellido.getText().toString(),
+                nombre.getText().toString(),
+                fecnac.getText().toString(),
+                cuil.getText().toString(), idsexoSeleccionado,
+                idEstCivilSeleccionado,
+                claveFiscal.getText().toString(),
+                cantGrupoFamiliar.getText().toString(),
+                idPlanPrestacionalSeleccionado};
 
-        if(idTitular!="00000000-0000-0000-0000-000000000000")
+/*        if(idTitular!="00000000-0000-0000-0000-000000000000")
             {
+                kkkkkk
                 //region Modificacion titular Existente
 
                 //endregion
             }
         else
             {
-            }
+            }*/
                 //region datos personales
                 JSONArray dtContactosEmail = new JSONArray();
                 try {
@@ -919,8 +932,6 @@ public  class fragmento_cargaTitulares extends Fragment  implements View.OnClick
                 JSONArray dtContactosDomicilio = new JSONArray();
                 try {
                     String idDire;
-
-
                     for (int i = 0; i < filasDomicilio.size(); i++) {
                         if(filasDomicilio.get(i)[8]=="00000000-0000-0000-0000-000000000000")
                         {
@@ -948,21 +959,31 @@ public  class fragmento_cargaTitulares extends Fragment  implements View.OnClick
                 //region Grupo familiar
                 JSONArray dtFamiliares = new JSONArray();
                 try {
+                    String idFam;
                     for (int i = 0; i < filasFamiliares.size(); i++) {
+                        if(filasFamiliares.get(i)[11]=="00000000-0000-0000-0000-000000000000")
+                        {
+                            String uniqueID = UUID.randomUUID().toString();
+                            idFam=uniqueID;
+                        }
+                        else
+                        {
+                            idFam=filasFamiliares.get(i)[11];
+                        }
                         JSONObject jGroupFam = new JSONObject();
-                        String uniqueID = UUID.randomUUID().toString();
-                        jGroupFam.put("idFamiliar", uniqueID);//"00000000-0000-0000-0000-000000000000");
-                        jGroupFam.put("apellido", filasFamiliares.get(i)[0]);
-                        jGroupFam.put("nombre", filasFamiliares.get(i)[1]);
-                        jGroupFam.put("fecNac", filasFamiliares.get(i)[2]);
-                        jGroupFam.put("cuil", filasFamiliares.get(i)[3]);
-                        jGroupFam.put("idSexo", getKey(mapSexos, filasFamiliares.get(i)[4]));
-                        jGroupFam.put("idNacionalidad", getKey(mapNacionalidades, filasFamiliares.get(i)[5]));
-                        jGroupFam.put("idEstadoCivil", getKey(mapEstadosCiviles, filasFamiliares.get(i)[6]));
-                        jGroupFam.put("idParentesco", getKey(mapParentesco, filasFamiliares.get(i)[7]));
+                        jGroupFam.put("idFamiliar", idFam);//"00000000-0000-0000-0000-000000000000");
+                        jGroupFam.put("apellido", filasFamiliares.get(i)[1]);
+                        jGroupFam.put("nombre", filasFamiliares.get(i)[2]);
+                        jGroupFam.put("fecNac", filasFamiliares.get(i)[3]);
+                        jGroupFam.put("cuil", filasFamiliares.get(i)[4]);
+                        jGroupFam.put("idSexo", getKey(mapSexos, filasFamiliares.get(i)[5]));
+                        jGroupFam.put("idNacionalidad", getKey(mapNacionalidades, filasFamiliares.get(i)[6]));
+                        jGroupFam.put("idEstadoCivil", getKey(mapEstadosCiviles, filasFamiliares.get(i)[7]));
+                        jGroupFam.put("idParentesco", getKey(mapParentesco, filasFamiliares.get(i)[8]));
                         jGroupFam.put("idEstadoAfiliacion", "00000000-0000-0000-0000-000000000000");
                         jGroupFam.put("perAlta", "00000000-0000-0000-0000-000000000000");
                         jGroupFam.put("perBaja", "00000000-0000-0000-0000-000000000000");
+                        jGroupFam.put("fechaCarga", filasFamiliares.get(i)[0]);
 
                         dtFamiliares.put(jGroupFam);
                     }
@@ -973,17 +994,28 @@ public  class fragmento_cargaTitulares extends Fragment  implements View.OnClick
                 //region Relación laboral
                 JSONArray dtRelacionesLaborales = new JSONArray();
                 try {
+                    String IdEmp;
 
                     for (int i = 0; i < filasRellab.size(); i++) {
+                        if(filasRellab.get(i)[8]=="00000000-0000-0000-0000-000000000000")
+                        {
+                            String uniqueID = UUID.randomUUID().toString();
+                            IdEmp=uniqueID;
+                        }
+                        else
+                        {
+                            IdEmp=filasRellab.get(i)[8];
+                        }
                         JSONObject jGroupRelLab = new JSONObject();
-                        String uniqueID = UUID.randomUUID().toString();
-                        jGroupRelLab.put("idEmpleador", uniqueID);//"00000000-0000-0000-0000-000000000000");
+                        jGroupRelLab.put("idEmpleador", IdEmp);//"00000000-0000-0000-0000-000000000000");
                         jGroupRelLab.put("idTipoRelacionLaboral", "00000000-0000-0000-0000-000000000000");
-                        jGroupRelLab.put("razonSocial", filasRellab.get(i)[0]);
-                        jGroupRelLab.put("cuit", filasRellab.get(i)[1]);
-                        jGroupRelLab.put("fecIngreso", filasRellab.get(i)[2]);
-                        jGroupRelLab.put("aporteOs", filasRellab.get(i)[3]);
-                        jGroupRelLab.put("sac", filasRellab.get(i)[4]);
+                        jGroupRelLab.put("razonSocial", filasRellab.get(i)[1]);
+                        jGroupRelLab.put("cuit", filasRellab.get(i)[2]);
+                        jGroupRelLab.put("fecIngreso", filasRellab.get(i)[3]);
+                        jGroupRelLab.put("aporteOs", filasRellab.get(i)[4]);
+                        jGroupRelLab.put("sac", filasRellab.get(i)[5]);
+                        jGroupRelLab.put("fechaCarga", filasRellab.get(i)[0]);
+
 
                         dtRelacionesLaborales.put(jGroupRelLab);
                     }
@@ -1018,7 +1050,7 @@ public  class fragmento_cargaTitulares extends Fragment  implements View.OnClick
                 //endregion
 
                 WebService.modificarDatosTitulares(getActivity()
-                        , "00000000-0000-0000-0000-000000000000"
+                        , idTitular //"00000000-0000-0000-0000-000000000000"
                         , apellido.getText().toString()
                         , nombre.getText().toString()
                         , fecnac.getText().toString()
@@ -1029,7 +1061,7 @@ public  class fragmento_cargaTitulares extends Fragment  implements View.OnClick
                         , claveFiscal.getText().toString()
                         , cantGrupoFamiliar.getText().toString()
                         , idPlanPrestacionalSeleccionado
-                        , "Comentario ingreso titular"
+                        , comentarioTitular.getText().toString()//"Comentario ingreso titular"
                         , dtContactosDomicilio.toString()
                         , dtContactosTelefonos.toString()
                         , dtContactosEmail.toString()
@@ -1067,12 +1099,12 @@ public  class fragmento_cargaTitulares extends Fragment  implements View.OnClick
     }
     //region agrega a tablas visibles
     private void agregaRelacionLaboral(){
-        String[]itemRelLab = new String[]{razonSocial.getText().toString()
+        String[]itemRelLab = new String[]{fechaCargaEmpleador,razonSocial.getText().toString()
                 ,cuit.getText().toString()
                 ,fecIngreso.getText().toString()
                 ,aporteOS.getText().toString()
                 ,sac.getText().toString()
-                ,"Eliminar", "Modificar"
+                ,"Eliminar", "Modificar", idEmpleador
                 };
         if (razonSocial.getText().toString().equals("") ||
                 cuit.getText().toString().equals("") ||
@@ -1085,6 +1117,13 @@ public  class fragmento_cargaTitulares extends Fragment  implements View.OnClick
         else
         {
             tablaDinamicaRelLab.addItems(itemRelLab);
+            razonSocial.setText("");
+            cuit.setText("");
+            fecIngreso.setText("");
+            aporteOS.setText("");
+            sac.setText("");
+            idEmpleador="00000000-0000-0000-0000-000000000000";
+            fechaCargaEmpleador=fechaCargaGeneral;
 
         }
 
@@ -1101,12 +1140,12 @@ public  class fragmento_cargaTitulares extends Fragment  implements View.OnClick
             tablaDinamicaMail.addItems(itemMail);
             mail.setText("");
             comentarioMail.setText("");
-            idMail="";
+            idMail="00000000-0000-0000-0000-000000000000";
             fechaCargaMail=fechaCargaGeneral;
         }
     }
     private void agregaFamiliares(){
-        String[]itemFam = new String[]{apellidoFam.getText().toString()
+        String[]itemFam = new String[]{fechaCargaFamiliar,apellidoFam.getText().toString()
                 ,nombreFam.getText().toString()
                 ,fecnacFam.getText().toString()
                 ,cuilFam.getText().toString()
@@ -1114,7 +1153,7 @@ public  class fragmento_cargaTitulares extends Fragment  implements View.OnClick
                 ,nacionalidadesFam.getSelectedItem().toString()
                 ,estadosCivilesFam.getSelectedItem().toString()
                 ,parentescos.getSelectedItem().toString()
-                , "Eliminar","Modificar"
+                , "Eliminar","Modificar",idFamiliar
         };
         if (apellidoFam.getText().toString().equals("") ||
                 nombreFam.getText().toString().equals("") ||
@@ -1130,7 +1169,7 @@ public  class fragmento_cargaTitulares extends Fragment  implements View.OnClick
         else
         {
             tablaDinamicaFamiliares.addItems(itemFam);
-            direccion.setText("");
+            apellidoFam.setText("");
             nombreFam.setText("");
             fecnacFam.setText("");
             cuilFam.setText("");
@@ -1138,6 +1177,8 @@ public  class fragmento_cargaTitulares extends Fragment  implements View.OnClick
             nacionalidadesFam.setId(0);
             estadosCivilesFam.setId(0);
             parentescos.setId(0);
+            idFamiliar="00000000-0000-0000-0000-000000000000";
+            fechaCargaFamiliar=fechaCargaGeneral;
         }
 
     }
