@@ -70,7 +70,7 @@ import com.jama.carouselview.enums.IndicatorAnimationType;
 import com.jama.carouselview.enums.OffsetType;
 public  class fragmento_cargaTitulares extends Fragment  implements View.OnClickListener{
     //region Declaraciones
-    SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+    SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
     Date date = new Date();
     String fechaCargaGeneral = dateFormat.format(date);
 
@@ -203,7 +203,7 @@ public  class fragmento_cargaTitulares extends Fragment  implements View.OnClick
         cuit= (EditText) view.findViewById(R.id.cuit);
         aporteOS=(EditText) view.findViewById(R.id.aporteOS);
         sac=(EditText) view.findViewById(R.id.sac);
-        comentarioTitular=(EditText) view.findViewById(R.id.comentarioTelefono);
+        comentarioTitular=(EditText) view.findViewById(R.id.comentarioTitular);
         //archivo=(EditText) view.findViewById(R.id.archivo);
 
         fecnacFam.setOnClickListener(this);
@@ -418,6 +418,8 @@ public  class fragmento_cargaTitulares extends Fragment  implements View.OnClick
                             cantGrupoFamiliar.setText(datos.getString("cantGrupoFam"));
                             sel = datos.getString("nombrePlanPrestacionalActual");
                             llenaPlanesPrestacionales(sel);
+                            comentarioTitular.setText(datos.getString("comentarioTitular"));
+
                             //planesPrestacionales.setSelection(adapterplanesPrestacionales.getPosition(sel));
 
                             try {
@@ -427,7 +429,7 @@ public  class fragmento_cargaTitulares extends Fragment  implements View.OnClick
                                     JSONObject arrayFila = arrayCompleto.getJSONObject(i);
                                     String FechaCargatelefono = arrayFila.getString("fechaCarga");
                                     String telefono = arrayFila.getString("telefono");
-                                    String comentarioTelefono="";
+                                    String comentarioTelefono=arrayFila.getString("comentario");
                                     String idTelefono = arrayFila.getString("idTelefono");
 
                                     String[]itemTelefonos = new String[]{FechaCargatelefono,
@@ -1081,7 +1083,7 @@ public  class fragmento_cargaTitulares extends Fragment  implements View.OnClick
                             public void onSuccess(JSONObject valores) {
                                 dialogo.dismiss();
                                 try {
-
+                                    Toast.makeText(contexto, "Datos almacenados", Toast.LENGTH_LONG).show();
                                 } catch (Exception errEx) {
                                     dialogo = Dialogos.dlgError(contexto, errEx.getMessage());
                                 }
